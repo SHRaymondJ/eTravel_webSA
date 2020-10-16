@@ -1,0 +1,41 @@
+.flex--align{}
+.flex--justify{}
+
+/* 杂项弹窗 */
+.popWindow--others{}
+.popWindow--others-title{}
+.popWindow--others-line{}
+.popWindow--others-close{}
+.popWindow--box-1{}
+.popWindow--box-1-box{}
+.popWindow--box-1-box--name{}
+.popWindow--box-1-box--input{}
+/* 杂项弹窗-标签页 */
+.popWindow--tag{}
+.popWindow--tag_alive{}
+.popWIndow--tag-title{}
+.popWindow--tag-boxs{}
+.popWindow--tag-nameOfInputItems{}
+/* 杂项弹窗-标签页-订单号 */
+.popWindow--tag--orderInformation{}
+.popWindow--tag--orderInformation-items{}
+/* 杂项弹窗-标签页-备注栏 */
+.popWindow--tag--ticketingTimeLimit-dateInput{}
+.popWindow--tag--ticketingTimeLimit-hourInput{}
+.popWindow--tag--ticketingTimeLimit-minuteInput{}
+
+.popWindow--tag--rebookInput{}
+.popWindow--tag--refundInput{}
+.popWindow--tag--remarkInput{}
+
+/* 杂项弹窗-标签页-价格信息 */
+.popWindow--tag--priceMsg-title{}
+.popWindow--tag--priceMsg-editBtn{}
+.popWindow--tag--priceMsg-table-title{}
+.popWindow--tag--priceMsg-table-name{}
+.popWindow--tag--priceMsg-table-item{}
+
+.popWindow--tag--priceMsg-table-item_lowerPriceInput{}
+.popWindow--tag--priceMsg-table-item_fullPriceInput{}
+.popWindow--tag--priceMsg-table-item_totalPriceInput{}
+.popWindow--tag--priceMsg-table-item_fullLineInput{}

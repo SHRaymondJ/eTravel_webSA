@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+	<title>Travel Portal,企业差旅管理专家</title>
+	<!--[if lt IE 9]>
+	  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+	  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+	<![endif]-->
+	<link rel="stylesheet" type="text/css" href="../css/jquery-ui.css">
+	<link rel="stylesheet" type="text/css" href="../css/common.css">
+	<link rel="stylesheet" type="text/css" href="../css/kuCity.css">
+	<link rel="stylesheet" type="text/css" href="../css/searchRemark.css">
+	<link rel="stylesheet" type="text/css" href="../css/jquery.mloading.css">
+	
+	<style>
+		.contain{
+			width: 1200px;
+			padding-top: 20px;
+			margin: auto;
+		}
+		.title{
+			width:75px;
+			height:22px;
+			font-size:16px;
+			font-weight:600;
+			color:rgba(9,75,144,1);
+			line-height:22px;	
+		}
+		table{
+			/* border: 1px solid #D8D8D8; */
+			width: 1200px;
+			text-align: left;
+			font-size: 14px;
+		}
+		table td,table th{
+			border-left: 1px solid #D8D8D8;
+			border-top: 1px solid #D8D8D8;
+			/* text-indent: 8px; */
+			padding-left: 8px;
+			height: 32px;
+		}
+		table tr td:last-of-type,table tr th:last-of-type{
+			border-right: 1px solid #D8D8D8;
+		}
+		table tr:last-of-type td{
+			border-bottom: 1px solid #D8D8D8;
+		}
+		table tr:last-of-type th{
+			border-bottom: 1px solid #D8D8D8;
+		}
+		table th{
+			font-weight: 800;
+		}
+		.allList td{
+			border-top: 1px dotted #D8D8D8;
+		}
+		.copy{
+		    float: right;
+		    height: 26px;
+		    padding: 0 10px;
+		    background-color: #1E66AE;
+		    color: #FFFFFF;
+		    margin: 11px 0;
+		}
+		
+		
+		/* 第n+1列 */
+		.listNum2 td{
+			border-top: none;
+		}
+	</style>
+</head>
+<body>
+	<div class="contain">
+		<div class="title">Email输出</div>
+		<div>
+			<span class="copy">复制</span>
+		</div>
+		<div class="tableGroup">
+			<table id="flightList" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<th width="93px">Flight</th>
+					<th width="165px">From</th>
+					<th width="203px">To</th>
+					<th width="166px">Departure Time</th>
+					<th width="160px">Arrival Time</th>
+					<th width="151px">Equipment</th>
+					<th width="128px">Meal</th>
+					<!-- <th width="127px">StopNumber</th> -->
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/tools.js"></script>
+<script type="text/javascript" src="../js/jquery.mloading.js"></script>
+<script type="text/javascript" src="../js/jquery.session.js"></script>
+<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="../js/config.js"></script>
+<script type="text/javascript" src="../js/searchRemark.js"></script>
+<script type="text/javascript" src="../intlAir/js/interEmailPrint.js"></script>
+<script type="text/javascript">
+	var onlineStyle = JSON.parse($.session.get('ProfileInfo')).onlineStyle;
+	if(onlineStyle){
+		switch(onlineStyle){
+			case 'BCD':
+			  includeLinkStyle("../css/BCDColorStyle.css");
+			  includeLinkStyle("../domesticAir/css/bookDomAirTicket_BCD.css?v=1.00");
+			  break;
+			case 'eTravel':
+			  includeLinkStyle("../css/eTravelColorStyle.css");
+			  includeLinkStyle("../domesticAir/css/bookDomAirTicket_1.css?v=1.00");
+			  break;
+			case 'APPLE':
+			  includeLinkStyle("../css/AppleColorStyle.css");
+			  includeLinkStyle("../domesticAir/css/bookDomAirTicket_Apple.css?v=1.00");
+			  break;
+		}
+	}
+	function includeLinkStyle(url) {
+	 var link = document.createElement("link");
+	 link.rel = "stylesheet";
+	 link.type = "text/css";
+	 link.href = url;
+	 document.getElementsByTagName("head")[0].appendChild(link);
+	}
+</script>
+</html>

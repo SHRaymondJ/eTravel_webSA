@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>  
+<books>  
+   <book title="藏地密码" imageurl="images/Tibet_Code.jpg">  
+       <description>  
+  这里是概况(www.huyang8.com)  
+       </description>  
+   </book>  
+
+<book title="剑桥雅思6" imageurl="images/ielts.jpg">  
+        <description>  
+   这里是概况(www.huyang8.com)    
+    </description>  
+    </book>  
+  
+    <book title="Professional ASP.NET" imageurl="images/asp.jpg">  
+        <description>  
+             这里是概况(www.huyang8.com)          
+         </description>  
+    </book>  
+</books>

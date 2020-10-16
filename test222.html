@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title></title>
+	<script type="text/javascript" src="./js/jquery.min.js"></script>
+</head>
+<body>
+	
+</body>
+<script type="text/javascript">
+	var xmlStr='<?xml version="1.0" encoding="utf-8"?>\
+<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="ad375b9fbd0414d88946dcf9a675956bb" Version="2.0" IssueInstant="2019-11-07T22:44:19Z" Destination="https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2">\
+  <Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">Travelweb</Issuer>\
+  <samlp:Status>\
+    <samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"></samlp:StatusCode>\
+  </samlp:Status>  \
+  <Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:xs="http://www.w3.org/2001/XMLSchema" ID="ab039fcd8fb894f4998680869c9f7d65c" IssueInstant="2019-11-07T22:44:19.000Z" Version="2.0">\
+    <Issuer>Travelweb</Issuer>\
+    <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">\
+      <ds:SignedInfo>\
+        <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>\
+        <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>\
+        <ds:Reference URI="#ab039fcd8fb894f4998680869c9f7d65c">\
+          <ds:Transforms>\
+            <ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>\
+            <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">\
+              <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="xs"></ec:InclusiveNamespaces>\
+            </ds:Transform>\
+          </ds:Transforms>\
+          <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>\
+          <ds:DigestValue>2BgD+QKJ960ZYz2oo5o5PONVElQ=</ds:DigestValue>\
+        </ds:Reference>\
+      </ds:SignedInfo>\
+      <ds:SignatureValue>KPmzJbMMdzY+dDIDl5xoRaClwJS1qAlO/8q9Pt0mmre5FsY0EYtxGWLwUUaYTjWPuC7CAOANvgPGTWMzSVQ7qo7v2p355ykNydyBXTH1Vnb80ij7Glete0WVCQJZ+mgEWPrWfOY6G53qnXOCNIK83hnzemTAcPsKJwHsarWiSOhRu5MOcELIvadw5olkasOO+yUTH4Hb8yI/QjoJaokFNL6SbQ2xc7dThiK4xWeCAiP2mWk/ecloziusoG8zbI/JlNDe69PArqr6o4qKRjpkzgaOgK/ZqGclNPLRMiVgPnVsppYHfguzkL9eO4AbZ2h6jj0FeaCCMhnl66cbxnML1g==</ds:SignatureValue>\
+      <ds:KeyInfo>\
+        <ds:X509Data>\
+          <ds:X509Certificate>MIIDYTCCAkmgAwIBAgIELRzNJDANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExEjAQBgNVBAcTCUN1cGVydGlubzEOMAwGA1UEChMFQXBwbGUxDzANBgNVBAsTBlRyYXZlbDEQMA4GA1UEAxMHVW5rbm93bjAeFw0xOTA3MTEyMjM0MDJaFw0yOTA3MDgyMjM0MDJaMGExCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTESMBAGA1UEBxMJQ3VwZXJ0aW5vMQ4wDAYDVQQKEwVBcHBsZTEPMA0GA1UECxMGVHJhdmVsMRAwDgYDVQQDEwdVbmtub3duMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsPnBWoporDe8Mux9Tk6s/0vTxjqL1Dbn4Xsybk4yLd9f+UkD1YGtiifdiPHcrKE8iw1IS5Jju2olB3TcfcdFuUuCRnOlFtYm5TrsGqfywfGt/1wjOD9Zw7nglxLUSwKKxFNx3/YDYDcbahlqWPcOY2dih9wXuJ6f90OQvy1gbZ0YQ9AR8soUelPL49IPm+CoFQdC9qMoyA1dUy8+szSgwCVf0HW5V+A+9c8aBibNI6/gko7WNVg6crS1Sns+ORHAoHV7A7tANxmwjjz3LWn6NDrRPGqWCmrAi5Jw2tPOCfDz47RK6MhqmuOewmE7ITdwTO65CpiWv9ucchgLcq6N1wIDAQABoyEwHzAdBgNVHQ4EFgQU7KbZnrbUksDYfvKZedyvhatSlm0wDQYJKoZIhvcNAQELBQADggEBAFKY8WJWy80/Dy3KvxaTZl9z9ObaEaENJpm1X6L+RiwiMI2LdlrtRdwgnXvY2TVfLM+GRWyf5+rZvnzCmfowquOKK7zniRTDbQhIfA37NmZfZz3IeIzP+RntnM4wsYqNZxoe4jvSZrs4lDhP8AA6EdIvZTSuStX9Bo7SbZ87UGPDG321p+UxiYQZpQjEi0U5VjZhys8TW/rmfxNvrzoZ1JtfwXjGkJpW7sYmkPD6w5s/Umc/wYgpVl+kLnd3tZMfxECG8cGK/VcE9bAG1RSAR/iUphw74dfMDHr3eNT4ncYVRYmlfx1lo1Q94O31b4aYiH2HjGt7OAZd8ceEmt0CXzA=</ds:X509Certificate>\
+        </ds:X509Data>\
+      </ds:KeyInfo>\
+    </ds:Signature>\
+    <Subject>\
+      <NameID Format="urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified">2319785658</NameID>\
+      <SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">\
+        <SubjectConfirmationData NotOnOrAfter="2019-11-07T22:46:19Z" Recipient="https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2"/>\
+      </SubjectConfirmation>\
+    </Subject>\
+    <Conditions NotBefore="2019-11-07T22:42:19Z" NotOnOrAfter="2019-11-07T22:46:19Z">\
+      <AudienceRestriction>\
+        <Audience>Apple Travel China</Audience>\
+      </AudienceRestriction>\
+    </Conditions>\
+    <AuthnStatement AuthnInstant="2019-11-07T22:44:19Z">\
+      <AuthnContext>\
+        <AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</AuthnContextClassRef>\
+      </AuthnContext>\
+    </AuthnStatement>\
+    <AttributeStatement>\
+      <Attribute Name="emailAddress">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">ling_zhu2@apple.com</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="departmentNum">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">0212</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="mobilePhone">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">+86-18521526021</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="prsTypeCode">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">1</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="lname">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">ZHU</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="employeeId">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">619883</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="nickName">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">Ling</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="prsId">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">2319785658</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="mgrEmailAddress">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">lbritto@apple.com</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="fname">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">LING</AttributeValue>\
+      </Attribute>\
+      <Attribute Name="divisionNum">\
+        <AttributeValue xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">0212</AttributeValue>\
+      </Attribute>\
+    </AttributeStatement>\
+  </Assertion>\
+</samlp:Response>'
+	var  tStr='<?xml version=\"1.0\" encoding=\"utf-8\"?>\
+<samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"ad375b9fbd0414d88946dcf9a675956bb\" Version=\"2.0\" IssueInstant=\"2019-11-07T22:44:19Z\" Destination=\"https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2\">\
+  <Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">Travelweb</Issuer>\
+  <samlp:Status>\
+    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"></samlp:StatusCode>\
+  </samlp:Status>  \
+  <Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ID=\"ab039fcd8fb894f4998680869c9f7d65c\" IssueInstant=\"2019-11-07T22:44:19.000Z\" Version=\"2.0\">\
+    <Issuer>Travelweb</Issuer>\
+    <ds:Signature xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">\
+      <ds:SignedInfo>\
+        <ds:CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\
+        <ds:SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/>\
+        <ds:Reference URI=\"#ab039fcd8fb894f4998680869c9f7d65c\">\
+          <ds:Transforms>\
+            <ds:Transform Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\"/>\
+            <ds:Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\">\
+              <ec:InclusiveNamespaces xmlns:ec=\"http://www.w3.org/2001/10/xml-exc-c14n#\" PrefixList=\"xs\"></ec:InclusiveNamespaces>\
+            </ds:Transform>\
+          </ds:Transforms>\
+          <ds:DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/>\
+          <ds:DigestValue>2BgD+QKJ960ZYz2oo5o5PONVElQ=</ds:DigestValue>\
+        </ds:Reference>\
+      </ds:SignedInfo>\
+      <ds:SignatureValue>KPmzJbMMdzY+dDIDl5xoRaClwJS1qAlO/8q9Pt0mmre5FsY0EYtxGWLwUUaYTjWPuC7CAOANvgPGTWMzSVQ7qo7v2p355ykNydyBXTH1Vnb80ij7Glete0WVCQJZ+mgEWPrWfOY6G53qnXOCNIK83hnzemTAcPsKJwHsarWiSOhRu5MOcELIvadw5olkasOO+yUTH4Hb8yI/QjoJaokFNL6SbQ2xc7dThiK4xWeCAiP2mWk/ecloziusoG8zbI/JlNDe69PArqr6o4qKRjpkzgaOgK/ZqGclNPLRMiVgPnVsppYHfguzkL9eO4AbZ2h6jj0FeaCCMhnl66cbxnML1g==</ds:SignatureValue>\
+      <ds:KeyInfo>\
+        <ds:X509Data>\
+          <ds:X509Certificate>MIIDYTCCAkmgAwIBAgIELRzNJDANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExEjAQBgNVBAcTCUN1cGVydGlubzEOMAwGA1UEChMFQXBwbGUxDzANBgNVBAsTBlRyYXZlbDEQMA4GA1UEAxMHVW5rbm93bjAeFw0xOTA3MTEyMjM0MDJaFw0yOTA3MDgyMjM0MDJaMGExCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTESMBAGA1UEBxMJQ3VwZXJ0aW5vMQ4wDAYDVQQKEwVBcHBsZTEPMA0GA1UECxMGVHJhdmVsMRAwDgYDVQQDEwdVbmtub3duMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsPnBWoporDe8Mux9Tk6s/0vTxjqL1Dbn4Xsybk4yLd9f+UkD1YGtiifdiPHcrKE8iw1IS5Jju2olB3TcfcdFuUuCRnOlFtYm5TrsGqfywfGt/1wjOD9Zw7nglxLUSwKKxFNx3/YDYDcbahlqWPcOY2dih9wXuJ6f90OQvy1gbZ0YQ9AR8soUelPL49IPm+CoFQdC9qMoyA1dUy8+szSgwCVf0HW5V+A+9c8aBibNI6/gko7WNVg6crS1Sns+ORHAoHV7A7tANxmwjjz3LWn6NDrRPGqWCmrAi5Jw2tPOCfDz47RK6MhqmuOewmE7ITdwTO65CpiWv9ucchgLcq6N1wIDAQABoyEwHzAdBgNVHQ4EFgQU7KbZnrbUksDYfvKZedyvhatSlm0wDQYJKoZIhvcNAQELBQADggEBAFKY8WJWy80/Dy3KvxaTZl9z9ObaEaENJpm1X6L+RiwiMI2LdlrtRdwgnXvY2TVfLM+GRWyf5+rZvnzCmfowquOKK7zniRTDbQhIfA37NmZfZz3IeIzP+RntnM4wsYqNZxoe4jvSZrs4lDhP8AA6EdIvZTSuStX9Bo7SbZ87UGPDG321p+UxiYQZpQjEi0U5VjZhys8TW/rmfxNvrzoZ1JtfwXjGkJpW7sYmkPD6w5s/Umc/wYgpVl+kLnd3tZMfxECG8cGK/VcE9bAG1RSAR/iUphw74dfMDHr3eNT4ncYVRYmlfx1lo1Q94O31b4aYiH2HjGt7OAZd8ceEmt0CXzA=</ds:X509Certificate>\
+        </ds:X509Data>\
+      </ds:KeyInfo>\
+    </ds:Signature>\
+    <Subject>\
+      <NameID Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified\">2319785658</NameID>\
+      <SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">\
+        <SubjectConfirmationData NotOnOrAfter=\"2019-11-07T22:46:19Z\" Recipient=\"https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2\"/>\
+      </SubjectConfirmation>\
+    </Subject>\
+    <Conditions NotBefore=\"2019-11-07T22:42:19Z\" NotOnOrAfter=\"2019-11-07T22:46:19Z\">\
+      <AudienceRestriction>\
+        <Audience>Apple Travel China</Audience>\
+      </AudienceRestriction>\
+    </Conditions>\
+    <AuthnStatement AuthnInstant=\"2019-11-07T22:44:19Z\">\
+      <AuthnContext>\
+        <AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</AuthnContextClassRef>\
+      </AuthnContext>\
+    </AuthnStatement>\
+    <AttributeStatement>\
+      <Attribute Name=\"emailAddress\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">ling_zhu2@apple.com</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"departmentNum\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">0212</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"mobilePhone\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">+86-18521526021</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"prsTypeCode\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">1</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"lname\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">ZHU</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"employeeId\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">619883</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"nickName\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">Ling</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"prsId\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">2319785658</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"mgrEmailAddress\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">lbritto@apple.com</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"fname\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">LING</AttributeValue>\
+      </Attribute>\
+      <Attribute Name=\"divisionNum\">\
+        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">0212</AttributeValue>\
+      </Attribute>\
+    </AttributeStatement>\
+  </Assertion>\
+</samlp:Response>\
+'
+	// {
+	// 	"SAMLResponse": {
+	// 		"SAMLResponse": "<?xml version=\"1.0\" encoding=\"utf-8\"?><samlp:Response xmlns:samlp=\"urn:oasis:names:tc:SAML:2.0:protocol\" ID=\"ad375b9fbd0414d88946dcf9a675956bb\" Version=\"2.0\" IssueInstant=\"2019-11-07T22:44:19Z\" Destination=\"https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2\">  <Issuer xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\">Travelweb</Issuer>  <samlp:Status>    <samlp:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"></samlp:StatusCode>  </samlp:Status>    <Assertion xmlns:saml=\"urn:oasis:names:tc:SAML:2.0:assertion\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" ID=\"ab039fcd8fb894f4998680869c9f7d65c\" IssueInstant=\"2019-11-07T22:44:19.000Z\" Version=\"2.0\">    <Issuer>Travelweb</Issuer>    <ds:Signature xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">      <ds:SignedInfo>        <ds:CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>        <ds:SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/>        <ds:Reference URI=\"#ab039fcd8fb894f4998680869c9f7d65c\">          <ds:Transforms>            <ds:Transform Algorithm=\"http://www.w3.org/2000/09/xmldsig#enveloped-signature\"/>            <ds:Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\">              <ec:InclusiveNamespaces xmlns:ec=\"http://www.w3.org/2001/10/xml-exc-c14n#\" PrefixList=\"xs\"></ec:InclusiveNamespaces>            </ds:Transform>          </ds:Transforms>          <ds:DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/>          <ds:DigestValue>2BgD+QKJ960ZYz2oo5o5PONVElQ=</ds:DigestValue>        </ds:Reference>      </ds:SignedInfo>      <ds:SignatureValue>KPmzJbMMdzY+dDIDl5xoRaClwJS1qAlO/8q9Pt0mmre5FsY0EYtxGWLwUUaYTjWPuC7CAOANvgPGTWMzSVQ7qo7v2p355ykNydyBXTH1Vnb80ij7Glete0WVCQJZ+mgEWPrWfOY6G53qnXOCNIK83hnzemTAcPsKJwHsarWiSOhRu5MOcELIvadw5olkasOO+yUTH4Hb8yI/QjoJaokFNL6SbQ2xc7dThiK4xWeCAiP2mWk/ecloziusoG8zbI/JlNDe69PArqr6o4qKRjpkzgaOgK/ZqGclNPLRMiVgPnVsppYHfguzkL9eO4AbZ2h6jj0FeaCCMhnl66cbxnML1g==</ds:SignatureValue>      <ds:KeyInfo>        <ds:X509Data>          <ds:X509Certificate>MIIDYTCCAkmgAwIBAgIELRzNJDANBgkqhkiG9w0BAQsFADBhMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExEjAQBgNVBAcTCUN1cGVydGlubzEOMAwGA1UEChMFQXBwbGUxDzANBgNVBAsTBlRyYXZlbDEQMA4GA1UEAxMHVW5rbm93bjAeFw0xOTA3MTEyMjM0MDJaFw0yOTA3MDgyMjM0MDJaMGExCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTESMBAGA1UEBxMJQ3VwZXJ0aW5vMQ4wDAYDVQQKEwVBcHBsZTEPMA0GA1UECxMGVHJhdmVsMRAwDgYDVQQDEwdVbmtub3duMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsPnBWoporDe8Mux9Tk6s/0vTxjqL1Dbn4Xsybk4yLd9f+UkD1YGtiifdiPHcrKE8iw1IS5Jju2olB3TcfcdFuUuCRnOlFtYm5TrsGqfywfGt/1wjOD9Zw7nglxLUSwKKxFNx3/YDYDcbahlqWPcOY2dih9wXuJ6f90OQvy1gbZ0YQ9AR8soUelPL49IPm+CoFQdC9qMoyA1dUy8+szSgwCVf0HW5V+A+9c8aBibNI6/gko7WNVg6crS1Sns+ORHAoHV7A7tANxmwjjz3LWn6NDrRPGqWCmrAi5Jw2tPOCfDz47RK6MhqmuOewmE7ITdwTO65CpiWv9ucchgLcq6N1wIDAQABoyEwHzAdBgNVHQ4EFgQU7KbZnrbUksDYfvKZedyvhatSlm0wDQYJKoZIhvcNAQELBQADggEBAFKY8WJWy80/Dy3KvxaTZl9z9ObaEaENJpm1X6L+RiwiMI2LdlrtRdwgnXvY2TVfLM+GRWyf5+rZvnzCmfowquOKK7zniRTDbQhIfA37NmZfZz3IeIzP+RntnM4wsYqNZxoe4jvSZrs4lDhP8AA6EdIvZTSuStX9Bo7SbZ87UGPDG321p+UxiYQZpQjEi0U5VjZhys8TW/rmfxNvrzoZ1JtfwXjGkJpW7sYmkPD6w5s/Umc/wYgpVl+kLnd3tZMfxECG8cGK/VcE9bAG1RSAR/iUphw74dfMDHr3eNT4ncYVRYmlfx1lo1Q94O31b4aYiH2HjGt7OAZd8ceEmt0CXzA=</ds:X509Certificate>        </ds:X509Data>      </ds:KeyInfo>    </ds:Signature>    <Subject>      <NameID Format=\"urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified\">2319785658</NameID>      <SubjectConfirmation Method=\"urn:oasis:names:tc:SAML:2.0:cm:bearer\">        <SubjectConfirmationData NotOnOrAfter=\"2019-11-07T22:46:19Z\" Recipient=\"https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2\"/>      </SubjectConfirmation>    </Subject>    <Conditions NotBefore=\"2019-11-07T22:42:19Z\" NotOnOrAfter=\"2019-11-07T22:46:19Z\">      <AudienceRestriction>        <Audience>Apple Travel China</Audience>      </AudienceRestriction>    </Conditions>    <AuthnStatement AuthnInstant=\"2019-11-07T22:44:19Z\">      <AuthnContext>        <AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:Password</AuthnContextClassRef>      </AuthnContext>    </AuthnStatement>    <AttributeStatement>      <Attribute Name=\"emailAddress\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">ling_zhu2@apple.com</AttributeValue>      </Attribute>      <Attribute Name=\"departmentNum\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">0212</AttributeValue>      </Attribute>      <Attribute Name=\"mobilePhone\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">+86-18521526021</AttributeValue>      </Attribute>      <Attribute Name=\"prsTypeCode\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">1</AttributeValue>      </Attribute>      <Attribute Name=\"lname\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">ZHU</AttributeValue>      </Attribute>      <Attribute Name=\"employeeId\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">619883</AttributeValue>      </Attribute>      <Attribute Name=\"nickName\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">Ling</AttributeValue>      </Attribute>      <Attribute Name=\"prsId\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">2319785658</AttributeValue>      </Attribute>      <Attribute Name=\"mgrEmailAddress\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">lbritto@apple.com</AttributeValue>      </Attribute>      <Attribute Name=\"fname\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">LING</AttributeValue>      </Attribute>      <Attribute Name=\"divisionNum\">        <AttributeValue xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"xs:string\">0212</AttributeValue>      </Attribute>    </AttributeStatement>  </Assertion></samlp:Response>"
+	// 	}
+	// }
+	var s={
+		"SAMLResponse":{
+			"SAMLResponse":tStr,
+		}
+	}
+	$.ajax(
+	  {
+	    type:'post',
+		url:"https://online.bcdtravel.cn/SystemAPI_PostSend/api/SystemAPI/PostSend",
+	    // url : "https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2", 
+	    dataType : 'json',
+	    data:{
+			url: "https://online.bcdtravel.cn/AppleLoginHandlerApi/api/AppleLogin/EtravelSSO2", 
+			jsonStr:JSON.stringify(s),
+	    },
+	    success : function(data) {
+			console.log(data)
+			// $('html').html(data)
+		}})
+			
+	 // $(document).ready(function(){  
+	 //        $.get('./t1.xml', function(d){  
+	 //        $('body').append('<h1> Saturn给你推荐几本书： </h1>');  
+	 //        $('body').append('<dl />');  
+	 //   console.log(d)
+	 //        $(d).find('book').each(function(){  
+	 //            var $book = $(this);    
+	 //             var title = $book.attr("title");  
+	 //             var description = $book.find('description').text();  
+	 //             var imageurl = $book.attr('imageurl');  
+	 //             var html ='<dt> <img class="bookImage" alt="" src="'+ imageurl +'" /> </dt>';
+	 //             html +='<dd> <span class="loadingPic" alt="Loading" />';  
+	 //             html +='<p class="title">'+ title +'</p>';  
+	 //             html +='<p> '+ description +'</p>' ;  
+	 //             html +='</dd>';  
+	 //             $('dl').append($(html));  
+	 //             $('.loadingPic').fadeOut(2000);  
+	 //         });  
+	 //     });  
+	 // });  
+</script>
+</html>

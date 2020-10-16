@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" name="viewport">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="../css/common.css">
+	<link rel="stylesheet" type="text/css" href="../css/jquery.mloading.css">
+</head>
+<body>
+</body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/tools.js"></script>
+<script type="text/javascript" src="../js/jquery.mloading.js"></script>
+<script type="text/javascript">
+	var mobileAgent = new Array("iphone", "ipod", "ipad", "android", "mobile", "blackberry", "webos", "incognito", "webmate", "bada", "nokia", "lg", "ucweb", "skyfire");
+	var browser = navigator.userAgent.toLowerCase(); 
+	var isMobile = false; 
+	for (var i=0; i<mobileAgent.length; i++){
+	    if (browser.indexOf(mobileAgent[i])!=-1){ 
+	        isMobile = true; 
+	        break;
+	    }
+	}
+    if(isMobile){
+        var browser = navigator.userAgent.toLowerCase();
+        if(browser.indexOf("iphone") != -1||browser.indexOf("ipad") != -1){
+            // alert("ios");
+            window.location.href = 'https://itunes.apple.com/cn/app/id1460243232';
+        }else if(browser.indexOf("android") != -1){
+            // alert("android");
+            window.location.href = 'https://online.bcdtravel.cn/download/android.apk';
+        }
+    }
+</script>
+</html>
