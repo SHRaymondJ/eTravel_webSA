@@ -1,0 +1,388 @@
+/* 公共 */
+* {
+    padding: 0;
+    margin: 0;
+}
+
+select {
+    padding-right: 30px;
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-image: url(../images/button_rightarrow.svg);
+    background-repeat: no-repeat;
+    background-size: 18px;
+    background-color: transparent;
+}
+
+input,
+select,
+textarea {
+    line-height: 30px;
+    border: 1px solid #979797;
+    border-radius: 4px;
+    padding-left: 5px;
+}
+
+input {
+    height: 28px;
+}
+input[type='number']{
+    
+}
+select {
+    height: 30px;
+}
+
+.flex-justify-between {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.flex-box {
+    display: flex;
+    align-items: baseline;
+}
+#MiscellaneousAndPrice{
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 999;
+}
+/* 遮罩层 */
+.mask {
+    background-color: black;
+    opacity: 0.36;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+}
+
+/* 杂项弹窗 */
+.popWindow--others-titleBox,
+.popWindow--box1,
+.popWindow--tag {
+    position: relative;
+    margin: 0 30px;
+}
+
+/* 字体设置 */
+.popWindow--box1-box--name,
+.popWindow--tag-nameOfInputItems {
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #666666;
+    line-height: 20px;
+    display: inline-block;
+}
+
+.popWindow--box1-box--name {
+    width: 130px;
+}
+
+.popWindow--tag-nameOfInputItems {
+    width: 100px;
+    margin-right: 10px;
+    word-wrap: break-word;
+}
+
+.popWindow--others {
+    position: fixed;
+    width: 938px;
+    height: 80%;
+    max-height: 800px;
+    background-color: white;
+    border-radius: 16px;
+    left: 50%;
+    margin-left: -464px;
+    margin-top: 100px;
+    overflow-y: scroll;
+}
+
+.popWindow--others-titleBox {
+    border-bottom: 2px dashed #979797;
+    margin-bottom: 12px;
+}
+
+.popWindow--others-title {
+    text-align: center;
+    font-size: 20px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #094b90;
+    line-height: 28px;
+    margin: 12px auto;
+}
+
+.popWindow--others-close {
+    position: absolute;
+    right: 0;
+    top: 3px;
+    line-height: 28px;
+}
+
+.popWindow--box1 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popWindow--box1-box {
+    margin-bottom: 12px;
+    width: 360px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.popWindow--box1-box--name {
+    line-height: 30px;
+}
+
+.popWindow--box1-box--input {}
+
+.popWindow--box1-box--select {
+    background-position: 175px center;
+    width: 200px;
+}
+
+/* 杂项弹窗-标签页 */
+.popWindow--tag {}
+
+.popWindow--tag-title {
+    width: 122px;
+    text-align: center;
+    margin-right: 8px;
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333;
+    background-color: white;
+    line-height: 20px;
+    padding: 4px 0;
+    border: 1px solid #cccccc;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    z-index: 1;
+    display: inline-block;
+}
+
+.popWindow--tag_title_alive {
+    border-bottom: none;
+    color: #041E5B;
+    z-index: 3;
+    border: 1px solid #041e5b;
+    border-bottom: 1px solid white;
+}
+
+.popWindow--tag-box {
+    z-index: 2;
+    border-radius: 0px 4px 4px 4px;
+    border: 1px solid #041E5B;
+    margin-top: -1px;
+}
+
+.popWindow--tag-area {
+    padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
+}
+
+.popWindow--tag-area:last-child {
+    border-bottom: none;
+}
+
+
+/* 杂项弹窗-标签页-订单号 */
+.popWindow--tag--orderInformation {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    margin-bottom: 8px;
+}
+
+.popWindow--tag--orderInformation-items {
+    font-size: 14px;
+    font-family: PingFangSC-Regular, PingFang SC;
+    font-weight: 400;
+    color: #333333;
+    line-height: 20px;
+    margin-right: 60px;
+}
+
+/* 杂项弹窗-标签页-备注栏 */
+.popWindow--tag-area>.flex-box {
+    margin-bottom: 10px;
+}
+
+.popWindow--tag--ticketingTimeLimit-dateInput {
+    width: 97px;
+    height: 28px;
+    border-radius: 4px;
+    border: 1px solid #979797;
+    margin-right: 4px;
+}
+
+.popWindow--tag--ticketingTimeLimit-hourInput,
+.popWindow--tag--ticketingTimeLimit-minuteInput {
+    width: 70px;
+    height: 30px;
+    border-radius: 4px;
+    border: 1px solid #979797;
+    background-position: 40px center;
+    margin-right: 4px;
+}
+
+.popWindow--tag--rebookInput {
+    width: 140px;
+    background-position: 116px center;
+}
+
+.popWindow--tag--refundInput {
+    width: 711px;
+    background-position: 686px center;
+}
+
+.popWindow--tag--remarkInput {
+    width: 716px;
+    line-height: normal;
+    resize: none;
+}
+
+/* 杂项弹窗-标签页-价格信息 */
+.popWindow--tag--priceMsg.flex-box {
+    justify-content: space-between;
+}
+
+.popWindow--tag--priceMsg-title {
+    font-size: 16px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    line-height: 22px;
+}
+
+.popWindow--tag--priceMsg-editBtn {
+    width: 90px;
+    height: 26px;
+    background: #041E5B;
+    border-radius: 4px;
+    color: red;
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #FFFFFF;
+    line-height: 26px;
+    border: none;
+    text-align: center;
+
+}
+
+.popWindow--tag--priceMsg-table-title {
+    padding-left: 110px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.popWindow--tag--priceMsg-table-title span:last-child,
+.popWindow--tag--priceMsg-table-items>.popWindow--tag--priceMsg-table-item:last-child {
+    width: 55px;
+}
+
+.popWindow--tag--priceMsg-table-title span {
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #666666;
+    line-height: 20px;
+    display: block;
+    width: 80px;
+    flex: 0 0 0.14286;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.popWindow--tag--priceMsg-table-name {}
+
+.popWindow--tag--priceMsg-table-items {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.popWindow--tag--priceMsg-table-item {
+    width: 70px;
+    flex: 0 0 0.14286;
+    position: relative;
+}
+.percentage.popWindow--tag--priceMsg-table-item{
+    margin-right: 10px;
+}
+.percentage.popWindow--tag--priceMsg-table-item:after {
+    content: "%";
+    position: absolute;
+    display: block;
+    right: -20px;
+    top: 5px;
+}
+
+.popWindow--tag--priceMsg-table-item_percentage {
+    width: 65px;
+}
+
+
+.popWindow--tag--priceMsg-table-item_lowerPriceLine {
+    display: flex;
+    justify-content: space-between;
+}
+
+.popWindow--tag--priceMsg-table-item_lowerPriceLine .popWindow--tag--priceMsg-table-item * {
+    display: inline-block;
+}
+
+.popWindow--tag--priceMsg-table-item_lowerPriceLine .popWindow--tag--priceMsg-table-item {
+    flex: 0 0 33%;
+    display: flex;
+    align-items: center;
+}
+
+.popWindow--tag--priceMsg-table-item_lowerPriceLine input {
+    width: 180px;
+    max-width: 180px;
+}
+
+.popWindow--tag--priceMsg-table-item_lowerPriceLine span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #666666;
+    line-height: 22px;
+    margin-right: 5px;
+
+}
+
+.popWindow--submit {
+    display: block;
+    width: 200px;
+    height: 38px;
+    margin: 20px auto;
+    background-color: #F6AA24;
+    font-size: 16px;
+    font-family: PingFangSC-Semibold, PingFang SC;
+    font-weight: 600;
+    color: #FFFFFF;
+    line-height: 22px;
+    text-align: center;
+    border:none;
+}
+
+/* 日期控件 */
+.ui-datepicker-month,.ui-datepicker-year{
+    background-color: white;
+    background-position: right center;
+}

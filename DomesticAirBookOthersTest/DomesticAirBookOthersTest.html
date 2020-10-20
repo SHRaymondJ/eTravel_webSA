@@ -4,9 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="DomesticAirBookOthersTest.css">
+    <link rel="stylesheet" href="./css/DomesticAirBookOthersTest.css">
+    <link rel="stylesheet" type="text/css" href="../css/jquery-ui.css">
 </head>
 <body>
+    <!-- <form action='' id='MiscellaneousAndPrice'>
+        <div class='mask'></div>
+        <section class='popWindow--others'>
+            <div class='popWindow--others-titleBox'>
+                <h3 class='popWindow--others-title'>[MiscellaneousAndPrice]</h3>
+                <img src='./img/close_window.png' alt='close' class='popWindow--others-close'>
+            </div>
+            <div class='popWindow--box1'>
+                <div class='popWindow--box1-box'>
+                    <span class='popWindow--box1-box--name'>[Subscriber]</span>
+                    <input type='text' class='popWindow--box1-box--input'>
+                </div>
+                <div class='popWindow--box1-box'>
+                    <span class='popWindow--box1-box--name'>[paymentMethod]</span>
+                    <select type='' class='popWindow--box1-box--select'>
+                        <option value=''></option>
+                    </select> 
+                </div>
+            </div>
+            <section class='popWindow--tag'>
+                <div class='popWindow--tag-title popWindow--tag_title_alive'>[tabTitle]</div>
+                <div class='popWindow--tag-title'>[tabTitle]</div>
+                <section class='popWindow--tag-box'>
+                    <div class='popWindow--tag-area'>
+                        <div class='popWindow--tag--orderInformation'>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineNumber]</span>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineTimetable]</span>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineDestination]</span>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineType]</span>
+                        </div>
+                        <div class='popWindow--tag--orderInformation'>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineNumber]</span>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineTimetable]</span>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineDestination]</span>
+                            <span class='popWindow--tag--orderInformation-items'>[airlineType]</span>
+                        </div>
+                    </div>
+                    <div class='popWindow--tag-area'>
+                        <div class='flex-justify-between'>
+                            <div class='flex-box'>
+                                <span class='popWindow--tag-nameOfInputItems'>[ticketingTimeLimit]</span>
+                                <input type='text' class='popWindow--tag--ticketingTimeLimit-dateInput'>
+                                <select type='' class='popWindow--tag--ticketingTimeLimit-hourInput'>
+                                    <option value='0'></option>
+                                    <option value='1'></option>
+                                    <option value='23'></option>
+                                </select> 
+                                <select type='' class='popWindow--tag--ticketingTimeLimit-minuteInput'>
+                                    <option value='00'></option>
+                                    <option value='30'></option>
+                                </select> 
+                            </div>
+                            <div class='flex-box'>
+                                <span class='popWindow--tag-nameOfInputItems'>[Rebook]</span>
+                                <select type='' class='popWindow--tag--rebookInput'>
+                                    <option value='0'></option>
+                                </select> 
+                            </div>
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[RefundFee]</span>
+                            <select type='' class='popWindow--tag--refundInput'>
+                                <option value='0'></option>
+                            </select> 
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[Remark]</span>
+                            <textarea name='' id='' cols='30' rows='10' class='popWindow--tag--remarkInput'></textarea>
+                        </div>
+                    </div>
+                    <div class='popWindow--tag-area' id='popWindowPriceBox'>
+                        <div class='popWindow--tag--priceMsg flex-box'>
+                            <h4 class='popWindow--tag--priceMsg-title'>[price]</h4>
+                            <div class='popWindow--tag--priceMsg-editBtn' id='popWindowEditBtn'>[editBtn]</div>
+                        </div>
+                        <div class='flex-box popWindow--tag--priceMsg-table-title'>
+                            <span>[priceHead]</span>
+                            <span>[priceHead]</span>
+                            <span>[priceHead]</span>
+                            <span>[priceHead]</span>
+                            <span>[priceHead]</span>
+                            <span>[priceHead]</span>
+                            <span>[priceHead]</span>
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[adult]</span>
+                            <div class='popWindow--tag--priceMsg-table-items'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <div class='popWindow--tag--priceMsg-table-item percentage'>
+                                    <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item_percentage'>
+                                </div>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                            </div>
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[child]</span>
+                            <div class='popWindow--tag--priceMsg-table-items'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <div class='popWindow--tag--priceMsg-table-item percentage'>
+                                    <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item_percentage'>
+                                </div>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                            </div>
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[babe]</span>
+                            <div class='popWindow--tag--priceMsg-table-items'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <div class='popWindow--tag--priceMsg-table-item percentage'>
+                                    <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item_percentage'>
+                                </div>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item'>
+                            </div>
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[lowestPrice]</span>
+                            <div class='popWindow--tag--priceMsg-table-items popWindow--tag--priceMsg-table-item_lowerPriceLine'>
+                                <input type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item flex3'>
+                                <div class='popWindow--tag--priceMsg-table-item flex3'>
+                                    <span>[fullPrice]</span>
+                                    <input type='number' disabled='disabled' min='0'>
+                                </div>
+                                <div class='popWindow--tag--priceMsg-table-item flex3'>
+                                    <span>[totalPrice]</span>
+                                    <input type='number' disabled='disabled' min='0'>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[discountCode]</span>
+                            <select type='' class='popWindow--tag--refundInput' disabled='disabled'>
+                                <option value='0'></option>
+                            </select> 
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[nonDiscountCode]</span>
+                            <select type='' class='popWindow--tag--refundInput' disabled='disabled'>
+                                <option value='0'></option>
+                            </select> 
+                        </div>
+                        <div class='flex-box'>
+                            <span class='popWindow--tag-nameOfInputItems'>[internalInfomation]</span>
+                            <textarea name='' cols='30' rows='10' class='popWindow--tag--remarkInput' disabled='disabled' id='popWindowInternalInformation'></textarea>
+                        </div>
+                    </div>
+
+                </section>
+            </section>
+            <input type='submit' value='提交' class='popWindow--submit'>
+        </section>
+    </form> -->
     
 </body>
+<script type="text/javascript" src="../js/jquery.min.js"></script>
+<script type="text/javascript" src="../js/tools.js"></script>
+<script type="text/javascript" src="../js/jquery.mloading.js"></script>
+<script type="text/javascript" src="../js/jquery.session.js"></script>
+<script type="text/javascript" src="../js/jquery-ui.min.js"></script>
+<script src="./js/DomesticAirBookOthersTest.js"></script>
+
 </html>
