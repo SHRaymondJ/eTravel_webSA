@@ -353,6 +353,26 @@ var en = {
 		"departure": "Departure",
 	},
 }
+
+var orderType = 2;  //订单类型 1机票 2酒店
+// //获得机票杂项的请求参数
+// var orderFinishDetail = {
+//     request: {
+//         id: "",  //用户ID
+//         orderRids: [],   //预定接口返回的AirMainRids参数
+//         orderType: 1,    //订单类型 1机票 2酒店
+//         Language: ""     //用户环境语言
+//     }
+// }
+//获得酒店杂项的请求参数
+function OrderFinishDetail(__id,__orderRids,__orderType,__Language){
+    this.request = {};
+    this.request.id = __id; //<String>用户ID
+    this.request.orderRids = __orderRids,   //<Array>预定接口返回的AirMainRids参数
+    this.request.orderType = __orderType,   //<int>订单类型 1机票 2酒店
+    this.request.Language = __Language      //<String>用户环境语言
+}
+
 if (ProfileInfo.onlineStyle == "APPLE") {
 	cn.remarkPop.remarkInfoRemind = "";
 	en.remarkPop.remarkInfoRemind = "";
@@ -3237,7 +3257,8 @@ function reserveHotel(res, payRes) {
 			url: $.session.get('ajaxUrl'),
 			dataType: 'json',
 			data: {
-				url: $.session.get('obtCompany') + "/OrderService.svc/BookAllHotelPost",
+				url: $.session.get('obtCompany') + "/OrderService.svc/BookAllHotelPost",	//正式	
+				// url: "https://mobileservicetest.bcdtravel.cn:8089/AndroidService.testForIT/OrderService.svc/BookAllHotelPost",	//测试
 				jsonStr: '{"request":{"queryKey":"' + finalQueryKey + '","preference":"' + preference + '","creditCardKey":"' +
 					creditCardKey + '","remarkKey":"' + remarkKey + '","payInfo":"' + payInfo + '","id":' + netUserId +
 					',"Language":"' + obtLanguage + '","busInfo":"' + busInfo + '","memberShipInfo":[' + memberShipInfo + ']}}'
@@ -3257,11 +3278,16 @@ function reserveHotel(res, payRes) {
 					}
 				} else {
 					var orderNo = res.OrderNo;
-					if ($.session.get("TAnumber") && !$.session.get("TAnumberIndex")) {
-						$.session.remove("TAnumber");
-						$.session.remove("TACustomerId");
-					}
-					changeNewUid(orderNo);
+					var orderFinishDetail = new OrderFinishDetail(netUserId.split('\"')[1],res.AirMainRids,orderType,obtLanguage)
+					hotelBookOthersPopUp(orderFinishDetail,res.OrderNo);	//确认酒店杂项
+					//以下移到杂项提交内
+					// if ($.session.get("TAnumber") && !$.session.get("TAnumberIndex")) {
+					// 	$.session.remove("TAnumber");
+					// 	$.session.remove("TACustomerId");
+					// }
+					// changeNewUid(orderNo);
+					//以上
+
 					// if(ProfileInfo.onlineStyle=="APPLE"){
 					//     var finishedInfo = {
 					//         'orderNo':orderNo,

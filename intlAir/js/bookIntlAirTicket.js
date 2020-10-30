@@ -224,6 +224,26 @@ var en = {
     "airlineRemind2":"China southern airlines' important tips",
     "airlineRemind3":"2019 excess baggage prices",
 }
+
+var orderType = 1;  //订单类型 1机票 2酒店
+// //获得机票杂项的请求参数
+// var orderFinishDetail = {
+//     request: {
+//         id: "",  //用户ID
+//         orderRids: [],   //预定接口返回的AirMainRids参数
+//         orderType: 1,    //订单类型 1机票 2酒店
+//         Language: ""     //用户环境语言
+//     }
+// }
+//获得机票杂项的请求参数
+function OrderFinishDetail(__id,__orderRids,__orderType,__Language){
+    this.request = {};
+    this.request.id = __id; //<String>用户ID
+    this.request.orderRids = __orderRids,   //<Array>预定接口返回的AirMainRids参数
+    this.request.orderType = __orderType,   //<int>订单类型 1机票 2酒店
+    this.request.Language = __Language      //<String>用户环境语言
+}
+
 if(ProfileInfo.onlineStyle=="APPLE"){
     cn.remarkPop.remarkInfoRemind = "";
     en.remarkPop.remarkInfoRemind = "";
@@ -2777,16 +2797,19 @@ function bookTicket(queryKey){
                 console.log(res);
                 if(res.OrderNo != null){
                     var orderNo = res.OrderNo;
-					if($.session.get("TAnumber")&&!$.session.get("TAnumberIndex")){
-						$.session.remove("TAnumber");
-						$.session.remove("TACustomerId");
-					}
+					// if($.session.get("TAnumber")&&!$.session.get("TAnumberIndex")){
+					// 	$.session.remove("TAnumber");
+					// 	$.session.remove("TACustomerId");
+					// }
 					if(orderNo=="SucceedIntExcApplication"){
 						alert(res.ErrorMsg)
 						// 跳转到原订单详情页
 						window.location.href='../../orders/orderDetails.html?state=finish'
 					}else{
-						changeNewUid(orderNo);
+                        var isTA=1;
+                        var orderFinishDetail = new OrderFinishDetail(netUserId.split('\"')[1],res.AirMainRids,orderType,obtLanguage)
+                        airBookOthersPopUp(orderFinishDetail,res.OrderNo,isTA) //确认机票杂项
+						// changeNewUid(orderNo);   //移到确认机票杂项里了
 					}
                     // if(ProfileInfo.onlineStyle=="APPLE"){
                     //     var finishedInfo = {

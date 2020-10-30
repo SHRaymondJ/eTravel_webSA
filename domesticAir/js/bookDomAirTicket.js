@@ -566,6 +566,7 @@ function surePassengerInfo(airlineInfo) {
                     $(".ricketOutBody").html('');
                 }
                 $(".orderDetail").attr("CompanyID", passengerJson.CompanyID);
+                $.session.set('companyID',passengerJson.CompanyID);
                 $(".popNameCnText").text(passengerJson.CustomerCN);
                 $(".popNameEnText").text(passengerJson.CustomerEN);
                 $(".popNameCn .popNameRadio").attr("PassengerName", passengerJson.CustomerCN);
@@ -2652,9 +2653,7 @@ function bookTicket() {
                             var isTA = 0
                             var orderFinishDetail = new OrderFinishDetail(netUserId.split('\"')[1],res.AirMainRids,orderType,obtLanguage)
                             airBookOthersPopUp(orderFinishDetail,res.OrderNo,isTA) //确认机票杂项
-                            // var orderNo = res.OrderNo;          
-                            // $.session.remove("changeOrderNo");
-                            // changeNewUid(orderNo);
+
                         } else if (res.ErrorMsg) {
                             alert(res.ErrorMsg);
                         }
@@ -2690,13 +2689,6 @@ function bookTicket() {
                             var orderFinishDetail = new OrderFinishDetail(netUserId.split('\"')[1],res.AirMainRids,orderType,obtLanguage)
                             airBookOthersPopUp(orderFinishDetail,res.OrderNo,isTA) //确认机票杂项
 
-                            // if ($.session.get("TAnumber") && !$.session.get("TAnumberIndex")) {
-                            //     $.session.remove("TAnumber");
-                            //     $.session.remove("TACustomerId");
-                            //     $.session.remove("changeOrderNo");
-                            // }
-                            // var orderNo = res.OrderNo;
-                            // changeNewUid(orderNo);
                         } else if (res.ErrorMsg) {
                             alert(res.ErrorMsg);
                         }
