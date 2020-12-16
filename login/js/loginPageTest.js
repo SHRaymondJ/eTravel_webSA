@@ -221,7 +221,8 @@ function login(){
 }
 function confirmLogin(res,userName,password){
 	if(res.Company_Url){
-	    $.session.set('obtCompany', res.Company_Url)
+	    // $.session.set('obtCompany', res.Company_Url)
+	    $.session.set('obtCompany', "https://mobileservicetest.bcdtravel.cn:8089/AndroidService.testForIT")  //测试
 	    $.ajax(
 	      {
 	          type: 'post',

@@ -1324,17 +1324,23 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
         // console.log($(this).find("option:selected").attr("index"));
         var selectKey = $(this).find("option:selected").attr("key");
         var selectIndex = parseInt($(this).find("option:selected").attr("index"));
+        $(".liTittle").removeClass("colorRed");
+        $(".remarkLiInput").attr("require", "");
         remarks[selectIndex].RelatedRemarkList.map(function (rItem) {
             if (rItem.ChooseMainValue == selectKey) {
+
+                //?????
+                $("#remarkInput" + rItem.SubRemarkIndex + "").val("");
+                $("#remarkInput" + rItem.SubRemarkIndex + "").removeAttr("key");
+                //?????
+
                 rItem.SubRemarkRuleList.map(function (sItem) {
-                    $("#remarkInput" + rItem.SubRemarkIndex + "").val("");
-                    $("#remarkInput" + rItem.SubRemarkIndex + "").removeAttr("key");
                     if (sItem.SubRemarkRule == 1) {
                         // console.log(sItem)
                         var colorRed = sItem.SubRemarkValue.indexOf("4") != -1 || sItem.SubRemarkValue == "" ? "" : "colorRed";
                         if (colorRed == "") {
-                            $("#liTittle" + rItem.SubRemarkIndex + "").removeClass("colorRed");
-                            $("#remarkInput" + rItem.SubRemarkIndex + "").attr("require", "");
+                        //     $("#liTittle" + rItem.SubRemarkIndex + "").removeClass("colorRed");
+                        //     $("#remarkInput" + rItem.SubRemarkIndex + "").attr("require", "");
                         } else if (colorRed == "colorRed") {
                             $("#liTittle" + rItem.SubRemarkIndex + "").addClass("colorRed");
                             $("#remarkInput" + rItem.SubRemarkIndex + "").attr("require", "colorRed");
@@ -1357,7 +1363,9 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
                     }
                 })
             }
+            
         })
+        $('.liTitle[title="Cost Center"]').addClass('colorRed');
     })
 
     /*关闭remark*/

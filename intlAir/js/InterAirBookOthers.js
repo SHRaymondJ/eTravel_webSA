@@ -147,38 +147,157 @@ function initTagArea(airInfoData, airModel) {
                             <span class='popWindow--tag--orderInformation-items'>"+ airlineType + "</span>\
                         </div>"
     })
+    //一行两个的组件元素值
+    var oneHalfSelectInputItems = [
+        {
+            name: 'validity', //model.OperationLanguage的名字
+            tagName: 'validity',  //标签上的名字, 事件触发
+            dataName: 'validity', //数据名字，用于保存数据, 可以用'-'链接，第一项是airModels的属性名，第二项是该属性数组下的子属性名
+            options: [
+                '7 Days', '14Days', '30Days', '45Days', '60Days', '90Days', '6 Months', '1Year'
+            ],
+            defaultValue: 'validity' //默认值，对应读取airModel的属性名
+        }, {
+            name: 'rebook',
+            tagName: 'rebook',
+            dataName: 'rebooking',
+            options: [
+                'Free', 'Applied'
+            ],
+            defaultValue: 'rebookingCN'
+        }, {
+            name: 'mins',
+            tagName: 'mins',
+            dataName: 'mins',
+            options: [
+                '0 Days', '1 Days', '2 Days', '3 Days', '4 Days', '5 Days', '6 Days', '7 Days', '8 Days', '9 Days', '10 Days'
+            ],
+            defaultValue: 'mins'
+        }, {
+            name: 'maxs',
+            tagName: 'maxs',
+            dataName: 'maxs',
+            options: [
+                '14 Days', '45 Days', '90 Days', '6 Months', '1 Year'
+            ],
+            defaultValue: 'maxs'
+        }
+    ]
+    //一行一个的组件元素值，带select, 用法同上
+    var wholeLineItems = [
+        {
+            name: 'limit',
+            tagName: 'res',
+            dataName: 'res',
+            options: [
+                'Normal fare', 'Restricted fare valid on selected airlines only', 'Stricly restricted fare valid on selected flight only'
+            ],
+            defaultValue: 'res'
+        }, {
+            name: 'refundFee',
+            tagName: 'refund',
+            dataName: 'refund',
+            options: [
+                'Free', 'Applied', 'Non refundable'
+            ],
+            defaultValue: 'refundCN'
+        }
+    ]
+    //一行两个的input组件元素
+    var oneHalfInputItems = [
+        {
+            name: 'lowestFare', //model.OperationLanguage的名字
+            tagName: 'lowestFare',  //id上的名字，拼接Input
+            dataName: 'lowestFare', //数据名字，用于保存数据, 可以用'-'链接，第一项是airModels的属性名，第二项是该属性数组下的子属性名
+            defaultValue: 'lowestFare' //默认值，对应读取airModel的属性名
+        }, {
+            name: 'lowestFareWithTax',
+            tagName: 'lowestFareWithTax',
+            dataName: 'lowestFareWithTax',
+            defaultValue: 'lowestFareWithTax'
+        }, {
+            name: 'fullFare',
+            tagName: 'fullFare',
+            dataName: 'fullFare',
+            defaultValue: 'fullFare'
+        }, {
+            name: 'totalAmount',
+            tagName: 'totalAmount',
+            dataName: 'totalAmount',
+            defaultValue: 'totalAmount',
+            blocked: 'blocked'
+        },
+    ]
+    //一行两个的select+input组件元素HTML
+    function OneHalfSelectInputElement(item) {
+        var dataValue = airModel[item.defaultValue] ? airModel[item.defaultValue] : '';
+        var elementHtml = "<div class='flex-box popWindow--tag--one-half-box'>\
+                            <span class='popWindow--tag-nameOfInputItems popWindow--tag--des-2'>"+ airInfoData.description[item.name] + ":</span>\
+                            <input type='text' class='popWindow--tag--input-2 popWindow--tag--"+ item.tagName + "Input' data-class='airModels' data-name='" + item.dataName + "' value='" + dataValue + "'>\
+                            <div class='popWindow--tag--"+ item.tagName + "-select popWindow--tag--half-select' style='display:none'>";
+        item.options.map(function (option) {
+            elementHtml += "<div value='" + option + "' class='popWindow--tag--" + item.tagName + "-option popWindow--tag--half-option' data-select='" + item.tagName + "'>" + option + "</div>"
+        })
+        elementHtml += "</div>\
+                        <div class='popWindow--tag--Img' id='popWindowImg"+ item.tagName + "'></div>\
+                    </div>";
+        return elementHtml;
+    }
+    //一行两个的input组件元素HTML
+    function OneHalfInputElement(item) {
+        var dataValue = airModel[item.defaultValue] ? airModel[item.defaultValue] : '';
+        var blocked = item.blocked || '';
+        var elementHtml = "<div class='flex-box popWindow--tag--one-half-box'>\
+                            <span class='popWindow--tag-nameOfInputItems popWindow--tag--des-2'>"+ airInfoData.description[item.name] + ":</span>\
+                            <input id='"+ item.tagName + "' class='" + blocked + " popWindow--tag--input-2' type='number' disabled='disabled' min='0' value='" + dataValue + "' data-class='airModels' data-name='" + item.dataName + "'>\
+                        </div>"
+        return elementHtml;
+    }
+    //一行一个的组件元素HTML
+    function wholeLineSelectInputElement(item) {
+        var dataValue = airModel[item.defaultValue] ? airModel[item.defaultValue] : '';
+        var elementHtml = "<div class='flex-box popWindow--tag--wholeLineInput-box'>\
+                            <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description[item.name] + ":</span>\
+                            <input type='text' class='popWindow--tag--whole-input_selectBtn popWindow--tag--"+ item.tagName + "Input' data-class='airModels' data-name='" + item.dataName + "' value='" + dataValue + "'>\
+                            <div class='popWindow--tag--"+ item.tagName + "-select popWindow--tag--whole-select' style='display:none'>";
+        item.options.map(function (option) {
+            elementHtml += "<div value='" + option + "' class='popWindow--tag--" + item.tagName + "-option popWindow--tag--whole-option' data-select='" + item.tagName + "'>" + option + "</div>"
+        })
+        elementHtml += "</div>\
+                        <div class='popWindow--tag--Img' id='popWindowImg"+ item.tagName + "'></div>\
+                    </div>";
+        return elementHtml;
+    }
+    //遍历flexArr，把内部元素放到容器里，如果有firstItem，firstItem放在第一个
+    //flexArr: 数据数组，getHTML: 获取哪个HTML，firstItem：加在第一个位置
+    function OneHalfSelectInputElement_Line(flexArr, getHTML, firstItem) {
+        var firstItem = firstItem || '';
+        //第一个是出票时限
+        var html = "<div class='flex-justify-between'>"
+        html += firstItem;
+        //遍历一行两个的组件元素数组往后添加
+        flexArr.map(function (item, index) {
+            html += getHTML(item);
+        })
+        html += "</div>";
+        return html;
+    }
     var tagArea = "<div class='popWindow--tag-area'>" +
         airlineDom
         + "</div>\
-                <div class='popWindow--tag-area'>\
-                    <div class='flex-justify-between'>\
-                        <div class='flex-box'>\
-                            <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description.ticketingTimeLimit + ":</span>\
+                <div class='popWindow--tag-area'>";
+    //出票时限放第一个
+    var timeLimit = "<div class='flex-box popWindow--tag--one-half-box'>\
+                        <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description.ticketingTimeLimit + ":</span>\
+                        <div class='flex-box popWindow--tag--ticketingTimeLimit-box'>\
                             <input type='text' class='popWindow--tag--ticketingTimeLimit-dateInput' data-class='airModels' data-name='ticketTime-date' readonly='readonly'>\
                             <input type='number' max='23' min='00'class='popWindow--tag--ticketingTimeLimit-hourInput' data-class='airModels' data-name='ticketTime-hour' value='"+ dateLimitHour + "'>\
                             <input type='number' max='59' min='00'class='popWindow--tag--ticketingTimeLimit-minuteInput' data-class='airModels' data-name='ticketTime-minute' value='"+ dateLimitMinute + "'>\
                         </div>\
-                        <div class='flex-box popWindow--tag--rebookBox'>\
-                            <span class='popWindow--tag-nameOfInputItems popWindow--tag--rebookDes'>"+ airInfoData.description.rebook + ":</span>\
-                            <input type='text' class='popWindow--tag--rebookInput' data-class='airModels' data-name='rebooking' value='"+airModel.rebookingCN+"'>\
-                            <div class='popWindow--tag--rebook-select' style='display:none'>\
-                                <div value='Free' class='popWindow--tag--rebook-option'>Free</div>\
-                                <div value='Applied' class='popWindow--tag--rebook-option'>Applied</div>\
-                            </div> \
-                            <div class='popWindow--tag--Img' id='popWindowRebookImg'></div>\
-                        </div>\
-                    </div>\
-                    <div class='flex-box popWindow--tag--refundInput-parent'>\
-                        <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description.refundFee + ":</span>\
-                        <input type='text' class='popWindow--tag--refundInput' data-class='airModels' data-name='refund' value='"+airModel.refundCN+"'>\
-                        <div type='' class='popWindow--tag--refund-select' style='display:none'>\
-                            <div value='Free' class='popWindow--tag--refund-option'>Free</div>\
-                            <div value='Applied' class='popWindow--tag--refund-option'>Applied</div>\
-                            <div value='Non refundable' class='popWindow--tag--refund-option'>Non refundable</div>\
-                        </div> \
-                        <div class='popWindow--tag--Img' id='popWindowRefundImg'></div>\
-                    </div>\
-                    <div class='flex-box'>\
+                    </div>";
+    tagArea += OneHalfSelectInputElement_Line(oneHalfSelectInputItems, OneHalfSelectInputElement, timeLimit);
+    wholeLineItems.map(function (item) { tagArea += wholeLineSelectInputElement(item) });
+    tagArea += "    <div class='flex-box'>\
                         <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description.remark + ":</span>\
                         <textarea name='' id='' cols='30' rows='10' class='popWindow--tag--remarkInput' data-class='airModels' data-name='remark'>"+ airModel.remark + "</textarea>\
                     </div>\
@@ -196,29 +315,17 @@ function initTagArea(airInfoData, airModel) {
                         <span>服务费</span>\
                         <span>税</span>\
                         <span>人数</span>\
-                    </div><div id='priceArea'></div><div class='flex-box'>\
-                        <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description.lowestPrice + ":</span>\
-                        <div class='popWindow--tag--priceMsg-table-items popWindow--tag--priceMsg-table-item_lowerPriceLine'>\
-                            <input  id='lowestFareInput' type='number' disabled='disabled' min='0' class='popWindow--tag--priceMsg-table-item flex3' value='"+ airModel.lowestFare + "' data-class='airModels' data-name='lowestFare'>\
-                            <div class='popWindow--tag--priceMsg-table-item flex3'>\
-                                <span>全价:</span>\
-                                <input id='fullFareInput' type='number' disabled='disabled' min='0' value='"+ airModel.fullFare + "' data-class='airModels' data-name='fullFare'>\
-                            </div>\
-                            <div class='popWindow--tag--priceMsg-table-item flex3'>\
-                                <span>总计:</span>\
-                                <input class='blocked' type='number' disabled='disabled' min='0' value='"+ airModel.totalAmount + "' data-class='airModels' data-name='totalAmount' id='totalAmount'>\
-                            </div>\
-                        </div>\
-                    </div>\
-                    <div class='flex-box'>\
+                    </div><div id='priceArea'></div>";
+    tagArea += OneHalfSelectInputElement_Line(oneHalfInputItems, OneHalfInputElement);
+    tagArea += "<div class='flex-box'>\
                         <span class='popWindow--tag-nameOfInputItems'>优惠代码:</span>\
-                        <select type='' class='popWindow--tag--refundInput' data-class='airModels' data-name='reason' id='airOthersReason'>\
+                        <select type='' class='popWindow--tag--whole-input_selectBtn' data-class='airModels' data-name='reason' id='airOthersReason'>\
                             <option value='"+ airModel.reason + "' selected>" + airModel.reason + "</option>\
                         </select> \
                     </div>\
                     <div class='flex-box'>\
                         <span class='popWindow--tag-nameOfInputItems'>非优惠代码:</span>\
-                        <select type='' class='popWindow--tag--refundInput' data-class='airModels' data-name='unreason' id='airOthersUnreason'>\
+                        <select type='' class='popWindow--tag--whole-input_selectBtn' data-class='airModels' data-name='unreason' id='airOthersUnreason'>\
                             <option value='"+ airModel.unreason + "' selected>" + airModel.unreason + "</option>\
                         </select> \
                     </div>\
@@ -227,7 +334,6 @@ function initTagArea(airInfoData, airModel) {
                         <textarea name='' cols='30' rows='10' class='popWindow--tag--remarkInput' id='popWindowInternalInformation' data-class='airModels' data-name='content'></textarea>\
                     </div>\
                 </div>";
-
     $('.popWindow--tag-box').html(tagArea);
     priceAreaInit(airModel);
     // GetReasonListPost();
@@ -288,17 +394,23 @@ function initTagArea(airInfoData, airModel) {
         }
     })
     //改签和退票费用下拉菜单事件
-    $('.popWindow--tag--Img').click(function(){
+    $('.popWindow--tag--Img').click(function () {
         $(this).siblings('div[class*="select"]').toggle();
     })
-    $(document).bind("click",function(e){
+    $(document).bind("click", function (e) {
         var target = $(e.target);
-        if(target.closest("#popWindowRebookImg").length==0){
-            $("#popWindowRebookImg").siblings('div[class*="select"]').hide();
-        }
-        if(target.closest("#popWindowRefundImg").length==0){
-            $("#popWindowRefundImg").siblings('div[class*="select"]').hide();
-        }
+        oneHalfSelectInputItems.map(function (item) {
+            var imgID = '#popWindowImg' + item.tagName;
+            if (target.closest(imgID).length == 0) {
+                $(imgID).siblings('div[class*="select"]').hide();
+            }
+        })
+        wholeLineItems.map(function (item) {
+            var imgID = '#popWindowImg' + item.tagName;
+            if (target.closest(imgID).length == 0) {
+                $(imgID).siblings('div[class*="select"]').hide();
+            }
+        })
     })
 }
 
@@ -317,7 +429,7 @@ function submitForm() {
         modifyAirInfomation(jsonObj);
     }
 }
-//
+//保存价格事件
 function priceSaveBtnClickFn(dom) {
     console.log(dom);
     dom.innerHTML = airInfo.description.edit;
@@ -399,23 +511,18 @@ function dataChangeEvent() {
         saveDataFn(this);
         console.log($(this).val());
     })
-    // $('input[type=number]').bind('blur', function () {
-    //     if ($(this).val() == '') {
-    //         $(this.val(0));
-    //     }
-    // })
     $('select').bind('change', function () {
         saveDataFn(this);
         console.log($(this).val());
     })
     //退票和改签下拉列表赋值
-    $('.popWindow--tag--refund-option').bind('click',function(){
-        $('.popWindow--tag--refundInput').val($(this).text())
-        saveDataFn('.popWindow--tag--refundInput');
-    })
-    $('.popWindow--tag--rebook-option').bind('click',function(){
-        $('.popWindow--tag--rebookInput').val($(this).text())
-        saveDataFn('.popWindow--tag--rebookInput');
+    //获取元素data-select的值，将值拼接成.popWindow--tag--xxxInput的形式保存
+    $('div[data-select]').bind('click', function () {
+        var select = $(this).data('select');
+        console.log(select);
+        var inputDom = '.popWindow--tag--' + select + 'Input';
+        $(inputDom).val($(this).text());
+        saveDataFn(inputDom);
     })
 }
 
@@ -531,7 +638,11 @@ function modifyAirInfomation(jsonObj) {
                             }
                         }
                         //进入订单完成页面
-                        changeNewUid(ORDERNO);
+                        // changeNewUid(ORDERNO);  //正式用
+                        alert(res.message)  //测试用
+                        $('.popWindow--others').remove();//测试用
+                        $('.mask').remove();//测试用
+
                     } else {
                         alert(res.message);
                     }
@@ -545,7 +656,6 @@ function modifyAirInfomation(jsonObj) {
     } else {
         alert('Error: 内部信息插入失败');
     }
-
 }
 //添加内部交流
 // index: tab 编号

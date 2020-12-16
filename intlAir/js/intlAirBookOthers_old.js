@@ -10,7 +10,8 @@ var fareMax = 0;
 var airInfo; //实例化对象
 var paymentMethodArr = [
     'Company Bill',
-    'Credit Card',
+    'Credit',
+    'Card',
     'Cash'
 ];
 var TABINDEX = 0;
@@ -30,10 +31,9 @@ var newOperationMessageJsonObj = {
 }
 
 //优惠代码返回模型
-function ReasonListModel(obj) {
-    var obj = obj || { FavorableReasonList: [], FavorableUnReasonList: [] }
+function ReasonListModel(obj = { FavorableReasonList: [], FavorableUnReasonList: [] }) {
     this.FavorableReasonList = obj.FavorableReasonList;
-    this.FavorableUnReasonList = obj.FavorableUnReasonList;
+    this.FavorableReasonList = obj.FavorableReasonList;
 }
 //初始化弹窗
 function initPopWindow(airInfoData) {
@@ -158,25 +158,21 @@ function initTagArea(airInfoData, airModel) {
                             <input type='number' max='23' min='00'class='popWindow--tag--ticketingTimeLimit-hourInput' data-class='airModels' data-name='ticketTime-hour' value='"+ dateLimitHour + "'>\
                             <input type='number' max='59' min='00'class='popWindow--tag--ticketingTimeLimit-minuteInput' data-class='airModels' data-name='ticketTime-minute' value='"+ dateLimitMinute + "'>\
                         </div>\
-                        <div class='flex-box popWindow--tag--rebookBox'>\
+                        <div class='flex-box class='popWindow--tag--rebookBox'>\
                             <span class='popWindow--tag-nameOfInputItems popWindow--tag--rebookDes'>"+ airInfoData.description.rebook + ":</span>\
-                            <input type='text' class='popWindow--tag--rebookInput' data-class='airModels' data-name='rebooking' value='"+airModel.rebookingCN+"'>\
-                            <div class='popWindow--tag--rebook-select' style='display:none'>\
-                                <div value='Free' class='popWindow--tag--rebook-option'>Free</div>\
-                                <div value='Applied' class='popWindow--tag--rebook-option'>Applied</div>\
-                            </div> \
-                            <div class='popWindow--tag--Img' id='popWindowRebookImg'></div>\
+                            <select type='' class='popWindow--tag--rebookInput' data-class='airModels' data-name='rebooking'>\
+                            <option value='Free'>Free</option>\
+                            <option value='Applied'>Applied</option>\
+                            </select> \
                         </div>\
                     </div>\
-                    <div class='flex-box popWindow--tag--refundInput-parent'>\
+                    <div class='flex-box'>\
                         <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description.refundFee + ":</span>\
-                        <input type='text' class='popWindow--tag--refundInput' data-class='airModels' data-name='refund' value='"+airModel.refundCN+"'>\
-                        <div type='' class='popWindow--tag--refund-select' style='display:none'>\
-                            <div value='Free' class='popWindow--tag--refund-option'>Free</div>\
-                            <div value='Applied' class='popWindow--tag--refund-option'>Applied</div>\
-                            <div value='Non refundable' class='popWindow--tag--refund-option'>Non refundable</div>\
-                        </div> \
-                        <div class='popWindow--tag--Img' id='popWindowRefundImg'></div>\
+                        <select type='' class='popWindow--tag--refundInput' data-class='airModels' data-name='refund'>\
+                            <option value='Free'>Free</option>\
+                            <option value='Applied'>Applied</option>\
+                            <option value='Non refundable'>Non refundable</option>\
+                        </select> \
                     </div>\
                     <div class='flex-box'>\
                         <span class='popWindow--tag-nameOfInputItems'>"+ airInfoData.description.remark + ":</span>\
@@ -230,7 +226,7 @@ function initTagArea(airInfoData, airModel) {
 
     $('.popWindow--tag-box').html(tagArea);
     priceAreaInit(airModel);
-    // GetReasonListPost();
+    GetReasonListPost();
     CalculateTotalAmount(0);
     dataChangeEvent();
     //初始化refund&robooking
@@ -287,24 +283,12 @@ function initTagArea(airInfoData, airModel) {
             priceSaveBtnClickFn(this);
         }
     })
-    //改签和退票费用下拉菜单事件
-    $('.popWindow--tag--Img').click(function(){
-        $(this).siblings('div[class*="select"]').toggle();
-    })
-    $(document).bind("click",function(e){
-        var target = $(e.target);
-        if(target.closest("#popWindowRebookImg").length==0){
-            $("#popWindowRebookImg").siblings('div[class*="select"]').hide();
-        }
-        if(target.closest("#popWindowRefundImg").length==0){
-            $("#popWindowRefundImg").siblings('div[class*="select"]').hide();
-        }
-    })
+
 }
 
 //提交表单
 function submitForm() {
-    if ($('.popWindow--tag--priceMsg-editBtn').text() == '保存' || editFlag == 1) {
+    if ($('.popWindow--tag--priceMsg-editBtn').text() == '编辑' || editFlag == 0) {
         priceSaveBtnClickFn($('.popWindow--tag--priceMsg-editBtn')[0]);
     }
     var internalMsg = $('#popWindowInternalInformation').val();
@@ -408,15 +392,6 @@ function dataChangeEvent() {
         saveDataFn(this);
         console.log($(this).val());
     })
-    //退票和改签下拉列表赋值
-    $('.popWindow--tag--refund-option').bind('click',function(){
-        $('.popWindow--tag--refundInput').val($(this).text())
-        saveDataFn('.popWindow--tag--refundInput');
-    })
-    $('.popWindow--tag--rebook-option').bind('click',function(){
-        $('.popWindow--tag--rebookInput').val($(this).text())
-        saveDataFn('.popWindow--tag--rebookInput');
-    })
 }
 
 //将页面项目保存到对象
@@ -451,7 +426,6 @@ function saveDataFn(dom) {
     } else if ($(dom).data('class') == 'createCustomers') {
         resetCreateCustomer($(dom).val());
     }
-    console.log(airInfo.airModels[0]);
 }
 //订票人赋值
 //value: 订票人的数据
@@ -556,33 +530,31 @@ function AddNewOperationMessage(index) {
     newOperationMessageJsonObj.mid = airInfo.airModels[index].orderRid;
     newOperationMessageJsonObj.content = airInfo.airModels[index].content;
     newOperationMessageJsonObj.Language = airInfo.Language;
-    var response = '';
-    $.ajax({
-        type: 'post',
-        url: $.session.get('ajaxUrl'),
-        dataType: 'json',
-        async: false,
-        data: {
-            url: $.session.get('obtCompany') + "/OrderService.svc/AddNewOperationMessage",
-            jsonStr: JSON.stringify(newOperationMessageJsonObj)
-        },
-        success: function (data) {
-            $('body').mLoading("hide");
-            var res = JSON.parse(data);
-            console.log(res);
-            if (res.code == 200) {
-                response = true;
-            } else {
-                alert(res.code + ":" + res.message);
-                response = false;
+    $.ajax(
+        {
+            type: 'post',
+            url: $.session.get('ajaxUrl'),
+            dataType: 'json',
+            data: {
+                url: $.session.get('obtCompany') + "/OrderService.svc/AddNewOperationMessage",
+                jsonStr: JSON.stringify(newOperationMessageJsonObj)
+            },
+            success: function (data) {
+                $('body').mLoading("hide");
+                var res = JSON.parse(data);
+                console.log(res);
+                if (res.code == 200) {
+                    return true;
+                } else {
+                    alert(res.code + ":" + res.message);
+                    return false
+                }
+            },
+            error: function (data) {
+                alert(data);
+                return false;
             }
-        },
-        error: function (data) {
-            alert(data);
-            response = false;
-        }
-    })
-    return response;
+        })
 }
 //计算机票相关费用
 function CalculateTotalAmount(index) {
@@ -623,7 +595,6 @@ function GetReasonListPost() {
     reasonListPostJsonObj.OrderID = airInfo.airModels[TABINDEX].orderRid;
     reasonListPostJsonObj.FullFare = airInfo.airModels[TABINDEX].fullFare;
     reasonListPostJsonObj.CurrentFare = airInfo.airModels[TABINDEX].fares[0].fare - airInfo.airModels[TABINDEX].fares[0].rangPer2;
-    reasonListPostJsonObj.CompanyID = $.session.get('companyID');
     $.ajax(
         {
             type: 'post',
@@ -645,7 +616,7 @@ function GetReasonListPost() {
                 var previousUnreasonSelectedVal = $('#airOthersUnreason').val();
 
                 var reason = new ReasonListModel(res);
-                if (reason.FavorableReasonList.length != 0 || reason.FavorableUnReasonList.length != 0) {
+                if (reason.FavorableReasonList.length != 0 && reason.FavorableUnReasonList.length != 0) {
                     reason.FavorableReasonList.map(function (item) {
                         if (item == previousReasonSelectedVal) {
                             var reasonSelected = "selected";

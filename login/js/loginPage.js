@@ -159,7 +159,8 @@ function login(){
                     var res = JSON.parse(data);
                     console.log(res);
                     if(res.Company_Url){
-                        $.session.set('obtCompany', res.Company_Url)
+                        // $.session.set('obtCompany', res.Company_Url)
+                        $.session.set('obtCompany', "https://mobileservicetest.bcdtravel.cn:8089/AndroidService.testForIT")    //测试
                         $.ajax(
                           {
                               type: 'post',

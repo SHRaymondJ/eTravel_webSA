@@ -68,7 +68,7 @@ select {
 /* 杂项弹窗 */
 .popWindow--others {
     position: fixed;
-    width: 938px;
+    width: 878px;
     height: 80%;
     max-height: 800px;
     background-color: white;
@@ -77,11 +77,12 @@ select {
     margin-left: -464px;
     margin-top: 100px;
     overflow-y: scroll;
+    padding-left: 30px;
+    padding-right: 30px;
 }
 .popWindow--others-titleBox,
 .popWindow--others-bodyBox {
     position: relative;
-    margin: 0 30px;
 }
 
 .popWindow--others-titleBox {
@@ -120,7 +121,7 @@ select {
     justify-content: space-between;
     margin-bottom: 5px;
 }
-.popWindow--others-bodyBox--description{
+.popWindow--tag--des-1{
     display: inline-block;
     width: 120px;
     min-width: 120px;
@@ -131,16 +132,16 @@ select {
     color: #666666;
     line-height: 22px;
 }
-.popWindow--others-bodyBox--input {
+.popWindow--tag--input-1 {
     width: 130px;
     max-width: 130px;
     margin-bottom: 10px;
 }
-input.popWindow--others-bodyBox--input{
+input.popWindow--tag--input-1{
     width: 130px;
 }
-.popWindow--others-bodyBox--wholeLineBox .popWindow--others-bodyBox--description,
-.popWindow--others-bodyBox--wholeLineBox .popWindow--others-bodyBox--input{
+.popWindow--others-bodyBox--wholeLineBox .popWindow--tag--des-1,
+.popWindow--others-bodyBox--wholeLineBox .popWindow--tag--input-1{
     width: 100%;
     max-width: none;
     resize: none;
@@ -161,4 +162,85 @@ input.popWindow--others-bodyBox--input{
     border:none;
     border-radius: 5px;
     line-height: 38px;
+}
+
+/* 从机票复制来 */
+.flex-justify-between {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    flex-wrap: wrap;
+}
+
+.flex-box {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+.popWindow--tag--one-third-box{
+    justify-content: space-between;
+    position: relative;
+    width: 31%;
+    margin-bottom: 5px;
+}
+.popWindow--tag--wholeLineInput-box{
+    position: relative;
+}
+.popWindow--tag--des-3{
+    display: inline-block;
+    width: 120px;
+    min-width: 120px;
+    margin-right: 5px;
+    font-size: 14px;
+    font-family: PingFangSC-Medium, PingFang SC;
+    font-weight: 500;
+    color: #666666;
+    line-height: 22px;
+}
+.popWindow--tag--input-3 {
+    background-position: 106px center;
+    padding-right: 5px;
+    flex: 1;
+    box-sizing: border-box;
+    width: 130px;
+    max-width: 130px;
+    margin-bottom: 10px;
+}
+
+.popWindow--tag--whole-input,
+.popWindow--tag--whole-input_selectBtn {
+    flex: 1;
+}
+.popWindow--tag--whole-input_selectBtn{
+    background-position: 686px center;
+    padding-right: 30px;
+}
+.popWindow--tag--whole-select,
+.popWindow--tag--third-select{
+    position: absolute;
+    top: 27px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #979797;
+    z-index: 10;
+    cursor: pointer;
+    line-height: 30px;
+}
+.popWindow--tag--third-select{
+    width: 257px;
+}
+.popWindow--tag--whole-select{
+    width: 707px;
+}
+.popWindow--tag--third-option,
+.popWindow--tag--whole-option{
+    /* border-bottom: 1px dotted #bbbbbb; */
+    padding-left: 5px;
+    padding-right: 30px;
+}
+.popWindow--tag--rebook-option:hover,
+.popWindow--tag--refund-option:hover,
+.popWindow--tag--third-option:hover,
+.popWindow--tag--whole-option:hover{
+    background-color: #dcdcdc;
 }
