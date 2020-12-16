@@ -46,6 +46,7 @@ var cn = {
     	"price":"价格(含税)",
     	"book":"预订",
     	"Finish":"订完",
+    	"Request":"申请",
     	"wifiTittle":"宽带",
     	"violation":"费用超标",
     	"violationApple":"违反政策",
@@ -64,7 +65,8 @@ var cn = {
     	"FoodService":"餐饮服务",
     	"TrafficInfo":"周边交通",
     },
-    "hotelRemind":"该酒店暂时无法预订，请重新选择",
+	"hotelRemind":"该酒店暂时无法预订，请重新选择",
+	"shuttleRemind":"APPLE在该酒店提供班车服务。",
 }
 var en = {
     "progressBar":{
@@ -98,6 +100,7 @@ var en = {
     	"price":"Price (Tax Included)",
     	"book":"Book",
     	"Finish":"Finish",
+		"Request":"Apply",
     	"wifiTittle":"Internet",
     	"violation":"Out of Policy",
     	"violationApple":"Out of Policy",
@@ -117,7 +120,8 @@ var en = {
     	"FoodService":"Food Service",
     	"TrafficInfo":"Traffic Info",
     },
-    "hotelRemind":"The hotel is not available now, please choose other hotel.",
+	"hotelRemind":"The hotel is not available now, please choose other hotel.",
+	"shuttleRemind":"APPLE provides shuttle service support in this hotel.",
 }
 if(ProfileInfo.onlineStyle=="APPLE"){
     en.hotelRoomList.book = "Select";
@@ -181,6 +185,7 @@ function showContent(res){
 	res.HotelService = res.HotelService == null?"":res.HotelService;
 	res.FoodService = res.FoodService == null?"":res.FoodService;
 	res.TrafficInfo = res.TrafficInfo == null?"":res.TrafficInfo;
+	var showBusRemind = res.HasShuttleBus?"":"hide";
 	$("#main").html('\
 		<div class="hotelImgPop hide">\
 		  <div id="cover"></div>\
@@ -189,8 +194,8 @@ function showContent(res){
               <span class="closeImgPop">×</span>\
             </div>\
             <div class="pop_tittle">'+get_lan('imgPop').tittle+'</div>\
-			<div style="float: left;height: 350px;width: 350px;position: relative; display: -moz-box;display: -ms-flexbox;display: -webkit-box;display: -webkit-flex;display: box;display: flexbox;display: flex;align-items: center;">\
-					<img  src="" class="bigImg" alt="">\
+			<div style="float: left;height: 388px;width: 388px;position: relative; display: -moz-box;display: -ms-flexbox;display: -webkit-box;display: -webkit-flex;display: box;display: flexbox;display: flex;align-items: center;border: 1px solid #d3e0ff;box-sizing: border-box;">\
+					<img  src="" class="bigImg" alt="" width="100%" height="100%">\
 					<div class="left"></div>\
 					<div class="right"></div>\
 			</div>\
@@ -339,14 +344,25 @@ function showContent(res){
 	hotelImgPop(res);//酒店图片弹窗
 	$(".hotelImg").unbind("click").click(function(){
 		hotelImgPop(res);//酒店图片弹窗
-		$(".hotelImgPop").removeClass("hide");
-		$("#cover").css("display","block");
+		
+		setTimeout(function(){
+			$(".hotelImgPop").removeClass("hide");
+			$("#cover").css("display","block");
+			var h=$('.pic_pop').height()
+			var w=$('.pic_pop').width()
+			// $('.pic_pop').css('margin-left',-w/2+'px')
+			// $('.pic_pop').css('margin-top',-h/2+'px')
+		},50)
 	})
 	var showScore = res.HotelRating==0?"hide":"";
 	var hotelInfoPrice = res.LocalCurrency==null?res.LowestPrice+'<span style="font-size:18px;margin:0 5px 0 5px">CNY</span>':res.LocalLowestPrice+'<span style="font-size:18px;margin:0 5px 0 5px">'+res.LocalCurrency+'</span>';
 	var hotelDescription = res.Description == null?"":res.Description;
 	$(".hotelInfoBody").html('\
 		<div class="hotelInfoName flexRow"><div title="'+res.Name+'" class="ellipsis" style="max-width:700px;">'+res.Name+'</div><span class="hotelReselection">'+get_lan('hotelInfoBody').reselection+'</span>\</div>\
+		<div class="hotelInfoBusRemind flexRow '+showBusRemind+'">\
+			<img src="./images/shuttlebus.png" style="display:block;width:16px;height:16px;margin:2px 5px 0 0;">\
+			'+get_lan("shuttleRemind")+'\
+		</div>\
 		<div class="hotelInfoStar"><div class="hotelLiStarHalf"></div></div>\
 		<div class="hotelInfoScore '+showScore+'">'+get_lan('hotelInfoBody').score+res.HotelRating+'</div>\
 		<div class="hotelInfoTelephone">'+get_lan('hotelInfoBody').telephone+res.Telephone+'</div>\
@@ -613,7 +629,8 @@ function hotelRoomList(res){
 	                $(".checkOutWeek").text(getWeek($("#checkOutDate").val()));
 	            }
 	        });
-	        $("#checkOutDate").val(getNextDay($("#checkInDate").val()));
+			$("#checkOutDate").val(getNextDay($("#checkInDate").val()));
+			$(".checkOutWeek").text(getWeek($("#checkOutDate").val()));
 	    }
 	});
 	
@@ -653,6 +670,9 @@ function hotelRoomList(res){
 		
 		item.RateInfos.map(function(bedItem){
 			var PolicyRuleShow = bedItem.PolicyRule==null?"hide":"";
+			//免费取消
+			var freeCancel = bedItem.PolicyRule==null?"":"hide";
+			var cancelText=obtLanguage=="CN"?"免费取消":"Free CNCL"
 			var policyUnderline = bedItem.Policy == null?"":"policyUnderline";
 			var RateType = bedItem.RateType==null?"":bedItem.RateType;
 			if(bedItem.PolicyTime){
@@ -679,7 +699,10 @@ function hotelRoomList(res){
 			}
 			hotelDailyRate = bedItem.LocalDailyRate == ""||bedItem.LocalDailyRate == null?bedItem.DailyRate:bedItem.LocalDailyRate;
 			hotelDailyCurrency = bedItem.LocalDailyRate == ""||bedItem.LocalDailyRate == null?bedItem.Currency:bedItem.LocalCurrency;
-			var bookHotelText = bedItem.HasRoom==2?get_lan('hotelRoomList').Finish:get_lan('hotelRoomList').book;
+			
+			var btnText = bedItem.HotelResourceType == 1 ? get_lan('hotelRoomList').Request : get_lan('hotelRoomList').book
+			var bookHotelText = bedItem.HasRoom==2?get_lan('hotelRoomList').Finish:btnText;
+			
 			var hotelRoomFinish = bedItem.HasRoom==2?"hotelRoomFinish":"";
 			var RateStartDate = bedItem.RateGroups[0].StartDate!=null&&bedItem.RateGroups[0].StartDate!=""?bedItem.RateGroups[0].StartDate.substring(0,10):"";
 			var RateEndDate = bedItem.RateGroups[bedItem.RateGroups.length-1].EndDate!=null&&bedItem.RateGroups[bedItem.RateGroups.length-1].EndDate!=""?bedItem.RateGroups[bedItem.RateGroups.length-1].EndDate.substring(0,10):"";
@@ -694,6 +717,16 @@ function hotelRoomList(res){
 			}
 			var showBookBtn = ProfileInfo.ManualPriceNoBook&&bedItem.HotelResourceType==1?"hide":"";
 			var violationText=ProfileInfo.onlineStyle=="APPLE"?get_lan('hotelRoomList').violationApple:get_lan('hotelRoomList').violation
+			var lastTime=bedItem.PolicyTime==null?"18:00":bedItem.PolicyTime;//后台返回空时，默认18点
+			var typeClass="hide"
+			if(ProfileInfo.onlineStyle!="APPLE" && bedItem.FuXunPayType){
+				if(bedItem.FuXunPayType=="到店付" || bedItem.FuXunPayType.indexOf("site")>-1){
+					typeClass="paySelf"
+				}
+				if(bedItem.FuXunPayType=="公司支付" || bedItem.FuXunPayType.indexOf("Central")>-1){
+					typeClass="payCompany"
+				}
+			}
 			$(".bedList").eq(index).append('\
 				<div class="bedLi flexRow ">\
 				  <div style="width: 60px;margin-left: 16px;">'+item.BedType+'</div>\
@@ -702,10 +735,12 @@ function hotelRoomList(res){
 				  <div style="width: 105px;margin-left: 5px;font-size: 18px;text-align: center;color: #'+DailyRateColor+';"><span class="hotelDailyRateText '+rateUnderline+'" roomInfo="'+item.HotelRoomType+','+bedItem.RatePlanCode+'">'+hotelDailyRate+'</span><span style="font-size:14px;margin-left:3px;">'+hotelDailyCurrency+'</span></div>\
 				  <div class="violationIcon '+showViolation+'">'+violationText+'</div>\
 				  <div class="bedLiPolicyRule '+PolicyRuleShow+' '+policyUnderline+' '+ruleMarginLeft+'" Policy="'+bedItem.Policy+'">'+bedItem.PolicyRule+'</div>\
+				  <div class="bedLiPolicyRule '+freeCancel+' '+policyUnderline+' '+ruleMarginLeft+'" Policy="'+bedItem.Policy+'">'+cancelText+'</div>\
 				  <div class="bedLiBookBody '+showBookBtn+'">\
-				    <div class="bedLiBook '+hotelRoomFinish+' '+canNotBook+'" GuestType="'+bedItem.GuestType+'" DailyRate="'+bedItem.DailyRate+'" TotalFare="'+bedItem.TotalFare+'" HotelRoomInfo="'+item.HotelRoomType+','+bedItem.RatePlanCode+','+s+'" LocalDailyRate="'+bedItem.LocalDailyRate+'" LocalCurrency="'+bedItem.LocalCurrency+'" LocalTotalFare="'+bedItem.LocalTotalFare+'">'+bookHotelText+'</div>\
+				    <div class="bedLiBook '+hotelRoomFinish+' '+canNotBook+'" FuXunPayType="'+bedItem.FuXunPayType+'" GuestType="'+bedItem.GuestType+'" DailyRate="'+bedItem.DailyRate+'" TotalFare="'+bedItem.TotalFare+'" HotelRoomInfo="'+item.HotelRoomType+','+bedItem.RatePlanCode+','+s+'" LocalDailyRate="'+bedItem.LocalDailyRate+'" LocalCurrency="'+bedItem.LocalCurrency+'" LocalTotalFare="'+bedItem.LocalTotalFare+'" lastestTime="'+lastTime+'">'+bookHotelText+'</div>\
 				    <div class="bedLiRateType '+showRate+'" Policy="'+bedItem.Policy+'"><span class="RateTypeText">'+RateType+'</span></div>\
 				  </div>\
+				  <div class="payType '+typeClass+'">'+bedItem.FuXunPayType+'</div>\
 				  <div class="dailyRateBody" roomInfo="'+item.HotelRoomType+','+bedItem.RatePlanCode+'">\
 				    <div class="dailyRateBodyTittle">'+get_lan('hotelRoomList').dailyRateBodyTittle1+' '+RateStartDate+' '+get_lan('hotelRoomList').dailyRateBodyTittle2+' '+RateEndDate+get_lan('hotelRoomList').dailyRateBodyTittle3+' '+bedItem.RateGroups.length+' '+get_lan('hotelRoomList').dailyRateBodyTittle4+'</div>\
 				    <div class="dailyRateBodyContent flexWrap">\
@@ -794,6 +829,8 @@ function hotelRoomList(res){
 	// if(res.ManualHotelReferenceDisplay){
 		$('.agreementHotel').remove()
 	}else{
+		//显示协议酒店时，隐藏价格,2020.05.22
+		$('.hotelInfoPrice').remove()
 		// 协议酒店 agreementHotel
 		// if(agreementHotelShow){
 			// 只隐藏第一个酒店
@@ -850,28 +887,31 @@ function hotelRoomList(res){
 	});
 	//房间图片
 	$(".roomImg").unbind("click").click(function(){
-		console.log(res.RoomTypes[parseInt($(this).attr('index'))].RoomImgs);
-		if(res.RoomTypes[parseInt($(this).attr('index'))].RoomImgs.length != 0){
-			$(".imgBtnList").html("");
-			$(".hotelImgPop").removeClass("hide");
-    		$("#imgList").html('');
-    		res.RoomTypes[parseInt($(this).attr('index'))].RoomImgs.map(function(item){
-    			$("#imgList").append('<li><img src="'+item+'" class="imgLi"></li>')
-    		})
-    		$('#imgList').viewer('destroy');
-    		$('#imgList').viewer({
-    			  transition:false,
-    			  // toolbar:false,
-    			  title:false,
-    			  zoomable:false,
-    			  rotatable:false,
-    			  scalable:false,
-    			});
-    		$(".closeImgPop").unbind("click").click(function(){
-    			$(".hotelImgPop").addClass("hide");
-    			$("#cover").css("display","none");
-    		})
+		// 新版
+		var imgList={
+			HotelImages:[]
 		}
+		var room=obtLanguage=="CN"?"房间":"Room"
+		res.RoomTypes[parseInt($(this).attr('index'))].RoomImgs.map(function(item){
+			imgList.HotelImages.push({
+				ImageUrl: item,
+				Type: "10",
+				TypeDes: room,
+			})
+		})
+		if(imgList.HotelImages==0){
+			return false;
+		}
+		hotelImgPop(imgList);//酒店图片弹窗
+		
+		setTimeout(function(){
+			$(".hotelImgPop").removeClass("hide");
+			$("#cover").css("display","block");
+			var h=$('.pic_pop').height()
+		    var w=$('.pic_pop').width()
+			// $('.pic_pop').css('margin-left',-w/2+'px')
+			// $('.pic_pop').css('margin-top',-h/2+'px')
+		},50)
 	})
 	
 	//酒店提前天数提醒
@@ -965,8 +1005,12 @@ function hotelRoomList(res){
 		    success : function(data) {
 		    	$('.hotelRoomBody').mLoading("hide");
 		    	var res = JSON.parse(data);
-		        console.log(res);
-		        hotelRoomList(res);
+				console.log(res);
+				if(res.CheckIn){
+					hotelRoomList(res);
+				}else{
+					console.log('cannot find the result');
+				}
 		    },
 		    error : function() {
 		      // alert('fail');
@@ -984,6 +1028,9 @@ function hotelRoomList(res){
 	        'LocalDailyRate':$(this).attr("LocalDailyRate"),
 	        'LocalCurrency':$(this).attr("LocalCurrency"),
 	        'LocalTotalFare':$(this).attr("LocalTotalFare"),
+			'lastestTime':$(this).attr("lastestTime"),
+			'FuXunPayType':$(this).attr("FuXunPayType"),
+			
 	    }
 	    $.session.set('hotelChooseInfo', JSON.stringify(hotelChooseInfo));
 		window.location.href='../../hotel/bookHotelRoom.html';
@@ -1054,9 +1101,10 @@ function getNextDay(d){
     d = new Date(d);
     d = +d + 1000*60*60*24;
     d = new Date(d);
-    var day = d.getDate()<10?'0'+d.getDate():d.getDate();
+	var day = d.getDate()<10?'0'+d.getDate():d.getDate();
+	var month = ("00"+(d.getMonth()+1)).substr(-2);
     //格式化
-    return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+day;
+    return d.getFullYear()+"-"+month+"-"+day;
 }
 function getWeek(dateStr){
     var myDate = new Date(Date.parse(dateStr.replace(/-/g, "/")));

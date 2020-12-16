@@ -938,3 +938,183 @@
 	width: 100%;
 	height: 50px;
 }
+
+/* 火车占座样式 */
+#coverTrain,#cancelTrain,#coverInter{
+				position: fixed;
+				top: 0;bottom: 0;
+				left: 0;right: 0;
+				background-color: rgba(0,0,0,0.3);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				z-index: 21;/* 要大于页头pageHeader*/
+			}
+			.l{
+				float: left;
+			}
+			.r{
+				float: right;
+			}
+			.clearfix::after{
+				content: "";
+				display: block;
+				clear:both;
+			}
+			
+			
+			/* 弹窗样式 */
+			.trainFix,.interFix{
+				background-color: #FFFFFF;
+				min-width: 910px;
+				max-width: 910px;
+				padding: 30px;
+				box-sizing: border-box;
+				border-radius:10px;
+				position: relative;
+			}
+			.interFix{
+				min-width: 736px;
+				max-width: 736px;
+			}
+			.cancelFix{
+				min-width: 520px;
+				max-width: 520px;
+			}
+			.trainTitle,.interTitle{
+				width:100%;
+				height:40px;
+				/* font-size:28px; */
+				font-size: 26px;
+				/* 统一26px */
+				font-weight:600;
+				color:#333333;
+				line-height:40px;	
+			}
+			.infoGroupList {
+				    max-height: 260px;
+				    overflow-y: auto;
+			}
+			.infoGroup{
+				background-color: #EFEFEF;
+				padding: 18px 0;
+				position: relative;
+				margin-bottom: 10px;
+				font-size: 14px;
+				color: #333333;
+			}
+			.trainTips,.interTips{
+				/* height:20px; */
+				font-size:14px;
+				font-weight:400;
+				color:#666666;
+				line-height:20px;
+				margin-top: 4px;
+			}
+			.interTips{
+				height: 90px;
+				line-height: 21px;
+				font-size:15px;
+				overflow-y: scroll;
+				border-top: 1px solid #E6E6E6;
+				border-bottom: 1px solid #E6E6E6;
+			}
+			.interTips p{
+				margin:12px 0
+			}
+			.trainInfoLeft{
+				border-right: 1px solid #CCCCCC;
+				width: 640px;
+				padding-left: 12px;
+				box-sizing: border-box;
+			}
+			.timeNum{
+				color: #3083FB;
+			}
+			.rightArrow{
+				height: 12px;
+				width: 100%;
+				background-image: url("./../../css/images/orderArrow.png");
+				background-repeat: no-repeat;
+				background-size: 100% auto;
+				background-position: center bottom;
+			}
+			.trainInfo{
+				height:28px;
+				font-size:20px;
+				font-weight:600;
+				color:rgba(51,51,51,1);
+				line-height:28px;
+				    padding-top: 20px;
+				    padding-bottom: 8px;
+			}
+			.trainInfoRight{
+				width: 209px;
+				position: absolute;
+				right: 0;
+				top: 0;bottom: 0;
+				line-height: 100%;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+			.pdr20{
+				padding-right: 20px;
+			}
+			.payBtnGroup{
+				padding-top: 30px;
+				text-align: center;
+			}
+			.closeTrainBtn{
+				position: absolute;
+				display: block;
+				top: 28px;
+				right: 28px;
+				font-size: 16px;
+				cursor: pointer;
+			}
+			.paybtn,.cancelConfirm,.closeTips{
+				width:200px;
+				text-align: center;
+				height:36px;
+				line-height: 36px;
+				color: #FFFFFF;
+				background:rgba(48,131,251,1);
+				border-radius:4px;
+				margin: 0 auto;
+				cursor: pointer;
+				display: inline-block;
+			}
+			.cancelbtn,.cancelBack,.cancelSuccess,.cancelError{
+				width:200px;
+				text-align: center;
+				height:36px;
+				line-height: 36px;
+				background-color: #FFFFFF;
+				color:rgba(48,131,251,1);
+				border: 1px solid rgba(48,131,251,1);
+				border-radius:4px;
+				margin: 0 auto;
+				cursor: pointer;
+				display: inline-block;
+			}
+			.paybtn,.cancelbtn{
+				margin: 0 40px;
+				font-size: 16px;
+			}
+			.closeTips{
+				float: right;
+				font-size: 16px;
+				border-radius: 18px;
+				width: 120px;
+				height: 30px;
+				line-height: 30px;
+			}
+			.cancelConfirm,.cancelBack,.cancelSuccess,.cancelError{
+				width: 120px;
+				margin: 0 40px;
+				height: 30px;
+				line-height: 30px;
+				font-size: 16px;
+			}
+			/* end */

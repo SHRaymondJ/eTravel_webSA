@@ -79,6 +79,8 @@
 			height: 20px;
 			line-height: 20px;
 			padding-left: 20px;
+			font-size: 14px !important;
+			margin: 0 !important;
 		}
 		label[name="Remember"] input{
 			position: absolute;
@@ -87,6 +89,8 @@
 			left: 0;
 			right: 0;
 			opacity: 0;
+			height: 20px;
+			margin: 0;
 		}
 		.checkboxSpan{
 			/* display: inline-block; */
@@ -120,14 +124,25 @@
 				</div>
 	            <div class="right-bg">
 	            </div>
-	            <div class="downloadBody flexRow">
+	           <!-- <div class="downloadBody flexRow">
 	            	<div class="downloadBtn iosBtn flexRow">
 	            		<img src="../login/images/ios.png" class="downloadIcon" style="margin-left: 37px;">IOS
 	            	</div>
 	            	<div class="downloadBtn androidBtn flexRow">
 	            		<img src="../login/images/android.png" class="downloadIcon">Android
 	            	</div>
-	            </div>
+	            </div> -->
+				
+				<div class="downloadBody flexRow">
+					<div class="downloadBtn iosBtn flexRow">
+						<img src="../login/images/icon_app.png" class="downloadIcon" ><span class="APP">下载APP</span>
+						<div class="QRcode hide"><img src="../staticFile/QCode/app.png" ></div>
+					</div>
+					<div class="downloadBtn androidBtn flexRow">
+						<img src="../login/images/icon_gzh.png" class="downloadIcon" ><span class="WeChat">微信公众号</span>
+						<div class="QRcode hide"><img src="../staticFile/QCode/pic_weQR.png" ></div>
+					</div>
+				</div>
 	            <div class="right-bottom">
 	            </div>
 	        </div>
@@ -191,6 +206,8 @@
 		    	关于交通运输部令2016年第56号《航班正常管理规定》第十七条"承运人应当制定并公布运输总条件"请登录 <a href="http://xxgk.mot.gov.cn/jigou/fgs/201607/t20160721_2973469.html" target="_blank">交通部网站</a> 查阅,或登陆国内各大航空公司官网。<br><br>\
 		    	<a style="color:#fff" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010402003828" target="_blank">沪公网安备 31010402003828号    沪ICP备17045138号</a>\
 		    	')
+				$('.APP').text('下载APP')
+				$('.WeChat').text('微信公众号')
 		}else{
 			$.session.set('obtLanguage', 'EN')
 		    $(".lanChange").text('中文');
@@ -201,6 +218,8 @@
 		    	Please log into the official website of the Ministry of Transport for the People’s Republic of China for more information on the Regulations on the Normal Management of Flights, Order No.56 of the Ministry of Transport of 2016. The order states that "the carrier shall formulate and promulgate the general conditions of transport". Visit <a href="http://xxgk.mot.gov.cn/jigou/fgs/201607/t20160721_2973469.html" target="_blank">here</a> or the official website of major domestic airlines for full details.<br><br>\
 		    	<a style="color:#fff" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010402003828" target="_blank">沪公网安备 31010402003828号    沪ICP备17045138号</a>\
 		    	')
+			$('.APP').text('Download APP')
+			$('.WeChat').text('WeChat official account')
 		}
 	}else if($.session.get('obtLanguage') == "CN"){
 	    $(".lanChange").text('English');
@@ -210,6 +229,8 @@
 	    	关于交通运输部令2016年第56号《航班正常管理规定》第十七条"承运人应当制定并公布运输总条件"请登录 <a href="http://xxgk.mot.gov.cn/jigou/fgs/201607/t20160721_2973469.html" target="_blank">交通部网站</a> 查阅,或登陆国内各大航空公司官网。<br><br>\
 	    	<a style="color:#fff" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010402003828" target="_blank">沪公网安备 31010402003828号    沪ICP备17045138号</a>\
 	    	')
+		$('.APP').text('下载APP')
+		$('.WeChat').text('微信公众号')
 	}else if($.session.get('obtLanguage') == "EN"){
 	    $(".lanChange").text('中文');
 	    $(".right-bottom").html('\
@@ -218,6 +239,8 @@
 	    	Please log into the official website of the Ministry of Transport for the People’s Republic of China for more information on the Regulations on the Normal Management of Flights, Order No.56 of the Ministry of Transport of 2016. The order states that "the carrier shall formulate and promulgate the general conditions of transport". Visit <a href="http://xxgk.mot.gov.cn/jigou/fgs/201607/t20160721_2973469.html" target="_blank">here</a> or the official website of major domestic airlines for full details.<br><br>\
 	    	<a style="color:#fff" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010402003828" target="_blank">沪公网安备 31010402003828号    沪ICP备17045138号</a>\
 	    	')
+		$('.APP').text('Download APP')
+		$('.WeChat').text('WeChat official account')
 	}
 	//语言转换
 	$(".lanChange").unbind('click').click(function(){
@@ -242,25 +265,36 @@
 		}else{
 			$(".sigleSignIcon").remove();
 		}
-		$(".iosBtn").unbind("click").click(function(){
-			openDownloadPop();
-			$(".downloadText").text('');
-			$(".downloadUrl").css("background-image","url('../login/images/iosImg.png')")
-			$("#cover").unbind("click").click(function(){
-				closeDownloadPop();
-			})
+		// $(".iosBtn").unbind("click").click(function(){
+		// 	openDownloadPop();
+		// 	$(".downloadText").text('');
+		// 	$(".downloadUrl").css("background-image","url('../login/images/iosImg.png')")
+		// 	$("#cover").unbind("click").click(function(){
+		// 		closeDownloadPop();
+		// 	})
+		// })
+		// $(".androidBtn").unbind("click").click(function(){
+		// 	openDownloadPop();
+		// 	if($.session.get('obtLanguage') == "CN"){
+		// 		$(".downloadText").text('请用浏览器扫码下载');
+		// 	}else if($.session.get('obtLanguage') == "EN"){
+		// 	    $(".downloadText").text('Please use browser scan code to download.');
+		// 	}
+		// 	$(".downloadUrl").css("background-image","url('../login/images/androidImg.png')")
+		// 	$("#cover").unbind("click").click(function(){
+		// 		closeDownloadPop();
+		// 	})
+		// })
+		$('.iosBtn').hover(function(){
+			console.log(1)
+			$('.iosBtn .QRcode').fadeIn(300)
+		},function(){
+			$('.iosBtn .QRcode').fadeOut(300)
 		})
-		$(".androidBtn").unbind("click").click(function(){
-			openDownloadPop();
-			if($.session.get('obtLanguage') == "CN"){
-				$(".downloadText").text('请用浏览器扫码下载');
-			}else if($.session.get('obtLanguage') == "EN"){
-			    $(".downloadText").text('Please use browser scan code to download.');
-			}
-			$(".downloadUrl").css("background-image","url('../login/images/androidImg.png')")
-			$("#cover").unbind("click").click(function(){
-				closeDownloadPop();
-			})
+		$('.androidBtn').hover(function(){
+			$('.androidBtn .QRcode').fadeIn(300)
+		},function(){
+			$('.androidBtn .QRcode').fadeOut(300)
 		})
 	})
 	function openDownloadPop(){

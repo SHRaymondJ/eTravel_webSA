@@ -811,7 +811,8 @@
 	background-color: #979797;
 	border-radius: 5px;
 	/* margin-left: 115px; */
-	margin-left: 150px;
+	/* margin-left: 150px; */
+	margin-left: 124px;
 	text-align: center;
 	font-size: 16px;
 	color: #fff;
@@ -1288,7 +1289,13 @@
 	background-color: #9b9b9b;
 	margin: 4px 5px 0 0;
 }
-.hotelCancelPolicy,.hotelAddress,.hotelRoomName,.hotelBedName,.hotelBreakfast,.hotelPayType,.hotelLastArriveTime,.hotelInfo,.CabinCustomerName{
+.hotelBusIcon{
+	width: 10px;
+    height: 10px;
+    display: block;
+    margin: 7px 6px 0 0;
+}
+.hotelCancelPolicy,.hotelAddress,.hotelRoomName,.hotelBedName,.hotelBreakfast,.hotelPayType,.hotelLastArriveTime,.hotelInfo,.CabinCustomerName,.hotelBusInfo{
 	/*position: absolute;
     left: 29px;*/
     /* height: 25px; */

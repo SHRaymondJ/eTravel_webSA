@@ -728,6 +728,8 @@
 	width: 120px;
 	height: 30px;
 	margin-top: 5px;
+	box-sizing: border-box;
+    padding-left: 5px;
 }
 /*信用卡信息*/
 .creditCardBody{
@@ -782,7 +784,9 @@
 }
 .creditCardTypeBody{
 	float: left;
-	height: 35px;
+	/* height: 35px; */
+	    min-height: 35px;
+	    max-width: 973px;
 }
 .creditCardTypeBody img{
 	height: 25px;
@@ -795,9 +799,12 @@
     height: 50px;
     line-height: 50px;
     color: #222;
-    margin: -45px 0 100px 950px;
+    /* margin: -45px 0 100px 950px; */
     /* text-align: right; */
-    font-size: 28px;
+	font-size: 28px;
+	position: absolute;
+    right: 0;
+    top: 0;
 }
 /*集中开票*/
 .centralFapiao{
@@ -806,7 +813,7 @@
 	line-height: 30px;
 	font-size: 14px;
 	box-sizing: border-box;
-	margin-top: 40px;
+	margin-top: 10px;
 	/*text-align: center;*/
 	padding-left: 15px;
 }

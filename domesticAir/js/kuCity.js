@@ -31,6 +31,8 @@
 		}
 		// 获取TA单限制的城市
 		function cityFilter(cityType,jsonList,cityDom,airType){
+			cityList(jsonList,cityDom,cityType)
+			return false;
 			var userid = netUserId.split("\"")[1]
 			$.ajax({
 				type: 'post',
@@ -112,7 +114,7 @@
 	var data1;
 
 	// if(TAnumber && TAnumberIndex==1){
-	if(TAnumber){
+    if(TAnumber&&$.session.get('TAOneCity')!=1){
 		// 第一次获取订单号TAnumber,如果存在订单号就用新接口，InitLimitCitys，否则InitCityPost
 		data1={
 			url: $.session.get('obtCompany')+"/SystemService.svc/InitLimitCitys",
@@ -141,7 +143,7 @@
 			}else{
 				// domCityString = data;
 				domCityJson = JSON.parse(data);
-				if(TAnumber){
+				if(TAnumber&&$.session.get('TAOneCity')!=1){
 					cityFilter("1",domCityJson,domCity)
 				}else{
 					// cityData(JSON.parse(data),intlDomCity)
@@ -175,7 +177,8 @@
         // cityData(domCityJson,domCity);
     })();
     function cityData(cityJson,city){
-		if(TAnumber){
+		if(TAnumber&&$.session.get('TAOneCity')!=1){
+			cityJson.shift();
 			cityJson.map(function(item){
 			        if(item.Value.length!=0){
 			            item.Value.map(function(sItem){
@@ -275,7 +278,7 @@
             // if(this.isContainerExit) return;
             $(".kucity").remove();
             var template = '<div class="kucity"><div class="citybox"><h3 class="kucity_header"></h3><ul class="kucity_nav flexRow"><li class="active">Key</li><li>ABCDEFGH</li><li>IJKLMNOP</li><li>QRSTUVWXYZ</li></ul><div class="kucity_body"></div></div><ul class="result"></ul></div>';
-            if(TAnumber){
+            if(TAnumber&&$.session.get('TAOneCity')!=1){
             	template = '<div class="kucity"><div class="citybox"><h3 class="kucity_header"></h3><ul class="kucity_nav flexRow"></ul><div class="kucity_body"></div></div><ul class="result"></ul></div>';
             }
             $(".kucity_body").html('');

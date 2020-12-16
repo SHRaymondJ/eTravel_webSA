@@ -81,6 +81,7 @@ var cn = {
         "hotelsNumber2":"家酒店供您选择",
     },
     'searchRemind':'请正确填写！',
+    "shuttleRemind":"APPLE在该酒店提供班车服务。",
 }
 var en = {
     "progressBar":{
@@ -150,6 +151,7 @@ var en = {
         "hotelsNumber2":"hotels",
     },
     'searchRemind':'Please fill in correctly!',
+    "shuttleRemind":"APPLE provides shuttle service support in this hotel.",
 }
 function get_lan(m)
 {
@@ -200,7 +202,7 @@ function showContent(){
         <div class="progressLine progressBackColor"></div><div class="progressCircle progressBackColor"></div>'+get_lan('progressBar').complete+'\
         ')
     $(".hotelChooseBody").html('\
-        '+get_lan('hotelChooseBody').remind+'￥<span class="policyPrice"></span>\
+        '+get_lan('hotelChooseBody').remind+ ProfileInfo.OfficeCurrency+'<span class="policyPrice"></span>\
         ')
     $.ajax(
       {
@@ -1160,10 +1162,22 @@ function hotelListInfo(res){
 		var onlineStyle = JSON.parse($.session.get('ProfileInfo')).onlineStyle;
 		var noimgUrl=onlineStyle=="BCD"?"../../hotel/images/BCDnoPicture.png":"../../hotel/images/noPicture.png";
         var imageUrl = item.imageUrl==null||item.imageUrl==""? noimgUrl:item.imageUrl;
+        /*班车*/
+        var showBus = item.HasShuttleBus?"":"hide";
+        var showGreen = item.IsGreenHotel?"":"hide";
+        /*end*/
         $(".hotelList").append('\
             <div class="hotelLi">\
               <div class="hotelLiName" title="'+item.HotelName+'" hotelId="'+item.ID+'" hotelType="'+item.HotelType+'" cityCode="'+item.CityCode+'">'+item.HotelName+'</div>\
-              <span style="color:#000;font-size:13px;margin-left:20px;" class="'+showHandImg+'">Apple Preferred</span>\
+              <div class="shuttleRemind hide">\
+                <div class="shuttleRemindText">'+get_lan("shuttleRemind")+'</div>\
+              </div>\
+              <div class="greenRemind hide">\
+                <div class="greenRemindText">Identified by Apple for performing well on environmental metrics, such as carbon emissions, waste treatment, and third-party certifications.</div>\
+              </div>\
+              <span style="color:#000;font-size:13px;margin-left:20px;" class="'+showHandImg+' flexRow">Apple Preferred\
+              <img class="greenIcon '+showGreen+'" index="'+index+'" src="./images/green.png" style="width:16px;height:16px;margin:0px 5px 0 5px;">\
+              <img class="shuttleIcon '+showBus+'" index="'+index+'" src="./images/shuttlebus.png" style="width:16px;height:16px;margin:0px 5px 0 5px;"></span>\
               <div class="hotelLiLine"></div>\
               <div class="hotelLiImg" style="background-image:url('+imageUrl+');"></div>\
               <div class="hotelLiScore '+showHotelLiScore+'">'+item.HotelRating+'</div>\
@@ -1178,12 +1192,32 @@ function hotelListInfo(res){
               \
             </div>\
             ')
+        if(item.HasShuttleBus&&item.IsGreenHotel){
+            $(".shuttleRemind").eq(index).css("left","93px");
+        }
         // <div class="protocolBody '+showHandImg+'">\
         //   <div class="protocolText">'+get_lan('hotelList').protocol+'</div>\
         //   <div class="triangleTopRight"></div>\
         // </div>\
         //<div class="hotelLiComment">'+item.ReviewInfo.Count+get_lan('hotelList').comment+'</div>
     })
+    /*班车*/
+    $(".shuttleIcon").hover(function(e){
+        var index = $(this).attr("index");
+	    $(".shuttleRemind").eq(index).removeClass("hide");
+	    e.stopPropagation();//阻止冒泡
+	},function(){
+        $(".shuttleRemind").addClass("hide");
+    })
+    /*绿色酒店*/
+    $(".greenIcon").hover(function(e){
+        var index = $(this).attr("index");
+	    $(".greenRemind").eq(index).removeClass("hide");
+	    e.stopPropagation();//阻止冒泡
+	},function(){
+        $(".greenRemind").addClass("hide");
+    })
+    /*end*/
 	// 绑定翻页
 	$('.hotelList').append('<div class="listEnd"><span class="loadingSpan"></span><span class="textSpan">正在加载...</span></div>')
 	if(SabreShopKey=='' || SabreShopKey==null){
@@ -1505,7 +1539,7 @@ function closeRemindPop(){
 		        </div>\
 		        ')
 		})
-		
+		clickHotelLi();//绑定进入详情页方法
 		$('.hotelList').append('<div class="listEnd"><span class="loadingSpan"></span><span class="textSpan">正在加载...</span></div>')
 		if(SabreShopKey=='' || SabreShopKey==null){
 			if(obtLanguage=="EN"){

@@ -23,8 +23,6 @@ if (TAnumber != undefined && TAnumber != "" && $.session.get('goOnBooktravelInfo
 	}
 	TAminDate=minTime<minTime2?TAminDate:new Date()
 }
-var emailTicketList=[]//emaile输出
-
 // console.log(JSON.parse($.session.get('returnTicket')));
 
 // 时间选择
@@ -80,6 +78,7 @@ var cn = {
 		"all2": "全部到达机场",
 		"price": "价格",
 		"stopTitle": "转机",
+		"recommendText": "推荐航班",
 	},
 	'airportName': {
 		'all': '全部航空公司',
@@ -140,6 +139,18 @@ var cn = {
 	},
 	"rulePopHeader": "退改签规则",
 	"cabinRemind": "您选择的行程没有可销售运价",
+	"pointBody":{
+		"lowest":"最低票价",
+		"recommend":"协议航空公司",
+		"or":"或",
+		"points":" 分",
+	},
+	"approachingTakeoff":{
+		"title":"临近起飞",
+		"para1":"1. 本航班已临近起飞时间，购票前请先到值机柜台确认出票后仍有时间值机 (支付成功后至少需 5-10 分钟完成出票) 。",
+		"para2":"2. 若出票失败，订单自动取消并全额退款，若已出票，退改损失需自行承担",
+		"btn":"确认预订"
+	}
 }
 var en = {
 	"progressBar": {
@@ -169,6 +180,7 @@ var en = {
 		"all2": "All Arrival Airports",
 		"price": "Price",
 		"stopTitle": "Stopover",
+		"recommendText": "Recommend",
 	},
 	'airportName': {
 		'all': 'All Airlines',
@@ -229,6 +241,18 @@ var en = {
 	},
 	"rulePopHeader": "Restriction",
 	"cabinRemind": "No fare available for the flights you selected.",
+	"pointBody":{
+		"lowest":"lowest price",
+		"recommend":"recommended airline's",
+		"or":"/",
+		"points":" Points",
+	},
+	"approachingTakeoff":{
+		"title":"Approaching Takeoff",
+		"para1":"1. The flight is approaching the departure time. Please confirm at the airlines counter if you have enough time to complete the check in process. (it will take at least 5-10 minutes to complete the ticket issuance after successful payment).",
+		"para2":"2. If travelers are refused to check in at airline counter once ticket issued, they need to pay the change fee and refund penalty at their own account.",
+		"btn":"Confirm Booking"
+	}
 }
 
 function get_lan(m) {
@@ -250,6 +274,15 @@ function get_lan(m) {
 
 	return t;
 }
+//弹窗
+var textObj = {
+	title:get_lan('approachingTakeoff').title,
+	body:"<p>" + get_lan('approachingTakeoff').para1 + "</p>\
+			<br>\
+			<p>" + get_lan('approachingTakeoff').para2 + "</p>",
+	btnText:get_lan('approachingTakeoff').btn
+}
+var start = new PopUpWindow(textObj);
 $(function() {
 	showContent(); //内容展示
 	ticketList(); //机票列表
@@ -263,18 +296,14 @@ function showContent() {
             <div class="searchBody flexRow"></div>\
 			<div class="picBody"><img class="picGroupImg" src="../staticFile/query.png"/><a class="picHref" target="_blank" href=""></a></div>\
             <div class="ticketBody">\
-                <div class="listTittle">' +
-		get_lan('ticketList').tittle +
-		'</div>\
+                <div class="listTittle">' +get_lan('ticketList').tittle +'</div>\
                 <div class="chooseDate specificFontColor"></div>\
                 <div class="listRemind flexRow">\
-                   <div style="width:90%;font-weight:bold;padding-left:40px" class="roundTittle">' +
-		get_lan('searchBody').oneWay +
-		'</div>\
-		<div class="emailPrint btnBackColor">Email输出</div>\
+                   <div style="width:90%;font-weight:bold;padding-left:40px" class="roundTittle">' +get_lan('searchBody').oneWay +'</div>\
                 </div>\
                 <div class="siftBody"></div>\
-            </div>\
+			</div>\
+			<div class="pointsHeader hide"></div>\
             <div class="ticketList"></div>\
         </div>\
         '
@@ -366,18 +395,18 @@ function showContent() {
         </select>\
         <div class="intlDepartureWeek">' +
 		'<select type="text" id="DepartPlusMinusintel"  class="plusMinus">\
-		  <option value="1">±1</option>\
-		  <option value="2">±2</option>\
-		  <option value="3">±3</option>\
-		  <option value="4">±4</option>\
-		  <option value="5">±5</option>\
-		  <option value="6">±6</option>\
-		  <option value="7">±7</option>\
-		  <option value="8">±8</option>\
-		  <option value="9">±9</option>\
-		  <option value="10">±10</option>\
-		  <option value="11">±11</option>\
-		  <option value="12">±12</option>\
+		  <option value="1">±1H</option>\
+		  <option value="2">±2H</option>\
+		  <option value="3">±3H</option>\
+		  <option value="4">±4H</option>\
+		  <option value="5">±5H</option>\
+		  <option value="6">±6H</option>\
+		  <option value="7">±7H</option>\
+		  <option value="8">±8H</option>\
+		  <option value="9">±9H</option>\
+		  <option value="10">±10H</option>\
+		  <option value="11">±11H</option>\
+		  <option value="12">±12H</option>\
 		</select>' +
 		'</div>\
 		</div>\
@@ -415,18 +444,18 @@ function showContent() {
         </select>\
         <div class="intlReturnDateWeek">' +
 		'<select type="text" id="returnPlusMinusintel"  class="plusMinus">\
-		  <option value="1">±1</option>\
-		  <option value="2">±2</option>\
-		  <option value="3">±3</option>\
-		  <option value="4">±4</option>\
-		  <option value="5">±5</option>\
-		  <option value="6">±6</option>\
-		  <option value="7">±7</option>\
-		  <option value="8">±8</option>\
-		  <option value="9">±9</option>\
-		  <option value="10">±10</option>\
-		  <option value="11">±11</option>\
-		  <option value="12">±12</option>\
+		  <option value="1">±1H</option>\
+		  <option value="2">±2H</option>\
+		  <option value="3">±3H</option>\
+		  <option value="4">±4H</option>\
+		  <option value="5">±5H</option>\
+		  <option value="6">±6H</option>\
+		  <option value="7">±7H</option>\
+		  <option value="8">±8H</option>\
+		  <option value="9">±9H</option>\
+		  <option value="10">±10H</option>\
+		  <option value="11">±11H</option>\
+		  <option value="12">±12H</option>\
 		</select>' +
 		'</div></div>\
         <select type="text" id="intlCabin">' +
@@ -435,7 +464,10 @@ function showContent() {
         <div class="searchAirBtn btnBackColor">' + get_lan('searchBody').search +
 		'</div></div>\
         ')
-	// 时间限制
+	if(ProfileInfo.NeedSpecialPolicy){
+		$("#intlCabin  option:first").prop("selected", 'selected');
+		$("#intlCabin").attr('disabled','disabled')
+	}
 	//时间限制
 	$.ajax({
 		type: 'post',
@@ -534,12 +566,12 @@ function showContent() {
 		if (day > 0) {
 			$('#DepartPlusMinusintel').val(day)
 		} else {
-			$('#DepartPlusMinusintel').val(5)
+			$('#DepartPlusMinusintel').val(12)//5改为12
 		}
 		if (returnday > 0) {
 			$('#returnPlusMinusintel').val(returnday)
 		} else {
-			$('#returnPlusMinusintel').val(5)
+			$('#returnPlusMinusintel').val(12)
 		}
 		// 默认值设置后
 		showPlusMinus()
@@ -572,28 +604,12 @@ function showContent() {
 			} else {
 				$('#intlReturnSelect').val('all')
 			}
-			$('#returnPlusMinusintel').val(5)
+			$('#returnPlusMinusintel').val(12)//5换成12
 
 		}
 	})
 	$(".searchAirBtn").unbind("click").click(function() {
-		if ($(this).attr("startlimit") && parseInt($(this).attr("startlimit")) > 0) {
-			if (datedifference(getNowFormatDate(), $('#intlDepartureDate').val()) < parseInt($(this).attr("startlimit"))) {
-				if ($(this).attr("Message").indexOf("\\n") != -1) {
-					var mymessage = confirm($(this).attr("Message").split("\\n").join('\n'));
-				} else {
-					var mymessage = confirm($(this).attr("Message"));
-				}
-				if (mymessage == true) {
-					if ($(this).attr("CanSearch") != "true") {
-						return false;
-					}
-				} else {
-					return false;
-				}
-			}
-		}
-
+		var that = this;
 		function getNowFormatDate() {
 			var date = new Date();
 			var seperator1 = "-";
@@ -621,14 +637,35 @@ function showContent() {
 			iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
 			return iDays
 		};
-		if (ProfileInfo.onlineStyle == "APPLE") {
+		// if (ProfileInfo.onlineStyle == "APPLE") {
 			var cityList = '"' + $('#intlDepartureCity').attr("code") + '","' + $('#intlArrivalCity').attr("code") + '"';
 			tools.appleRemindPop(cityList, 1, netUserId, function() {
-				searchIntl()
+				if ($(that).attr("startlimit") && parseInt($(that).attr("startlimit")) > 0) {
+					if (datedifference(getNowFormatDate(), $('#intlDepartureDate').val()) < parseInt($(that).attr("startlimit"))) {
+						if ($(that).attr("Message").indexOf("\\n") != -1) {
+							var mymessage = confirm($(that).attr("Message").split("\\n").join('\n'));
+						} else {
+							var mymessage = confirm($(that).attr("Message"));
+						}
+						if (mymessage == true) {
+							if ($(that).attr("CanSearch") != "true") {
+								return false;
+							}else{
+								searchIntl()
+							}
+						} else {
+							return false;
+						}
+					}else{
+						searchIntl()
+					}
+				}else{
+					searchIntl()
+				}
 			});
-		} else {
-			searchIntl();
-		}
+		// } else {
+		// 	searchIntl();
+		// }
 
 		function searchIntl() {
 			var Direct = JSON.parse($.session.get('searchIntlInfo')).isDirect;
@@ -793,9 +830,44 @@ function showContent() {
 			'siftBody').price + '<div class="priceSortIcon"></div></div>\
         <div class="stopSort flexRow">' + get_lan(
 			'siftBody').stopTitle + '</div>\
+		<div class="recommed flexRow hide"><input type="checkbox" name="recommed" id="recommed" />\
+		<label for="recommed">' + get_lan('siftBody').recommendText + '</label></div>\
         ')
 	//<div class="arrivalTimeSort flexRow">'+get_lan('siftBody').arrivalTime+'<div class="arrivalTimeSortIcon"></div></div>
 	GetCompanyImageInfos()
+
+	/*2020-10-9 积分*/
+	var PointTypeId2;
+	var PointTypeId3;
+	var pointsType = '';
+	if(ProfileInfo.PointInfo&&ProfileInfo.PointInfo.PointRuleList){
+		ProfileInfo.PointInfo.PointRuleList.map(function(item){
+			if(item.PointTypeId==2&&(item.RegionType=="ALL"||item.RegionType=="I")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				pointsType += get_lan("pointBody").lowest+' ';
+				PointTypeId2 = '2';
+			}
+			if(item.PointTypeId==3&&(item.RegionType=="ALL"||item.RegionType=="I")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				if(PointTypeId2=='2'){
+					pointsType += get_lan("pointBody").or+' '+get_lan("pointBody").recommend+' ';
+				}else{
+					pointsType += get_lan("pointBody").recommend+' ';
+				}
+				PointTypeId3 = '3';
+			}
+		})
+	}
+	if(PointTypeId2=='2'||PointTypeId3=='3'){
+		$(".pointsHeader").removeClass("hide");
+	}
+	if(obtLanguage=="CN"){
+		$(".pointsHeader").text("ⓘ 预订 "+pointsType+"的机票即可获得积分奖励");
+	}else if(obtLanguage=="EN"){
+		$(".pointsHeader").text("ⓘ Book the "+pointsType+"ticket  to get bonus points");
+	}
+	if(isReturn==1){
+		$(".pointsHeader").addClass("hide");
+	}
+	/*end*/
 }
 // 广告图片接口
 function GetCompanyImageInfos(){
@@ -1020,9 +1092,6 @@ function ticketList() {
 					var res = JSON.parse(data);
 					console.log(res);
 					var airTicketList = [];
-					
-					emailTicketList=res//emaile输出
-					
 					setTime = $('#intlDepartureSelect').val()
 					day = $.session.get('searchIntelDay');
 					setReturnTime = $('#intlReturnSelect').val()
@@ -1190,7 +1259,8 @@ function chooseAirLine(res) {
 	})
 	var airlineAirList = [],
 		departAirPortList = [],
-		arrivalAirPortList = [];
+		arrivalAirPortList = [],
+		recommedList=[];
 	res.map(function(item) {
 		airlineAirList.push(item);
 		departAirPortList.push(item);
@@ -1250,10 +1320,38 @@ function chooseAirLine(res) {
 		$(".priceSort,.departureTimeSort,.durationSort").css("color", '#000');
 		$(".priceSortIcon,.departureTimeSortIcon,.durationSortIcon").css("background-position", "0px 0px");
 	})
+	
+	//推荐航班
+	$('#recommed').change(function(){
+		console.log($(this).is(":checked"))
+		if(ProfileInfo.ShowDAgreementOrLevel3){
+			recommedList = [];
+			if (!$(this).is(":checked")) {
+				res.map(function(item) {
+					recommedList.push(item);
+				})
+			} else {
+				res.map(function(item) {
+					if (item.isAgreementOrLevel3) {
+						recommedList.push(item)
+					}
+				})
+			}
+		}
+		siftAirList(airlineAirList, departAirPortList, arrivalAirPortList,recommedList);
+	})
+	if(ProfileInfo.ShowDAgreementOrLevel3 && (searchIntlInfo.type=='oneWay' || (searchIntlInfo.type=='roundTrip' && isReturn != 1))){
+		// $('#recommed').prop('checked',"true")
+		$('#recommed').click()
+		$('.recommed').removeClass('hide')//注意类名和ID
+	}else{
+		$('.recommed').remove()
+	}
 }
 
-function siftAirList(airlineList, departAirPortList, arrivalAirPortList) {
+function siftAirList(airlineList, departAirPortList, arrivalAirPortList,recommedList) {
 	var chooseAirLine = [];
+	var hasRecommed=[]
 	var result = [];
 	airlineList.map(function(item) {
 		departAirPortList.map(function(dItem) {
@@ -1266,12 +1364,28 @@ function siftAirList(airlineList, departAirPortList, arrivalAirPortList) {
 	chooseAirLine.map(function(item) {
 		arrivalAirPortList.map(function(aItem) {
 			if (item.SegID == aItem.SegID) {
-				result.push(item);
+				// result.push(item);
+				hasRecommed.push(item);
 			}
 		})
 	})
+	hasRecommed.map(function(item) {
+		if(recommedList && recommedList.length>0 && $('#recommed').is(':checked')){
+			recommedList.map(function(aItem) {
+				if (item.SegID == aItem.SegID) {
+					result.push(item);
+				}
+			})
+		}else{
+			if(ProfileInfo.ShowDAgreementOrLevel3 && $('#recommed').is(':checked')){
+				result=[]
+			}else{
+				result=hasRecommed
+			}
+		}
+	})
 	// console.log(result);
-	ticketListInfo(result);
+	ticketListInfo(result,"recommed");
 	sortTicketInfo(result); //排序
 }
 //机票排序
@@ -1411,10 +1525,14 @@ function sortTicketInfo(res) {
 	})
 }
 
-function ticketListInfo(res) {
+function ticketListInfo(res,recommed) {
 	// console.log(res);
 	if (res.length == 0) {
-		alert(get_lan("ticketList").listRemind);
+		if(recommed=="recommed" && ProfileInfo.ShowDAgreementOrLevel3){
+			//有推荐航班权限 且推荐航班被选中
+		}else{
+			alert(get_lan("ticketList").listRemind);
+		}
 	}
 	$(".ticketList").html('');
 	// 时间过滤
@@ -1424,11 +1542,25 @@ function ticketListInfo(res) {
 	//     priceList.push(parseInt(item.Fare)+parseInt(item.TotalTax));
 	// })
 	// var minPrice = Math.min.apply(null,priceList);
-	$('.emailPrint').unbind().click(function(){
-		$.session.set('isReturn',isReturn)
-		$.session.set('EmailPrint',JSON.stringify(res))
-		window.open("./interEmailPrint.html");  
-	})
+
+	/*2020-10-9积分*/
+	var PointTypeId2;
+	var PointTypeId3;
+	var PointValue2;
+	var PointValue3;
+	if(ProfileInfo.PointInfo&&ProfileInfo.PointInfo.PointRuleList){
+		ProfileInfo.PointInfo.PointRuleList.map(function(item){
+			if(item.PointTypeId==2&&(item.RegionType=="ALL"||item.RegionType=="I")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				PointTypeId2 = '2';
+				PointValue2 = item.PointValue;
+			}
+			if(item.PointTypeId==3&&(item.RegionType=="ALL"||item.RegionType=="I")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				PointTypeId3 = '3';
+				PointValue3 = item.PointValue;
+			}
+		})
+	}
+	/*end*/
 	res.map(function(item, index) {
 		var ticketPriceColor = item.ShowLowestFare == 1 ? "ticketPriceColor" : "";
 		// if(isReturn==1){
@@ -1485,6 +1617,9 @@ function ticketListInfo(res) {
 			hideStopOver = ""
 			StayTime = ""
 		}
+		var dateStartDay = item.Date.split(' ')[0].split('-').join('');
+		var dateStartTime = item.DateStart.split(':').join('');
+		var dateStart = dateStartDay + dateStartTime;
 		stopNum = item.InterSegments.length - 1
 		$(".ticketList").append('\
             <div class="ticketLi">\
@@ -1531,15 +1666,16 @@ function ticketListInfo(res) {
 			'</span></div>\
 				<div class="stopOverTime ' + showStopOver + '">' + StayTime +
 			'</div>\
-				<div class="ticketFareAmount ' + ticketPriceColor + '" CabinID="' + item.InterCabins[0].CabinID +
+				<div class="ticketFareAmount ' + ticketPriceColor + '" dateStart="' + dateStart + '" CabinID="' + item.InterCabins[0].CabinID +
 			'" spread="off" AirLineCode="' + item.AirLineCode + '" SegID="' + item.SegID + '" ticketTax="' + item.TotalTax +
-			'" ticketPrice="' + item.Fare +'" LimitFare="'+item.LimitFare+'"'+ 'index="'+ index +
-			'"><span style="font-size:14px;color:#4d4d4d;">￥</span><span class="ticketPriceText" style="text-decoration: underline;">' +
-			(parseInt(item.Fare) + parseInt(item.TotalTax)) + '</span><span style="font-size:14px;color:#4d4d4d">(' + get_lan(
+			'" ticketPrice="' + item.Fare +'" LimitFare="'+item.LimitFare+'"'+
+			'"><span class="ticketPriceText" style="text-decoration: underline;">' +
+			(parseInt(item.Fare) + parseInt(item.TotalTax)) + '</span><span style="font-size:14px;color:#4d4d4d;">'+item.Curreny+'</span><span style="font-size:14px;color:#4d4d4d">(' + get_lan(
 				'ticketList').includeTax + ')</span></div>\
-                <div class="ticketCabin">' + item.CabinName +
+                <div class="ticketCabin flexRow"><img src="../images/honeyIcon.png" class="honeyIcon hide" style="width:14px;height:14px;margin: 1px 5px 0 0;">' + item.CabinName +
 			'  &nbsp;/&nbsp;  ' + get_lan('ticketList').Tax + ' ' + item.TotalTax +
 			'</div>\
+			    <div class="ticketLiPointsBody hide"></div>\
                 <div class="protocolBody ' + protocolShow +
 			'">\
                   <div class="protocolText">' + get_lan('ticketList').protocol +
@@ -1550,6 +1686,40 @@ function ticketListInfo(res) {
             <div class="ticketLiSpread"></div>\
         '
 		)
+
+		if(item.ShowLowestFare == 1){
+			if(PointTypeId2 == "2"){
+				if(!ProfileInfo.PointHoney){
+					$(".ticketLiPointsBody").eq(index).text('+'+PointValue2+get_lan("pointBody").points);
+					$(".ticketLiPointsBody").eq(index).removeClass("hide");
+				}else{
+					$(".honeyIcon").eq(index).removeClass("hide");
+				}
+			}
+		}
+		if(item.FareType == 2){
+			if(PointTypeId3 == "3"){
+				if(!ProfileInfo.PointHoney){
+					$(".ticketLiPointsBody").eq(index).text('+'+PointValue3+get_lan("pointBody").points);
+					$(".ticketLiPointsBody").eq(index).removeClass("hide");
+				}else{
+					$(".honeyIcon").eq(index).removeClass("hide");
+				}
+			}
+			if(item.ShowLowestFare == 1){
+				if(PointTypeId2 == "2"&&PointTypeId3 == "3"){
+					if(!ProfileInfo.PointHoney){
+						$(".ticketLiPointsBody").eq(index).text('+'+(parseInt(PointValue2)+parseInt(PointValue3))+get_lan("pointBody").points);
+					}else{
+						$(".honeyIcon").eq(index).removeClass("hide");
+					}
+				}
+			}
+		}
+		if(isReturn==1){
+		    $(".ticketLiPointsBody").addClass("hide");
+		}
+
 		if (searchIntlInfo.type == "roundTrip" && !isReturn) {
 			$(".ticketRestriction").addClass("hide");
 		}
@@ -1668,14 +1838,16 @@ function ticketListInfo(res) {
 			if (res[0].ShowCabinDetail) {
 				MoreIntlPrice(SegID, this);
 			} else {
-				searchIntlTicket($(this).attr("CabinID"), SegID, $(this).attr("AirLineCode"));
+				var that = this;
+				approachingRemind(this,function(){
+					searchIntlTicket($(that).attr("CabinID"), SegID, $(that).attr("AirLineCode"));
+				})
 			}
 		} else if (searchIntlInfo.type == "roundTrip" && !isReturn) {
 			var SegID = $(this).attr("SegID");
 			var AirLineCode = $(this).attr("AirLineCode");
 			var ticketPrice = $(this).attr("ticketPrice");
 			var ticketTax = $(this).attr("ticketTax");
-			var printIndex=$(this).attr("index")
 			$.ajax({
 				type: 'post',
 				url: $.session.get('ajaxUrl'),
@@ -1695,10 +1867,6 @@ function ticketListInfo(res) {
 						"ticketPrice": ticketPrice,
 						"ticketTax": ticketTax,
 					}
-					
-					var emailPrintInfo = emailTicketList.segmentList[printIndex]
-					$.session.set('emailPrintInfo', JSON.stringify(emailPrintInfo));
-					 
 					$.session.set('returnTicket', JSON.stringify(returnTicket));
 					window.location.href = '../../intlAir/airTicketList.html?isReturn=1';
 				},
@@ -1712,7 +1880,10 @@ function ticketListInfo(res) {
 			if (res[0].ShowCabinDetail) {
 				MoreIntlPrice(SegID, this);
 			} else {
-				searchIntlTicket($(this).attr("CabinID"), SegID, $(this).attr("AirLineCode"));
+				var that = this;
+				approachingRemind(this,function(){
+					searchIntlTicket($(that).attr("CabinID"), SegID, $(that).attr("AirLineCode"));
+				})
 			}
 		}
 
@@ -1868,7 +2039,10 @@ function ticketListInfo(res) {
 								});
 							})
 							$(".chooseTicket").unbind("click").click(function() {
-								searchIntlTicket($(this).attr("CabinID"), SegID, $(that).attr("AirLineCode"));
+								var target = this;
+								approachingRemind(that,function(){
+									searchIntlTicket($(target).attr("CabinID"), SegID, $(that).attr("AirLineCode"));
+								})
 							})
 						} else {
 							alert(get_lan("cabinRemind"));
@@ -1886,7 +2060,21 @@ function ticketListInfo(res) {
 		}
 	})
 }
-
+function approachingRemind(that,success){
+	var flightTimeStr = $(that).attr('dateStart').split(',')[0];
+	if(flightTimeStr.length<12){
+		console.log('时间格式不对，请检查');
+	}else{
+		var REMINDTIME = 3*60*60*1000;
+		if(flightTime(flightTimeStr)-currentTime()<REMINDTIME){
+			start.popUp('body',function(){
+				success(that);
+			});
+		}else{
+			success(that);
+		}
+	}
+}
 function searchIntlTicket(CabinID, SegID, AirLineCode) {
 	var intlTicketInfo = {
 		'type': searchIntlInfo.type,

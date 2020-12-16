@@ -233,7 +233,7 @@
 	height: 20px;
 	margin-right: 5px;
 }
-.popNameCn,.popNameEn,.popPhone,.popMail,.popDocuments,.popDocumentsTime,.popPhone,.popFrequentFlier,.newCustomerLi{
+.popNameCn,.popNameEn,.popPhone,.popMail,.popDocuments,.popDocumentsTime,.popPhone,.popFrequentFlier,.newCustomerLi,.popPhone12306{
 	height: 20px;
 	line-height: 20px;
 	font-size: 13px;
@@ -242,7 +242,7 @@
 	padding-left: 50px;
 	margin-top: 10px;
 }
-.popPhoneInput,.popMailInput,.popDocumentsInput,.popFrequentFlierInput,.popDocumentsTimeInput,.newCustomerInput{
+.popPhoneInput,.popMailInput,.popDocumentsInput,.popFrequentFlierInput,.popDocumentsTimeInput,.newCustomerInput,.popPhone12306Input{
 	width: 180px;
 	border: 1px solid #979797;
 }
@@ -650,14 +650,64 @@
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
+/*2020-9-21 候补信息*/
+.standByInfo{
+	margin-top: 25px;
+}
+.standByTime{
+	height: 30px;
+	line-height: 30px;
+	font-size: 13px;
+}
+.standByTimeInput{
+	height: 26px;
+	border: 1px solid #979797;
+	border-radius: 2px;
+	box-sizing: border-box;
+	margin: 2px 0 0 10px;
+	position: relative;
+}
+.standByRemind{
+	font-size: 12px;
+	color: #838183;
+	margin-top: 10px;
+}
+.standByDateInput{
+	width: 100px;
+    height: 24px;
+    margin-left: 5px;
+	outline: none;
+	border: 0;
+}
+.standByHourSelect{
+	width: 70px;
+    height: 24px;
+    margin-left: 5px;
+	outline: none;
+	border: 0;
+}
+.standByInputTittle{
+	width: 44px;
+    height: 25px;
+    margin-top: -0.5px;
+    line-height: 25px;
+    font-size: 12px;
+    color: #666;
+    background-color: #ccc;
+    text-align: center;
+}
+/*end*/
 /*总价*/
 .totalAmount{
-	width: 230px;
+	/* width: 230px; */
 	height: 50px;
 	line-height: 50px;
 	font-size: 16px;
 	line-height: 50px;
-	margin:30px 0 0 986px;
+	/* margin:30px 0 0 986px; */
+	width: 100%;
+	margin:30px 0 0 0;
+	text-align: right;
 }
 .totalAmountText{
 	font-size: 20px;
@@ -711,4 +761,149 @@
 	font-size: 16px;
 	color: #4A4A4A;
 	margin-bottom: 22px;
+}
+
+
+
+
+/* 火车提醒 */		
+#coverCredent{
+	position: fixed;
+	top: 0;bottom: 0;
+	left: 0;right: 0;
+	background-color: rgba(0,0,0,0.3);
+	/* display: flex; */
+	/* justify-content: center; */
+	/* align-items: center; */
+	z-index: 100;
+}
+.credentGroupPop{
+	position: relative;
+	background-color: #ffffff;
+	border-radius: 5px;
+	overflow: hidden;
+	padding: 0 30px;
+	width: 576px;
+	/* height: 200px; */
+	margin: 0 auto;
+	padding-bottom: 20px;
+	margin-top: 180px;
+	    padding-top: 62px;
+}
+.closeCredent{
+	position: absolute;
+	right: 30px;
+	top: 0;
+	cursor: pointer;
+	z-index: 100;
+	background-image: url(../../index/images/icon_cha.png);
+	height: 48px;
+	width: 20px;
+	background-size: 15px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: rgba(255, 255, 255, 0.4);
+}
+.credentTitle{
+	height: 50px;
+    line-height: 50px;
+    text-align: center;
+	font-size:18px;
+	font-weight:800;
+	/* color:rgba(9,75,144,1); */
+	
+	    position: absolute;
+	    color: #FFFFFF;
+		background-color: #303030;
+	    width: 100%;
+	    left: 0;
+		top: 0;
+}
+.credent{
+	height: 20px;
+	line-height: 20px;
+	font-size: 14px;
+	color: rgb(51,51,51);
+	padding: 8px 0;
+	box-sizing: content-box;
+}
+.credentTips{
+	height:22px;
+	font-size:16px;
+	font-weight:500;
+	color:rgba(255,122,0,1);
+	line-height:22px;
+	margin-top: 12px;
+}
+.credent span:first-of-type{
+	display: inline-block;
+	width: 150px;
+}
+.credent span:nth-of-type(2){
+	display: inline-block;
+	width: 100px;
+	margin: 0 20px;
+}
+.credent span:last-of-type{
+	display: inline-block;
+	width: 100px;
+	font-weight: 600;
+	color: rgba(51,51,51,1);
+}
+.credentBtnGroup{
+	text-align: center;
+}
+.credentBtnGroup .btn{
+	width:220px;
+	height:38px;
+	border-radius:4px;	
+	color: #FFFFFF;
+	text-align: center;
+	line-height: 38px;
+	margin: auto;
+	margin-top: 30px;
+	cursor: pointer;
+	font-size: 14px;
+	display: inline-block;
+	margin-left: 20px;
+	margin-right: 20px;
+	cursor: pointer;
+}
+.credentBtn{
+	background:#3083FB;
+}
+.cancelBtn{
+	background:#9B9B9B;
+}
+/* 关闭提示 */
+.closeGroupPop{
+	width: 650px;
+}
+.closeBody{
+	text-align: center;
+	padding: 18px 60px 55px 60px;
+}
+.closeBtn{
+	width: 190px;
+	    height: 32px;
+	    background: rgba(48,131,251,1);
+	    border-radius: 4px;
+	    color: #ffffff;
+	    line-height: 32px;
+	    text-align: center;
+	    margin: auto;
+		cursor: pointer;
+}
+.tipsImg{
+	    display: inline-block;
+	    width: 54px;
+	    height: 54px;
+	    position: absolute;
+}
+.tipsImg img{
+	position: absolute;
+	width: 54px;
+	height: 54px;
+    top: -15px;
+    left: -60px;
 }

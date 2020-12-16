@@ -19,10 +19,12 @@ function get_lan(m)
     if(t==undefined) t = en[m];
     return t;
 }
+var regPhone = tools.regPhone;
+
 //中英文对象
 var cn = {
     "customer":'企业客户',
-    'login':'登陆',
+    'login':'登录',
     'company':'公司名',
     'userName':'用户名',
     'password':'密码',
@@ -30,7 +32,7 @@ var cn = {
     'language':'English',
     'forgetPassword':'忘记密码',
     "passwordRemind":"账号或密码错误",
-    "updateRemind":"欢迎使用在线预定系统，首次登陆请修改密码。",
+    "updateRemind":"欢迎使用在线预定系统，首次登录请修改密码。",
     "newPassword":"新密码:",
     "confirmPassword":"确认密码:",
     "Confirm":"确定",
@@ -86,7 +88,7 @@ $(function(){
   $("header").remove();
   $(".pageHeader").css("height","80px")
   showContent();//内容展示
-  login();//登陆
+  login();//登录
   document.onkeydown = function (event) {
      var e = event || window.event || arguments.callee.caller.arguments[0];
      if (e && e.keyCode == 13) {
@@ -157,9 +159,9 @@ function rememberUser(){
 	}
 }
 
-//登陆事件
+//登录事件
 function login(){
-    //点击登陆
+    //点击登录
 	$.session.set('TAnumber','')
 	$.session.set('trainTicketChanges','');
 	$.session.set('TAorderNo','');
@@ -221,8 +223,7 @@ function login(){
 }
 function confirmLogin(res,userName,password){
 	if(res.Company_Url){
-	    // $.session.set('obtCompany', res.Company_Url)
-	    $.session.set('obtCompany', "https://mobileservicetest.bcdtravel.cn:8089/AndroidService.testForIT")  //测试
+	    $.session.set('obtCompany', res.Company_Url)
 	    $.ajax(
 	      {
 	          type: 'post',
@@ -574,7 +575,7 @@ function completeInfo(ProfileInfo){
         var documentValue =$(".documentInput").val();
         var expirationValue = $(".documentDateInput").val()?$(".documentDateInput").val():"";
         if(phoneValue){
-          var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+          // var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
           if(!regPhone.test(phoneValue)){
               alert(get_lan("remind"));
               return false;

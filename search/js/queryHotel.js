@@ -5,6 +5,8 @@ var TAnumber = $.session.get('TAnumber');
 var TAnumberIndex = $.session.get('TAnumberIndex');
 console.log(ProfileInfo)
 
+//货币单位
+var curreny= ProfileInfo.OfficeCurrency? ProfileInfo.OfficeCurrency : ""
 
 //当前最小日期
 function nowMinDate(d){
@@ -237,7 +239,7 @@ function showContent(){
     $("#main").html('\
         <article>\
             <div style="position: relative;height: 340px;">\
-                <img src="../search/images/bgImgHotel.jpg" style="width:100%;height:340px;">\
+                <img class="bannerImg" src="" style="width:100%;height:340px;">\
                 <div class="bgShadow"></div>\
                 <div class="bgBody">\
                     <div class="autoCenter">\
@@ -373,15 +375,15 @@ function searchBody(){
             </div>\
             <div class="dateStyle flexRow">\
                 <div class="dateTittle">'+get_lan('searchBody').hotelPrice+'</div>\
-                <input type="text" id="hotelPrice" value="￥0-5000" minPrice="0" maxPrice="5000">\
+                <input type="text" id="hotelPrice" value="0-5000'+curreny+'" minPrice="0" maxPrice="5000">\
                 <div class="hotelPriceBody">\
                     <div class="hotelPriceLi" minPrice="0" maxPrice="5000">'+get_lan('searchBody').all+'</div>\
-                    <div class="hotelPriceLi" minPrice="0" maxPrice="150">￥0-150</div>\
-                    <div class="hotelPriceLi" minPrice="151" maxPrice="300">￥151-300</div>\
-                    <div class="hotelPriceLi" minPrice="301" maxPrice="450">￥301-450</div>\
-                    <div class="hotelPriceLi" minPrice="451" maxPrice="600">￥451-600</div>\
-                    <div class="hotelPriceLi" minPrice="601" maxPrice="1000">￥601-1000</div>\
-                    <div class="hotelPriceLi" minPrice="1000" maxPrice="5000">￥1000+</div>\
+                    <div class="hotelPriceLi" minPrice="0" maxPrice="150">0-150'+curreny+'</div>\
+                    <div class="hotelPriceLi" minPrice="151" maxPrice="300">151-300'+curreny+'</div>\
+                    <div class="hotelPriceLi" minPrice="301" maxPrice="450">301-450'+curreny+'</div>\
+                    <div class="hotelPriceLi" minPrice="451" maxPrice="600">451-600'+curreny+'</div>\
+                    <div class="hotelPriceLi" minPrice="601" maxPrice="1000">601-1000'+curreny+'</div>\
+                    <div class="hotelPriceLi" minPrice="1000" maxPrice="5000">1000+'+curreny+'</div>\
                 </div>\
                 <div class="dateTittle">'+get_lan('searchBody').hotelAddress+'</div>\
                 <div class="hotelAddressBody">\
@@ -474,6 +476,43 @@ function searchBody(){
         }
       }
     );
+	
+	GetImageInfo()
+	//获取图片
+	function GetImageInfo(){
+			$.ajax({
+				type: 'post',
+				url: $.session.get('ajaxUrl'),
+				dataType: 'json',
+				data: {
+					url: $.session.get('obtCompany') + "/SystemService.svc/GetCompanyImageInfosWType",
+					jsonStr: '{"key":' + netUserId + ',"appType":"WEB"}',
+				},
+				success: function(data) {
+					var res=JSON.parse(data)
+					console.log(res);
+					if(res.code==200){
+						var hotelImg=''
+						res.CompanyImageList.map(function(item){
+							if(item.type==12){
+								hotelImg=item.path
+							}
+						})
+						if(hotelImg==""|| hotelImg==null){
+							$('.bannerImg').attr('src','../search/images/bgImgHotel.jpg')
+						}else{
+							$('.bannerImg').attr('src',hotelImg)
+						}
+					}else{
+						$('.bannerImg').attr('src','../search/images/bgImgHotel.jpg')
+						// alert(res.errMsg)
+					}
+				},
+				error: function() {
+					// alert('fail');
+				}
+			});
+	}
     //tab切换
     // $(".tab").unbind("click").click(function(){
     //     $('.tab').removeClass('tabActive');
@@ -1044,7 +1083,7 @@ function dateChoose(departure,returnDate){
                             var res = JSON.parse(data);
                             console.log(res);
                             $('body').mLoading("hide");
-                            $("#hotelPrice").val('￥'+res.minFare+'-'+res.maxFare);
+                            $("#hotelPrice").val(res.minFare+'-'+res.maxFare+curreny);
                             $("#hotelPrice").attr("minPrice",res.minFare);
                             $("#hotelPrice").attr("maxPrice",res.maxFare);
                         },

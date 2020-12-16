@@ -15,6 +15,8 @@
     z-index: 300;
     background-color: #fff;
     /*font-family: PingFangSC-Semibold;*/
+	max-height: 350px;
+	overflow-y: auto;
 }
 .kucity h3{
     font-size:12px;
@@ -103,33 +105,60 @@
     text-decoration: underline;
 }
 
-.kucity .result{
+.kucity .result,.kucity .locationResult{
     list-style: none;
+	
+	/* max-height: 170px; */
+	/* overflow-y: scroll; */
 }
-.kucity .result li{
+.kucity .result li,.kucity .locationResult li{
     padding:5px;
     background-color: #fff;
     margin:2px 0;
     cursor: pointer;
     overflow: hidden;
 }
-.kucity .result li.active, .kucity .result li.active .letter{
+.kucity .result li.active, .kucity .result li.active .letter,.kucity .result li.active .carAddress,
+.kucity .locationResult li.active, .kucity .locationResult li.active .letter,.kucity .locationResult li.active .carAddress{
     background-color: #297bcd;
     color:#fff;
 }
-.kucity .result li .letter{
+.kucity .result li .letter,.kucity .result li .carAddress,
+.kucity .locationResult li .letter,.kucity .locationResult li .carAddress{
     float:right;
     color:#999;
 }
-.kucity .result li .noresult{
+.kucity .result li .noresult,
+.kucity .locationResult li .noresult{
     padding:0 8px;
     color:#3083fb;
 }
-.kucity .result li:hover, .kucity .result li:hover > .letter{
+.kucity .result li:hover, .kucity .result li:hover > .letter,
+.kucity .locationResult li:hover, .kucity .locationResult li:hover > .letter
+	.kucity .result li:hover, .kucity .result li:hover > .carAddress,
+	.kucity .locationResult li:hover, .kucity .locationResult li:hover > .carAddress{
     background-color: #1e66ae;
     /*color:#fff!important;*/
 }
-
+.carAddress{
+	float: none !important;
+}
+/* 租车 */
+.airTitle,.locationTitle{
+	color: #333333;
+	font-size:14px;
+	font-weight:800;
+	line-height:20px;
+	background-position: left center;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+}
+.airTitle{
+	background-image: url(../index/images/pic_airportcar.png);
+}
+.locationTitle{
+	background-image: url(../index/images/pic_citycar.png);
+}
 /*滚动条*/
 .kucity_body::-webkit-scrollbar  
 {  

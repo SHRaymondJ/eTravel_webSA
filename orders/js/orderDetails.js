@@ -60,6 +60,9 @@ var cn = {
 	},
 	'refundTicketPop': {
 		"refundTicketTittle": "退票后无法恢复，是否确认提交退票申请？",
+		"refundTittle1": "退票后",
+		"refundTittle2": "无法恢复",
+		"refundTittle3": "，是否确认提交退票申请？",
 		"refundTicketPassenger": "退票人:",
 		"refundTicketLimit": "退票限制",
 		"refundTicketReason": "退票原因",
@@ -69,12 +72,18 @@ var cn = {
 		"refundPopRemind": "如因为航班取消/由航空公司延误取消行程，请联系服务小组退票。",
 		"refundPopRemind2": "如已办理值机，请先取消值机再点击确认，否则可能引起退票费用的差异。如果您需要部分更改，请联系服务团队。",
 		"refundSuccess": "退票申请成功",
-		"refundBrokerage":"预计航空公司手续费",
-		"refundMoney":"预计退款金额",
+		"refundBrokerage": "预计航空公司手续费",
+		"refundMoney": "预计退款金额",
+		"refundAmount": "预计退款金额:",
+		"refundFee": "预计退票手续费:",
+		"refundTips": "具体费用以实际退款为准",
 	},
 	'intlRefundRemind': "请联系线下服务组做申请。",
 	'alterTicketPop': {
 		"alterTicketTittleRemind": "改签后原订单无法恢复，是否确认提交改签申请？",
+		"alterTicket1": "改签后原订单",
+		"alterTicket2": "无法恢复",
+		"alterTicket3": "，是否确认提交改签申请？",
 		"alterTicketTittleAir": "请选择改签时间、舱位类型以完成申请",
 		"alterTicketTittleTrain": "请选择改签时间、列车车次以完成申请",
 		"alterTicketPassenger": "乘客:",
@@ -94,12 +103,14 @@ var cn = {
 		"intlAlterRemind": "国际票在线改签请联系线下服务小组。",
 		"domAlterRemind": "如需部分改签，请联系线下服务小组。",
 		"allDay": "全天",
-		"alterTicketRemark": "1.一张车票仅可以办理一次改签。</br>2. 对于没有换取纸质车票且不晚于开车前60分钟的，可在线办理改签。</br>3.开车前48小时(不含)以上，在线可改签预售期内的其他列车；开车前48小时以内，在线仅可改签开车前的其他列车和开车后至票面日期当日24:00之间的其他列车。</br>4.只可变更乘车日期、车次、席位，不可变更发站和到站（同城车站除外）,不可变更乘客名字及证件号。</br>5. 更改规则会因12306的调整而不同。</br>6. 高票价车票更改到低票价车票后，差价将退回到对应支付账户。</br>另注:车票改签后，旅客取消旅行的，可以按规定退票。改签后的退票，按12306的规定。"
+		"alterTicketRemark": "1.一张车票仅可以办理一次改签。</br>2. 对于没有换取纸质车票且不晚于开车前60分钟的，可在线办理改签。</br>3.开车前48小时(不含)以上，在线可改签预售期内的其他列车；开车前48小时以内，在线仅可改签开车前的其他列车和开车后至票面日期当日24:00之间的其他列车。</br>4.只可变更乘车日期、车次、席位，不可变更发站和到站（同城车站除外）,不可变更乘客名字及证件号。</br>5. 更改规则会因12306的调整而不同。</br>6. 高票价车票更改到低票价车票后，差价将退回到对应支付账户。</br>另注:车票改签后，旅客取消旅行的，可以按规定退票。改签后的退票，按12306的规定。",
+		"AlterRemindLine": "*如已办理值机，请先取消值机再点击确认，否则将会改签失败。如果您需要部分更改，请联系服务团队。",
 	},
 	'approvalPop': {
 		"approvalTittle": "审核信息",
 		"selectTittle": "审核人选择",
 		"approvalPrice": "总金额:",
+		"commentsApple": "申请理由:",
 		"comments": "申请理由:",
 		"after": "审核后出票选项",
 		"reason1": "直接出票-审核完成后直接出票，无需再次确认",
@@ -124,8 +135,8 @@ var cn = {
 		"ticketRemind": "提交出票成功",
 		'onlinePay': "在线支付",
 		'uploadFile': "上传审核单",
-		'DownloadItinerary':"下载行程单",
-		'DownloadInvoice':"下载账单",
+		'DownloadItinerary': "下载行程单",
+		'DownloadInvoice': "下载账单",
 	},
 	'fileListInfo': {
 		'fileListTittle': "附件信息:",
@@ -208,6 +219,10 @@ var cn = {
 		'SeatNo': '座位号:',
 		'CoachNo': '车厢:',
 		'trainTicketNo': '取票号:',
+		'TicketGate': "检票口:",
+		'busInfo':"班车信息:",
+		"showMore":"展开 ∨",
+		"retract":"收起 ∧",
 	},
 	"uploadFilePop": {
 		"browse": "浏览",
@@ -247,7 +262,7 @@ var cn = {
 		"alipay": "支付宝",
 		"wechat": "微信支付",
 		"quickPayment": "快捷支付",
-		"nopayment":"未配置支付方式，请联系服务组",
+		"nopayment": "未配置支付方式，请联系服务组",
 	},
 	"otherExpensesList": {
 		"miscell": "杂项",
@@ -277,7 +292,7 @@ var cn = {
 		"codeText": "请输入验证码：",
 		"lineText": "重新获取",
 		"payBtn": "确认支付",
-		"Maintain":"请维护信用卡卡号",
+		"Maintain": "请维护信用卡卡号",
 	},
 
 }
@@ -319,6 +334,9 @@ var en = {
 	},
 	'refundTicketPop': {
 		"refundTicketTittle": "Confirm to refund the ticket ? The booking will be cancelled after it is refunded.",
+		"refundTittle1": "Confirm to refund the ticket ? The booking will be ",
+		"refundTittle2": "cancelled",
+		"refundTittle3": " after it is refunded.",
 		"refundTicketPassenger": "Refund Passenger:",
 		"refundTicketLimit": "Restriction",
 		"refundTicketReason": "Refund Reason",
@@ -328,12 +346,18 @@ var en = {
 		"refundPopRemind": "For involuntary refund(it's cancelled/delayed by the airline), please reach out to your service team for the assistance ",
 		"refundPopRemind2": "If you have already checked in. please cancel the check-in first, otherwise it may cause extra refund fee. Please contact the service team if you need change partially.",
 		"refundSuccess": "Refund Request Successful",
-		"refundBrokerage":"Estimated Airline Deduction",
-		"refundMoney":"Estimated Refund Fee",
+		"refundBrokerage": "Estimated Airline Deduction",
+		"refundMoney": "Estimated Refund Fee",
+		"refundAmount": "Estimated Refund Amount:",
+		"refundFee": "Estimated Service Charge:",
+		"refundTips": "The specific fee is subject to the actual refund.",
 	},
 	'intlRefundRemind': "Please contact service team per the request.",
 	'alterTicketPop': {
 		"alterTicketTittleRemind": "The booking will be cancelled after it is changed.",
+		"alterTicket1": "The booking will be ",
+		"alterTicket2": "cancelled",
+		"alterTicket3": "， after it is changed.",
 		"alterTicketTittleAir": "Please select the change information.",
 		"alterTicketTittleTrain": "Please select the time of renewal and train number to complete the application.",
 		"alterTicketPassenger": "Passenger:",
@@ -355,12 +379,14 @@ var en = {
 		"domAlterRemind": "Please contact service team if you need change partially.",
 		"allDay": "All Day",
 		"alterTicketRemark": "1.Change is only permissible once. </br>2.Online change can be made before 60 minutes prior to original departure time provided paper ticket is not obtained.</br> 3.Outside of 48 hours of original train departure time , online change can be made to available trains. Within 48 hours of original train departure time , Online change can be made to the train which departure prior to the original train departure time (change before original departure time) or to the train which departure by 24:00 of same day to original train departure time (change after original departure time).</br> 4.Change can be made on the travel date, train number and seat type only. No change can be made passenger name, travel document number and on original and final destination station unless it is within same city. </br>5.Terms and conditions are subjected to 12306’s discretion.</br> 6.The price difference between original and new ticket will be refunded to corresponding payment account. </br>Cancellation after changes made is allowed for refund but according to 12306’s regulations.",
+		"AlterRemindLine": "*If you have already checked in, please cancel the check-in first, otherwise your change request will failed.Please contact the service team if you need change partially.",
 	},
 	'approvalPop': {
 		"approvalTittle": "Approval Info",
 		"selectTittle": "Approver Selection",
 		"approvalPrice": "Total Price:",
-		"comments": "Comments:",
+		"commentsApple": "Comments:",
+		"comments": "Reason for Travel/Remark:",
 		"after": "After Approval：",
 		"reason1": "Issue ticket immediately - Tickets will be issued immediately upon approval.",
 		"reason2": "Issue ticket on further request - Tickets will not be issued until your further notification.Please inform us before the ticket deadline.",
@@ -384,8 +410,8 @@ var en = {
 		"ticketRemind": "Ticketing request submitted successfully.",
 		'onlinePay': "Online Payment",
 		'uploadFile': "Upload Approval File",
-		'DownloadItinerary':"Download Itinerary",
-		'DownloadInvoice':"Download Invoice",
+		'DownloadItinerary': "Download Itinerary",
+		'DownloadInvoice': "Download Invoice",
 	},
 	'fileListInfo': {
 		'fileListTittle': "Files Info:",
@@ -468,6 +494,10 @@ var en = {
 		'SeatNo': 'Seat No:',
 		'CoachNo': ' Coach No:',
 		'trainTicketNo': 'E Ticket No:',
+		'TicketGate': "Check in:",
+		'busInfo':"Shuttle Bus:",
+		"showMore":"Show More ∨",
+		"retract":"Retract ∧",
 	},
 	"uploadFilePop": {
 		"browse": "Browse",
@@ -508,7 +538,7 @@ var en = {
 		"alipay": "Alipay",
 		"wechat": "Wechat",
 		"quickPayment": "Quick payment",
-		"nopayment":"Can not find payment method, please contact service team for help.",
+		"nopayment": "Can not find payment method, please contact service team for help.",
 	},
 	"otherExpensesList": {
 		"miscell": "Miscell",
@@ -538,7 +568,7 @@ var en = {
 		"codeText": "Please enter the verification code:",
 		"lineText": "Regain",
 		"payBtn": "Confirm Payment",
-		"Maintain":"Please complete your credit card info.",
+		"Maintain": "Please complete your credit card info.",
 	}
 }
 if (ProfileInfo.onlineStyle == "APPLE") {
@@ -567,7 +597,7 @@ function get_lan(m) {
 	if (t == undefined) t = en[m];
 	return t;
 }
-$(function() {
+$(function () {
 	showContent(); //内容展示
 	orderDetails(); //
 	deleteTAnumber()
@@ -604,7 +634,7 @@ function showContent() {
 		get_lan('fileListInfo').uploadDate +
 		'</div>\
                   <div class="filesListBarLi delectFileBar" style="width:180px;">' + get_lan('fileListInfo')
-		.edit +
+			.edit +
 		'</div>\
               </div>\
             </div>\
@@ -665,7 +695,7 @@ function showContent() {
 	'
 	)
 	$(".refundTicketPop").html('\
-        <div class="refundTicketTittle">' + get_lan("refundTicketPop").refundTicketTittle +
+        <div class="refundTicketTittle">' + get_lan("refundTicketPop").refundTittle1 + '<span class="orangeColor">' + get_lan("refundTicketPop").refundTittle2 + '</span>' + get_lan("refundTicketPop").refundTittle3 +
 		'</div>\
         <div class="refundTicketBody"></div>\
         <div class="refundTicketFooter flexRow">\
@@ -675,9 +705,17 @@ function showContent() {
 		'</div>\
         </div>\
         ')
+	// get_lan("alterTicketPop").alterTicketTittleRemind + '</span><br>'
+	if (ProfileInfo.onlineStyle == "APPLE") {
+		var grayColor = "activeFontColor"
+	} else {
+		var grayColor = ""
+	}
 	$(".alterPop").html('\
-        <div class="alterTicketTittle"><span class="activeFontColor" style="font-size:22px;">' +
-		get_lan("alterTicketPop").alterTicketTittleRemind + '</span><br>' + get_lan("alterTicketPop").alterTicketTittleAir +
+        <div class="alterTicketTittle">'+
+		'<span class="' + grayColor + '" style="font-size:22px;">' +
+		get_lan("alterTicketPop").alterTicket1 + '<span class="orangeColor">' + get_lan("alterTicketPop").alterTicket2 + '</span>' + get_lan("alterTicketPop").alterTicket3 + '</span><br>'
+		+ get_lan("alterTicketPop").alterTicketTittleAir +
 		'</div>\
         <div class="alterTicketBody"></div>\
         <div class="alterTicketFooter flexRow">\
@@ -717,6 +755,10 @@ function showContent() {
 	//     }
 	//   }
 	// );
+	var approvalText = ProfileInfo.onlineStyle == "APPLE" ? get_lan("approvalPop").commentsApple : get_lan("approvalPop").comments
+
+
+
 	$(".approvalPop").html('\
         <div class="approvalTittle">' + get_lan("approvalPop").approvalTittle +
 		'</div>\
@@ -732,7 +774,7 @@ function showContent() {
           </div>\
           <div class="flexRow">\
             <div class="popLiTittle">' +
-		get_lan("approvalPop").comments +
+		approvalText +
 		'</div>\
             <textarea class="commentsBody" maxlength="80"></textarea>\
           </div>\
@@ -760,7 +802,7 @@ function showContent() {
 		'</div>\
         <div class="uploadFileContent">\
           <div class="chooseFileText">' + get_lan("uploadFilePop")
-		.chooseFile +
+			.chooseFile +
 		'</div>\
           <div class="chooseFilePath"></div>\
           <div class="browseBtn"><input id="file" type="file">' +
@@ -796,7 +838,7 @@ function paymentMethod(res) {
 				jsonStr: '{"request":{"id":' + netUserId + ',"orderNo":"' + $(".onlinePayBtn").attr("orderNo") +
 					'","language":"' + obtLanguage + '","payChannel":"1"}}'
 			},
-			success: function(data) {
+			success: function (data) {
 				// $('body').mLoading("hide");
 				var res = JSON.parse(data);
 				console.log(res);
@@ -811,18 +853,18 @@ function paymentMethod(res) {
 						jsonStr: '{"request":{"subject":"' + subject + '","totalAmount":"' + res.payAmount + '","exMechantNO":"' +
 							res.exMechantNO + '","type":"' + type + '"}}'
 					},
-					success: function(data) {
+					success: function (data) {
 						// $('body').mLoading("hide");
 						var res = JSON.parse(data);
 						console.log(res);
 						$('body').append(res);
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
 			},
-			error: function() {
+			error: function () {
 				// alert('fail');
 			}
 		});
@@ -836,7 +878,7 @@ function paymentMethod(res) {
 		} else if (!ProfileInfo.CreditCardYeepay && !ProfileInfo.CloseCreditCardGateway) {
 			yeePay(orderDetaile);
 		} else {
-			onlinePay(orderDetaile,"","CreditCardPay");
+			onlinePay(orderDetaile, "", "CreditCardPay");
 		}
 		// yeePay(res);
 	}
@@ -853,13 +895,14 @@ function orderDetails() {
 			url: $.session.get('obtCompany') + "/OrderService.svc/ListDetailPost",
 			jsonStr: '{"orderNo":"' + orderNo + '","id":' + netUserId + ',"Language":"' + obtLanguage + '"}'
 		},
-		success: function(data) {
+		success: function (data) {
 			$('body').mLoading("hide");
 			var res = JSON.parse(data)
-			orderDetaile = res
+			orderDetaile = res;
 			var detailInfo = res;
 			console.log(res);
-			if (res.OrderNo == null) {
+			if (res.OrderNo == null || res.OrderNo == "") {
+				alert("No Order");
 				window.location.href = '../../index/index.html';
 			}
 			$(".approvalPrice").text(res.OrderFare);
@@ -878,7 +921,7 @@ function orderDetails() {
 			// OrderFare  换成  PaidAmount
 			$(".orderInfo").html('\
                 <div class="orderInfoTittle">' + get_lan('orderInfo').OrderNo + ' ' + res
-				.OrderNo +
+					.OrderNo +
 				'</div>\
                 <div class="flexRow">\
                 	<div class="orderInfoLeft">\
@@ -887,9 +930,9 @@ function orderDetails() {
 				get_lan('orderInfo').OrderCustomer + ' ' + res.OrderCustomer +
 				'</div>\
                 	  <div class="orderDetailInfoDate">' + get_lan('orderInfo').BookTime + ' ' + res.BookTime
-				.substring(0, 10) + '</div>\
+					.substring(0, 10) + '</div>\
                 	  <div class="orderDetailInfoState ' + showState + '">' + get_lan(
-					'orderInfo').State + ' <span class="activeFontColor" style="font-size:20px;">' + res.ApplicationState +
+						'orderInfo').State + ' <span class="activeFontColor" style="font-size:20px;">' + res.ApplicationState +
 				'</span></div>\
                 	  <div class="orderDetailInfoPrice">' + get_lan('orderInfo').OrderFare +
 				' <span class="activeFontColor" style="font-size:22px;">' + res.PaidAmount +
@@ -919,7 +962,8 @@ function orderDetails() {
 					'orderInfo').uploadFile + '</div>\
                     </div>\
                 </div>\
-            ')
+			')
+			
 			//<div class="orderDetailInfoState">'+get_lan('orderInfo').State+' <span style="font-size:20px;color:#F58A00">'+res.State+'</span></div>
 			// 2020.1.9 苹果隐藏右边的所有按钮
 			if (ProfileInfo.onlineStyle == "APPLE") {
@@ -942,7 +986,7 @@ function orderDetails() {
                     ')
 			}
 			if (res.ShowTicket) {
-				$(".delectFile").unbind("click").click(function() {
+				$(".delectFile").unbind("click").click(function () {
 					$('body').mLoading("show");
 					$.ajax({
 						type: 'post',
@@ -952,7 +996,7 @@ function orderDetails() {
 							url: $.session.get('obtCompany') + "/orderService.svc/FileDeletePost",
 							jsonStr: '{"orderNo":"' + $(this).attr("orderNo") + '","id":' + netUserId + '}'
 						},
-						success: function(data) {
+						success: function (data) {
 							var res = JSON.parse(data);
 							console.log(res);
 							$('body').mLoading("hide");
@@ -961,7 +1005,7 @@ function orderDetails() {
 								location.reload();
 							}
 						},
-						error: function() {
+						error: function () {
 							// alert('fail');
 						}
 					});
@@ -970,7 +1014,7 @@ function orderDetails() {
 				$(".delectFileBar").hide();
 			}
 			/*上传*/
-			$(".uploadFileBtn").unbind("click").click(function() {
+			$(".uploadFileBtn").unbind("click").click(function () {
 				if (ProfileInfo.HotelGKBooking) {
 					// HotelGKBooking(res, "file");
 					CheckHotelTrip(res, "file")
@@ -981,7 +1025,7 @@ function orderDetails() {
 			/*继续预订*/
 			goOnBook(res);
 			/*提交审核*/
-			$(".approvalBtn").unbind("click").click(function() {
+			$(".approvalBtn").unbind("click").click(function () {
 				if (res.HasTicketTimeOut) {
 					alert(res.TicketTimeOutMessage)
 					return false;
@@ -1008,7 +1052,7 @@ function orderDetails() {
 						jsonStr: '{"request":{"id":' + netUserId + ',"aliPayNO":"' + trade_no + '","language":"' + obtLanguage +
 							'","exMechantNO":"' + out_trade_no + '","payAccount":""}}'
 					},
-					success: function(data) {
+					success: function (data) {
 						// $('body').mLoading("hide");
 						var res = JSON.parse(data);
 						console.log(res);
@@ -1023,7 +1067,7 @@ function orderDetails() {
 									jsonStr: '{"orderNo":"' + detailInfo.OrderNo + '","id":' + netUserId + ',"Language":"' + obtLanguage +
 										'"}'
 								},
-								success: function(data) {
+								success: function (data) {
 									var res = JSON.parse(data);
 									$('body').mLoading("hide");
 									console.log(res);
@@ -1038,7 +1082,7 @@ function orderDetails() {
 										location.replace("../../orders/orderDetails.html");
 									}
 								},
-								error: function() {
+								error: function () {
 									// alert('fail');
 								}
 							});
@@ -1047,13 +1091,13 @@ function orderDetails() {
 							alert(res.message);
 						}
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
 			}
 			/*取消审核*/
-			$(".cancelApprovalBtn").unbind("click").click(function() {
+			$(".cancelApprovalBtn").unbind("click").click(function () {
 				var r = confirm(get_lan('orderInfo').cancelapprovalRemind);
 				if (r == true) {
 					$('body').mLoading("show");
@@ -1065,21 +1109,21 @@ function orderDetails() {
 							url: $.session.get('obtCompany') + "/SystemService.svc/CancelApplicationPost",
 							jsonStr: '{"OrderNO":"' + res.OrderNo + '","key":' + netUserId + '}'
 						},
-						success: function(data) {
+						success: function (data) {
 							var res = JSON.parse(data);
 							console.log(res);
 							$('body').mLoading("hide");
 							// alert('ok');
 							location.reload();
 						},
-						error: function() {
+						error: function () {
 							// alert('fail');
 						}
 					});
 				}
 			})
 			/*在线支付*/
-			$(".onlinePayBtn").unbind("click").click(function() {
+			$(".onlinePayBtn").unbind("click").click(function () {
 				if (res.HasTicketTimeOut) {
 					alert(res.TicketTimeOutMessage)
 					return false;
@@ -1093,7 +1137,7 @@ function orderDetails() {
 				}
 			})
 			/*出票*/
-			$(".ticketBtn").unbind("click").click(function() {
+			$(".ticketBtn").unbind("click").click(function () {
 				if (res.HasTicketTimeOut) {
 					alert(res.TicketTimeOutMessage)
 					return false;
@@ -1117,12 +1161,12 @@ function orderDetails() {
 							"remarkPop").confirm + '</div>\
                         </div>\
                         ')
-					$(".closeCombineOrderIcon,.closeCombineBtn").unbind("click").click(function() {
+					$(".closeCombineOrderIcon,.closeCombineBtn").unbind("click").click(function () {
 						closeCombineOrderPop();
 					})
 					$('body').mLoading("show");
 					var customerIdList = '';
-					detailInfo.OrderCustomerDetailList.map(function(item) {
+					detailInfo.OrderCustomerDetailList.map(function (item) {
 						customerIdList += item.Uid;
 						customerIdList += ',';
 					})
@@ -1136,7 +1180,7 @@ function orderDetails() {
 							jsonStr: '{"request":{"BCN":"' + detailInfo.OrderNo + '","customerIdList":[' + customerIdList + '],"id":' +
 								netUserId + '}}'
 						},
-						success: function(data) {
+						success: function (data) {
 							$('body').mLoading("hide");
 							var res = JSON.parse(data);
 							console.log(res);
@@ -1149,7 +1193,7 @@ function orderDetails() {
 									checkRemark(detailInfo, 'ticket');
 								}
 							} else {
-								res.map(function(item) {
+								res.map(function (item) {
 									var hotelName = obtLanguage == "CN" ? item.hotelName_CN : item.hotelName_EN;
 									$(".combineOrderSelect").append('\
                                     <option value="' + item.orderNo +
@@ -1162,7 +1206,7 @@ function orderDetails() {
 									"combineOrderPop").option + '</option>\
                                 ')
 							}
-							$(".sureCombineBtn").unbind("click").click(function() {
+							$(".sureCombineBtn").unbind("click").click(function () {
 								if ($(".combineOrderSelect").val() == "no") {
 									closeCombineOrderPop();
 									if (ProfileInfo.HotelGKBooking) {
@@ -1182,7 +1226,7 @@ function orderDetails() {
 											jsonStr: '{"orgOrderNo":"' + detailInfo.OrderNo + '","newOrderNo":"' + $(".combineOrderSelect").val() +
 												'","id":' + netUserId + '}'
 										},
-										success: function(data) {
+										success: function (data) {
 											$('body').mLoading("hide");
 											var res = JSON.parse(data);
 											console.log(res);
@@ -1198,14 +1242,14 @@ function orderDetails() {
 												alert(res);
 											}
 										},
-										error: function() {
+										error: function () {
 											// alert('fail');
 										}
 									});
 								}
 							})
 						},
-						error: function() {
+						error: function () {
 							// alert('fail');
 						}
 					});
@@ -1220,19 +1264,19 @@ function orderDetails() {
 			})
 			/*预订完成后点击事件*/
 			if ("finish" == bookState) {
-				$(".uploadFileImg").unbind("click").click(function() {
+				$(".uploadFileImg").unbind("click").click(function () {
 					closeGoOnBookPop();
 					$(".uploadFileBtn").click();
 				})
-				$(".approveImg").unbind("click").click(function() {
+				$(".approveImg").unbind("click").click(function () {
 					closeGoOnBookPop();
 					$(".approvalBtn").click();
 				})
-				$(".payImg").unbind("click").click(function() {
+				$(".payImg").unbind("click").click(function () {
 					closeGoOnBookPop();
 					$(".onlinePayBtn").click();
 				})
-				$(".ticketImg").unbind("click").click(function() {
+				$(".ticketImg").unbind("click").click(function () {
 					closeGoOnBookPop();
 					$(".ticketBtn").click();
 				})
@@ -1241,7 +1285,7 @@ function orderDetails() {
 			if (res.ApproveDtailList.length == 0) {
 				$(".approvalInfo").remove();
 			} else {
-				res.ApproveDtailList.map(function(item) {
+				res.ApproveDtailList.map(function (item) {
 					$(".approvalList").append(
 						'\
                         <div class="approvalLi flexRow">\
@@ -1253,7 +1297,7 @@ function orderDetails() {
 						'<img src="../../orders/images/phoneIcon.png" class="phoneIcon" applicationNo="' + item.ApplicationNo +
 						'" approvor="' + item.ApproverID +
 						'"></div>\
-                        <div class="approvalLiDiv" style="width:250px;">' + item.ApproverEmail +
+                        <div class="approvalLiDiv" style="width:250px;">' + hideEmail(ProfileInfo, item.ApproverEmail) +
 						'<img src="../../orders/images/emailIcon.png" class="emailIcon" applicationNo="' + item.ApplicationNo +
 						'" approvor="' + item.ApproverID +
 						'"></div>\
@@ -1266,7 +1310,7 @@ function orderDetails() {
                         </div>\
                         ')
 				})
-				$(".phoneIcon").unbind("click").click(function() {
+				$(".phoneIcon").unbind("click").click(function () {
 					var r = confirm(get_lan("approvalInfo").approvalPhoneRemind);
 					if (r == true) {
 						$.ajax({
@@ -1278,7 +1322,7 @@ function orderDetails() {
 								jsonStr: '{"applicationNo":"' + $(this).attr("applicationNo") + '","approvor":"' + $(this).attr(
 									"approvor") + '","type":"2","id":' + netUserId + ',"Language":"' + obtLanguage + '"}'
 							},
-							success: function(data) {
+							success: function (data) {
 								var res = JSON.parse(data);
 								console.log(res);
 								if (res.code == "200") {
@@ -1287,13 +1331,13 @@ function orderDetails() {
 									alert(res.data);
 								}
 							},
-							error: function() {
+							error: function () {
 								// alert('fail');
 							}
 						})
 					}
 				})
-				$(".emailIcon").unbind("click").click(function() {
+				$(".emailIcon").unbind("click").click(function () {
 					var r = confirm(get_lan("approvalInfo").approvalEmailRemind);
 					if (r == true) {
 						$.ajax({
@@ -1305,7 +1349,7 @@ function orderDetails() {
 								jsonStr: '{"applicationNo":"' + $(this).attr("applicationNo") + '","approvor":"' + $(this).attr(
 									"approvor") + '","type":"1","id":' + netUserId + ',"Language":"' + obtLanguage + '"}'
 							},
-							success: function(data) {
+							success: function (data) {
 								var res = JSON.parse(data);
 								console.log(res);
 								if (res.code == "200") {
@@ -1314,7 +1358,7 @@ function orderDetails() {
 									alert(res.data);
 								}
 							},
-							error: function() {
+							error: function () {
 								// alert('fail');
 							}
 						});
@@ -1322,7 +1366,7 @@ function orderDetails() {
 				})
 			}
 			/*订单详情*/
-			res.OrderCustomerDetailList.map(function(item, index) {
+			res.OrderCustomerDetailList.map(function (item, index) {
 				$(".passengerList").append('\
                     <div class="passengerLi flexRow" customerId="' + item.Uid +
 					'">\
@@ -1334,8 +1378,8 @@ function orderDetails() {
 					'</div>\
                     <div class="passengerLiDiv passengerPhone" style="width:150px;">' + item.Tel +
 					'</div>\
-                    <div class="passengerLiDiv passengerLiDocuments" style="width:300px;">' + item.DocumentNOs[
-						0] + '</div>\
+                    <div class="passengerLiDiv passengerLiDocuments" style="width:300px;">' + hideDocument(ProfileInfo, item.DocumentNOs[
+						0], 2) + '</div>\
                     <div class="passengerLiDiv" style="width:170px;">' + item.PsgType +
 					'</div>\
                     <div class="passengerLiDiv" style="width:100px;"></div>\
@@ -1346,7 +1390,7 @@ function orderDetails() {
                     </div>\
                     \
                     ')
-				$(".changeRemarkBtn").unbind("click").click(function() {
+				$(".changeRemarkBtn").unbind("click").click(function () {
 					var index = parseInt($(this).attr("index"));
 					var customerId = res.OrderCustomerDetailList[index].Uid;
 					var employeeName = res.OrderCustomerDetailList[index].NameCn;
@@ -1395,7 +1439,7 @@ function orderDetails() {
 			// 2020-3-26 下载行程单
 			showDownloadBtn()
 			/*end*/
-			
+
 			// 支付订单显示字段
 			var enStr = '',
 				cnStr = '';
@@ -1409,28 +1453,28 @@ function orderDetails() {
 				carENStr = '';
 			console.log(res.Segment)
 			console.log(res.Segment[0])
-			res.Segment.map(function(airList) {
+			res.Segment.map(function (airList) {
 				// 飞机票是嵌套的数组
-				airList.map(function(airItem) {
+				airList.map(function (airItem) {
 					if (airItem.ItemPayment == "Credit Card") {
 						airCNStr = '机票、'
 						airENStr = 'air,'
 					}
 				})
 			})
-			res.Hotel.map(function(hotelItem) {
+			res.Hotel.map(function (hotelItem) {
 				if (hotelItem.ItemPayment == "Credit Card") {
 					HotelCNStr = '酒店、'
 					HotelENStr = 'hotel,'
 				}
 			})
-			res.Train.map(function(trainItem) {
+			res.Train.map(function (trainItem) {
 				if (trainItem.ItemPayment == "Credit Card") {
 					TrainCNStr = '火车、'
 					TrainENStr = 'train,'
 				}
 			})
-			res.Car.map(function(carItem) {
+			res.Car.map(function (carItem) {
 				if (carItem.ItemPayment == "Credit Card") {
 					carCNStr = '租车、'
 					carENStr = 'car rental,'
@@ -1451,7 +1495,7 @@ function orderDetails() {
 			if ($(".orderDetailsTab").eq(0)) {
 				$(".orderDetailsTab").eq(0).addClass("tabActive");
 			}
-			$(".orderDetailsTab").unbind("click").click(function() {
+			$(".orderDetailsTab").unbind("click").click(function () {
 				scrollTo(0, 0);
 				$(".orderDetailsTab").removeClass("tabActive");
 				$(this).addClass("tabActive");
@@ -1475,7 +1519,7 @@ function orderDetails() {
 				}
 			})
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
@@ -1484,7 +1528,7 @@ function orderDetails() {
 
 // 是否显示现在按钮
 
-function showDownloadBtn(){
+function showDownloadBtn() {
 	// 判断条件3.24 显示下载按钮
 	// DownloadItinerary  下载行程单
 	// DownloadBill  下载账单
@@ -1495,34 +1539,34 @@ function showDownloadBtn(){
 	// if(ProfileInfo.DownloadItinerary){
 	// 	$(".downloadBtnGroup").append('<div class="xx">下载账单</div>');
 	// }
-	var showItinerary=ProfileInfo.DownloadItinerary?"":"hide"
-	var showInvoice=orderDetaile.CanDownloadBill?"":"hide"
-	
-	$(".orderDetailsTabBar").append('<div class="downloadBtnGroup">'+
-		'<span class="itinerary ">'+get_lan('orderInfo').DownloadItinerary+'</span>'+
-		'<span class="invoice">'+get_lan('orderInfo').DownloadInvoice+'</span>'+
-	'</div>');
-	
-	if(showItinerary == "hide"){
+	var showItinerary = ProfileInfo.DownloadItinerary ? "" : "hide"
+	var showInvoice = orderDetaile.CanDownloadBill ? "" : "hide"
+
+	$(".orderDetailsTabBar").append('<div class="downloadBtnGroup">' +
+		'<span class="itinerary ">' + get_lan('orderInfo').DownloadItinerary + '</span>' +
+		'<span class="invoice">' + get_lan('orderInfo').DownloadInvoice + '</span>' +
+		'</div>');
+
+	if (showItinerary == "hide") {
 		$('.itinerary').remove()
-	}else{
-		$(".itinerary").unbind().click(function(){
+	} else {
+		$(".itinerary").unbind().click(function () {
 			getItineraryFile(orderDetaile)
 		})
 	}
-	if(showInvoice == "hide"){
+	if (showInvoice == "hide") {
 		$('.invoice').remove()
-	}else{
-		$(".invoice").unbind().click(function(){
+	} else {
+		$(".invoice").unbind().click(function () {
 			getInvoiceFile(orderDetaile)
 		})
 	}
-	
-	
-	
+
+
+
 }
 // 行程单
-function getItineraryFile(orderDetaile){
+function getItineraryFile(orderDetaile) {
 	$('body').mLoading("show");
 	$.ajax({
 		type: 'post',
@@ -1531,21 +1575,21 @@ function getItineraryFile(orderDetaile){
 		data: {
 			url: $.session.get('obtCompany') + "/orderService.svc/getItineraryFile",
 			jsonStr: '{"orderNo":"' + orderDetaile.OrderNo + '","id":' + netUserId + ',"language":"' + obtLanguage +
-				'","fileName":"Itinerary-' + orderDetaile.OrderNo+'"}'
+				'","fileName":"Itinerary-' + orderDetaile.OrderNo + '"}'
 		},
-		success: function(data) {
-			if(data==""){
+		success: function (data) {
+			if (data == "") {
 				alert("生成订单失败")
 				return false;
 			}
-			var res=JSON.parse(data)
+			var res = JSON.parse(data)
 			// 预览行程单
-			getPdf(res,"Itinerary")
+			getPdf(res, "Itinerary")
 		},
-		})
+	})
 }
 // 账单
-function getInvoiceFile(orderDetaile){
+function getInvoiceFile(orderDetaile) {
 	$('body').mLoading("show");
 	//string orderType 机票 1  酒店2  租车3 火车4
 	$.ajax({
@@ -1555,48 +1599,48 @@ function getInvoiceFile(orderDetaile){
 		data: {
 			url: $.session.get('obtCompany') + "/orderService.svc/getInvoiceFile",
 			jsonStr: '{"orderNo":"' + orderDetaile.OrderNo + '","id":' + netUserId + ',"language":"' + obtLanguage +
-				'","fileName":"Invoice-' + orderDetaile.OrderNo+'","orderType":"1"}'
+				'","fileName":"Invoice-' + orderDetaile.OrderNo + '","orderType":"1"}'
 		},
-		success: function(data) {
+		success: function (data) {
 			$('body').mLoading("hide");
-			var res=JSON.parse(data)
-			if(res==""){
+			var res = JSON.parse(data)
+			if (res == "") {
 				alert("生成账单失败")
 				return false;
 			}
 			// 预览行程单
-			getPdf(res,"Invoice")
+			getPdf(res, "Invoice")
 		},
-		})
+	})
 }
 // 获取pdf
-function getPdf(fileName,type){
+function getPdf(fileName, type) {
 	$.ajax({
 		type: 'post',
 		url: $.session.get('ajaxUrl'),
 		dataType: 'json',
 		data: {
 			url: $.session.get('obtCompany') + "/orderService.svc/DownloadFile",
-			jsonStr: '{"id":'+netUserId+',"fileName":"' + fileName + '","type":"' + type + '"}'
+			jsonStr: '{"id":' + netUserId + ',"fileName":"' + fileName + '","type":"' + type + '"}'
 		},
-		timeout:10000,
-		success: function(data,s) {
+		timeout: 10000,
+		success: function (data, s) {
 			$('body').mLoading("hide");
-			var res=JSON.parse(data)
+			var res = JSON.parse(data)
 			console.log(res)
-			sessionStorage.setItem('localPdfUrl',res.fileModelList[0].FileStr)
-			sessionStorage.setItem('localPdfName',fileName)
+			sessionStorage.setItem('localPdfUrl', res.fileModelList[0].FileStr)
+			sessionStorage.setItem('localPdfName', fileName)
 			window.open("../../js/pdfjs/web/viewer.html")
 		},
-		complete: function(x, s) {
+		complete: function (x, s) {
 			$('body').mLoading("hide");
-			if(s=='timeout'){//超时,s还有success,error等值的情况
-// 　　				ajaxTimeoutTest.abort();
-		　　　　	alert("timeout");
-		　　}		
+			if (s == 'timeout') {//超时,s还有success,error等值的情况
+				// 　　				ajaxTimeoutTest.abort();
+				alert("timeout");
+			}
 		}
-		
-		})
+
+	})
 }
 
 
@@ -1612,7 +1656,7 @@ function travXpense(orderRes) {
 			jsonStr: '{"request":{"BCN":"' + orderRes.OrderNo + '","id":' + netUserId + ',"language":"' + obtLanguage +
 				'","companyId":"' + ProfileInfo.companyId + '"}}'
 		},
-		success: function(data) {
+		success: function (data) {
 			var res = JSON.parse(data);
 			console.log(res);
 			$('body').mLoading("hide");
@@ -1621,7 +1665,7 @@ function travXpense(orderRes) {
 					'orderDetailsTabBar').otherExpenses + '</div>');
 			}
 			otherExpensesList(res);
-			$(".otherExpenses").unbind("click").click(function() {
+			$(".otherExpenses").unbind("click").click(function () {
 				scrollTo(0, 0);
 				$(".orderDetailsTab").removeClass("tabActive");
 				$(this).addClass("tabActive");
@@ -1629,7 +1673,7 @@ function travXpense(orderRes) {
 				$(".otherExpensesList").removeClass("hide");
 			})
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
@@ -1641,7 +1685,7 @@ function travXpense(orderRes) {
 			'</div>\
             <div class="MiscellList"></div>\
             ')
-		travelRequestRes.TravelRequestNewMiscell[0].MiscellBookList.map(function(item, index) {
+		travelRequestRes.TravelRequestNewMiscell[0].MiscellBookList.map(function (item, index) {
 			$(".MiscellList").append(
 				'\
                 <div class="MiscellLi flexRow">\
@@ -1671,7 +1715,7 @@ function travXpense(orderRes) {
 				$(".miscellPayCheck").eq(index).prop("checked", true);
 			}
 		})
-		$(".modifyMiscell").unbind("click").click(function() {
+		$(".modifyMiscell").unbind("click").click(function () {
 			var index = parseInt($(this).attr("index"));
 			if ($(this).attr("state") == "modify") {
 				$(".miscellLiInputAmount").eq(index).removeAttr("readonly");
@@ -1689,26 +1733,26 @@ function travXpense(orderRes) {
 	}
 }
 /*在线支付*/
-function onlinePay(orderRes, operationType,payType) {
+function onlinePay(orderRes, operationType, payType) {
 	//  无卡支付权限 CreditCardYeepay
-	if(!ProfileInfo.AliPay && !ProfileInfo.WechatPay && !ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway){
+	if (!ProfileInfo.AliPay && !ProfileInfo.WechatPay && !ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway) {
 		alert(get_lan('onlinePayPop').nopayment)
 		return false;
 	}
-	if(payType == "CreditCardPay" && !ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway){
+	if (payType == "CreditCardPay" && !ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway) {
 		alert(get_lan('onlinePayPop').nopayment)
 		return false;
 	}
 	if (!ProfileInfo.AliPay && !ProfileInfo.WechatPay && !ProfileInfo.CreditCardYeepay) {
 		// 仅有易宝支付
 		yeePay(orderRes);
-	}else if (ProfileInfo.AliPay && !ProfileInfo.WechatPay && !ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway) {
+	} else if (ProfileInfo.AliPay && !ProfileInfo.WechatPay && !ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway) {
 		// 仅有支付宝支付
 		apilyPay(orderRes);
-	}else if (!ProfileInfo.AliPay && !ProfileInfo.WechatPay && ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway) {
+	} else if (!ProfileInfo.AliPay && !ProfileInfo.WechatPay && ProfileInfo.CreditCardYeepay && ProfileInfo.CloseCreditCardGateway) {
 		// 仅有无卡支付
 		nocardPay(orderRes);
-	}else {
+	} else {
 		openOnlinePayPop();
 		$(".onlinePayPop").html('\
             <div class="onlinePayTittle tittleBackColor">' + get_lan('onlinePayRemind') +
@@ -1748,10 +1792,10 @@ function onlinePay(orderRes, operationType,payType) {
 				</div>\
             ')
 		// $(".onlinePayPop").css("background-color","#ececec");
-		$(".closeOnlinePayIcon").unbind("click").click(function() {
+		$(".closeOnlinePayIcon").unbind("click").click(function () {
 			closeOnlinePayPop(operationType);
 		})
-		$(".cancelbtn").unbind("click").click(function() {
+		$(".cancelbtn").unbind("click").click(function () {
 			closeOnlinePayPop(operationType);
 		})
 
@@ -1766,7 +1810,7 @@ function onlinePay(orderRes, operationType,payType) {
 		if (!ProfileInfo.AliPay) {
 			$(".alipayLi").remove();
 		}
-		if("CreditCardPay"==payType){
+		if ("CreditCardPay" == payType) {
 			$(".alipayLi").remove();
 		}
 		// $(".onlinePayLi").eq(1).remove(); 600 - 900
@@ -1775,7 +1819,7 @@ function onlinePay(orderRes, operationType,payType) {
 		$(".onlinePayImg").css("margin", "15px auto");
 		// $(".onlinePayImg").css("margin", "15px " + (300 / parseInt($(".onlinePayLi").length) - 85) + "px");
 
-		$(".onlinePayImg").unbind("click").click(function() {
+		$(".onlinePayImg").unbind("click").click(function () {
 			if ($(this).attr("name") == "yeePay") {
 				yeePay(orderRes);
 			} else if ($(this).attr("name") == "alipay") {
@@ -1790,7 +1834,7 @@ function onlinePay(orderRes, operationType,payType) {
 						jsonStr: '{"request":{"id":' + netUserId + ',"orderNo":"' + $(".onlinePayBtn").attr("orderNo") +
 							'","language":"' + obtLanguage + '","payChannel":"1"}}'
 					},
-					success: function(data) {
+					success: function (data) {
 						// $('body').mLoading("hide");
 						var res = JSON.parse(data);
 						console.log(res);
@@ -1805,18 +1849,18 @@ function onlinePay(orderRes, operationType,payType) {
 								jsonStr: '{"request":{"subject":"' + subject + '","totalAmount":"' + res.payAmount + '","exMechantNO":"' +
 									res.exMechantNO + '","type":"' + type + '"}}'
 							},
-							success: function(data) {
+							success: function (data) {
 								// $('body').mLoading("hide");
 								var res = JSON.parse(data);
 								console.log(res);
 								$('body').append(res);
 							},
-							error: function() {
+							error: function () {
 								// alert('fail');
 							}
 						});
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -1841,13 +1885,13 @@ function yeePay(orderRes) {
 			jsonStr: '{"orderNo":"' + $(".onlinePayBtn").attr("orderNo") + '","id":' + netUserId + ',"phone":"' + $(
 				".onlinePayBtn").attr("phone") + '"}'
 		},
-		success: function(data) {
+		success: function (data) {
 			var res = JSON.parse(data);
 			console.log(res);
 			$('body').mLoading("hide");
 			if (res.status == "S") {
 				window.open("" + res.salelink + "");
-				setTimeout(function() {
+				setTimeout(function () {
 					closeOnlinePayPop();
 					if (orderRes.ShowApproval && !orderRes.UploadFileApprove) {
 						// approvalInfoPop(orderRes);
@@ -1887,15 +1931,15 @@ function yeePay(orderRes) {
 					get_lan('cancelbtn') + '</div>\
 						</div>\
 				    ')
-				$(".refresh").unbind("click").click(function() {
+				$(".refresh").unbind("click").click(function () {
 					closeOnlinePayPop('approval');
 				})
-				$(".cancelbtn").eq(1).unbind("click").click(function() {
+				$(".cancelbtn").eq(1).unbind("click").click(function () {
 					closeOnlinePayPop(); //不刷新页面
 				})
 			}
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	})
@@ -1960,7 +2004,7 @@ function nocardPay(orderRes) {
 	// '<div class="quickBtn">888.00<span>CNY，</span>支付</div>'+
 
 	//填充订单旅客
-	orderDetaile.OrderCustomerDetailList.map(function(user) {
+	orderDetaile.OrderCustomerDetailList.map(function (user) {
 		if (obtLanguage == "EN") {
 			$('.cardholder').append('<option value ="' + user.Uid + '">' + user.NameCn + '</option>')
 		} else {
@@ -1968,8 +2012,8 @@ function nocardPay(orderRes) {
 		}
 	})
 	// 2020-3-11 如果订单内旅客只有一个，隐藏持卡人姓名
-	
-	if(orderDetaile.OrderCustomerDetailList.length<2){
+
+	if (orderDetaile.OrderCustomerDetailList.length < 2) {
 		$('.CreditCardName').hide()
 	}
 	// 不显示有效期，证件类型，证件号，手机号
@@ -1977,10 +2021,10 @@ function nocardPay(orderRes) {
 	$('.domline').hide()
 	$('.phoneline').hide()
 	// 绑定改变事件
-	$('.cardholder').change(function() {
+	$('.cardholder').change(function () {
 		getcustomerInfo()
 	})
-	$('.payBtn').click(function() {
+	$('.payBtn').click(function () {
 		payWithNocard()
 	})
 
@@ -1988,7 +2032,7 @@ function nocardPay(orderRes) {
 	// 第一次打开先获取一次   默认订单内第一个人
 	getcustomerInfo()
 	var requireInfo = ""
-
+	//无卡支付，换新方法，且UseType传2，其他传1
 	function getcustomerInfo() {
 		var customerId = $('.cardholder').val()
 		$.ajax({
@@ -1996,31 +2040,33 @@ function nocardPay(orderRes) {
 			url: $.session.get('ajaxUrl'),
 			dataType: 'json',
 			data: {
-				url: $.session.get('obtCompany') + "/SystemService.svc/GetCustomerCreditCardInfoPost",
-				jsonStr: '{"id":' + netUserId + ',"Language ":"' + obtLanguage + '","customerId":"' + customerId + '"}'
+				// url: $.session.get('obtCompany') + "/SystemService.svc/GetCustomerCreditCardInfoPost",
+				// jsonStr: '{"id":' + netUserId + ',"Language ":"' + obtLanguage + '","customerId":"' + customerId + '"}'
+				url: $.session.get('obtCompany') + "/SystemService.svc/GetAllCreditCardInfoPost",
+				jsonStr: '{"request":{"Id":' + netUserId + ',"CustomerId":"' + customerId + '","UseType":"2","Language ":"' + obtLanguage + '"}}'
 			},
-			success: function(data) {
+			success: function (data) {
 				var res = JSON.parse(data);
 				console.log(res);
-				$(".quickClose").click(function() {
+				$(".quickClose").click(function () {
 					$('#cover2').remove()
 				})
 				// 证件类型
 				// 信用卡号
 				$('.customerCardList').empty()
-				if(res.customerCCIs.length>0){
-					res.customerCCIs.map(function(item) {
+				if (res.customerCCIs.length > 0) {
+					res.customerCCIs.map(function (item) {
 						$(".customerCardList").append('<option value="' + item.DelRefId + '"CreditCardExpire="' + item.CreditCardExpire +
 							'" CreditCardNumber="' + item.CreditCardNumber + '" NeedCvv="' + item.NeedCvv + '" NeedDocument="' + item.NeedDocument +
 							'" NeedPhone="' + item.NeedPhone + '">' + item.CardNum + '</option>')
 					})
 					$(".CVVline").show(100)
 					changeCardNum()
-				}else{
+				} else {
 					$(".CVVline").hide(100)
 				}
 
-				$('.customerCardList').change(function() {
+				$('.customerCardList').change(function () {
 					changeCardNum("click")
 				})
 				// 获取该信用卡,及条件
@@ -2045,27 +2091,27 @@ function nocardPay(orderRes) {
 
 					console.log(opt.attr("NeedCvv"))
 					requireInfo = opt
-					if (opt.attr("NeedCvv")=="false") {
+					if (opt.attr("NeedCvv") == "false") {
 						// NeedCvv=true时，表示需要填CVV
 						$(".CVVline").hide(100)
-					}else{
+					} else {
 						$(".CVVline").show(100)
 					}
 					// if(!res.companyCCI.NeedPhone){
-					if (opt.attr("NeedPhone")=="false") {
+					if (opt.attr("NeedPhone") == "false") {
 						// NeedPhone=true时，表示需要填手机号
 						$(".phoneline").hide(100)
-					}else{
+					} else {
 						$(".phoneline").show(100)
 					}
 					// if(!res.companyCCI.NeedDocument){
-					if (opt.attr("NeedDocument")=="false") {
+					if (opt.attr("NeedDocument") == "false") {
 						// NeedDocument=true时，表示需要填证件号
 						$(".domline").hide(100)
 
 					} else {
 						if (selectType != "click") {
-							res.DocumentTypeList.map(function(item) {
+							res.DocumentTypeList.map(function (item) {
 								if (obtLanguage == "EN") {
 									$(".documentType").append('<option value ="' + item.Rid + '">' + item.NameEn + '</option>')
 								} else {
@@ -2074,15 +2120,15 @@ function nocardPay(orderRes) {
 							})
 						}
 					}
-					var h=$('.quickGroup').height()/2
-					$('.quickGroup').css('marginTop','calc(50vh - '+h+'px)')
+					var h = $('.quickGroup').height() / 2
+					$('.quickGroup').css('marginTop', 'calc(50vh - ' + h + 'px)')
 				}
 				// 改变证件类型
 				function changeDocType() {
 					// 获取选中的rid即value
 					var type = $(".documentType").val()
 					var docNum = ""
-					res.DocumentList.map(function(docItem) {
+					res.DocumentList.map(function (docItem) {
 						if (docItem.Rid == type) {
 							docNum = docItem.DocumentNumber
 						}
@@ -2090,14 +2136,14 @@ function nocardPay(orderRes) {
 					$(".domNum").val(docNum)
 				}
 				changeDocType()
-				$('.documentType').change(function() {
+				$('.documentType').change(function () {
 					changeDocType()
 				})
 				// 默认手机号
 				$(".phoneNum").val(res.PhoneNumber)
 
 			},
-			error: function() {
+			error: function () {
 				// alert('fail');
 			}
 		});
@@ -2112,32 +2158,32 @@ function nocardPay(orderRes) {
 		var card_num = $(".customerCardList").val()
 		var opt = $(".customerCardList").find("option[value =" + card_num + "]")
 		var cardNum = opt.attr("creditcardnumber")
-		if(cardNum==undefined || cardNum=="" || cardNum==null){
+		if (cardNum == undefined || cardNum == "" || cardNum == null) {
 			alert(get_lan("noCard").Maintain)
 			return false;
 		}
 		// var s=tools.Decrypt(cardNum)
 		// return false
-		
-		
+
+
 		var subid = netUserId.split("\"")[1]
-		var optName = $(".cardholder").find('option[value ="'+$(".cardholder").val()+'"]')
+		var optName = $(".cardholder").find('option[value ="' + $(".cardholder").val() + '"]')
 		var request = {
 			id: subid,
 			orderNo: orderDetaile.OrderNo,
 			cardNumber: cardNum,
 			// vailDate: $(".overTime").val(),
 			cvv: $(".cvvNum").val(),
-			holderName:optName.text(),
+			holderName: optName.text(),
 			// docType: docType,
 			// docNumber: $(".domNum").val(),
 			// phone: $(".phoneNum").val(),
 			language: obtLanguage,
-			customerId:$('.cardholder').val(),
+			customerId: $('.cardholder').val(),
 		}
 		//验证是否为空
 		console.log(requireInfo)
-		if (requireInfo.attr("NeedCvv")=="true" && request.cvv == "") {
+		if (requireInfo.attr("NeedCvv") == "true" && request.cvv == "") {
 			// NeedCvv=true时，表示需要填CVV
 			if (obtLanguage == "EN") {
 				alert("请填写CVV")
@@ -2146,7 +2192,7 @@ function nocardPay(orderRes) {
 			}
 			return false;
 		}
-		if (requireInfo.attr("NeedPhone")=="true" && request.phone == "") {
+		if (requireInfo.attr("NeedPhone") == "true" && request.phone == "") {
 			// NeedPhone=true时，表示需要填手机号
 			if (obtLanguage == "EN") {
 				alert("请填写银行预留手机号")
@@ -2155,7 +2201,7 @@ function nocardPay(orderRes) {
 			}
 			return false;
 		}
-		if (requireInfo.attr("NeedDocument")=="true" && request.docNumber == "") {
+		if (requireInfo.attr("NeedDocument") == "true" && request.docNumber == "") {
 			// NeedDocument=true时，表示需要填证件号
 			if (obtLanguage == "EN") {
 				alert("请填写证件号")
@@ -2177,7 +2223,7 @@ function nocardPay(orderRes) {
 				url: $.session.get('obtCompany') + "/OrderService.svc/SubmitYeePayInfoPost",
 				jsonStr: '{"request":' + JSON.stringify(request) + '}'
 			},
-			success: function(data) {
+			success: function (data) {
 				var res = JSON.parse(data);
 				console.log(res);
 				$('body').mLoading("hide");
@@ -2217,7 +2263,7 @@ function nocardPay(orderRes) {
 								"color": "#333333",
 								"cursor": "none"
 							})
-							var interval = setInterval(function() {
+							var interval = setInterval(function () {
 								time--
 								if (time > 0) {
 									$('.linebtn').text(time + "s")
@@ -2234,7 +2280,7 @@ function nocardPay(orderRes) {
 							}, 1000)
 						}
 						myTimer()
-						$('.linebtn').click(function() {
+						$('.linebtn').click(function () {
 							console.log($(this).attr('click'))
 							// 获取验证码
 							if ($(this).attr('click') == 'yes') {
@@ -2245,9 +2291,9 @@ function nocardPay(orderRes) {
 									dataType: 'json',
 									data: {
 										url: $.session.get('obtCompany') + "/OrderService.svc/GetVerifyCodePost",
-										jsonStr: '{"yeepayOrder":' + res.YeepayOrder + '","language":"'+ obtLanguage+'"}'
+										jsonStr: '{"yeepayOrder":' + res.YeepayOrder + '","language":"' + obtLanguage + '"}'
 									},
-									success: function(data) {
+									success: function (data) {
 										var codeRes = JSON.parse(data);
 										console.log(codeRes);
 										if (codeRes.code != "200") {
@@ -2259,9 +2305,9 @@ function nocardPay(orderRes) {
 								return false
 							}
 						})
-						$('.confirmPay').click(function() {
+						$('.confirmPay').click(function () {
 							var yeepayStr = {
-								id:netUserId.split("\"")[1],
+								id: netUserId.split("\"")[1],
 								orderNo: orderDetaile.OrderNo,
 								yeepayOrder: res.YeepayOrder,
 								amount: res.Amount,
@@ -2276,14 +2322,15 @@ function nocardPay(orderRes) {
 									url: $.session.get('obtCompany') + "/OrderService.svc/YeePayPost",
 									jsonStr: '{"request":' + JSON.stringify(yeepayStr) + '}'
 								},
-								success: function(data) {
+								success: function (data) {
 									var payRes = JSON.parse(data);
 									console.log(payRes);
 									if (payRes.code == "200") {
-										alert("支付成功")
+										// alert("支付成功")
+										alert(res.message)	//打印后台返回的参数，不确定是不是这个
 										$('#cover2').remove()
 										window.location.reload();
-									}else{
+									} else {
 										alert(payRes.message)
 									}
 								},
@@ -2291,7 +2338,8 @@ function nocardPay(orderRes) {
 
 						})
 					} else {
-						alert("支付成功")
+						// alert("支付成功")
+						alert(res.message)	//打印后台返回的参数，不确定是不是这个
 						window.location.reload();
 						$("#cover2").remove()
 					}
@@ -2302,7 +2350,7 @@ function nocardPay(orderRes) {
 		})
 	}
 }
-function apilyPay(){
+function apilyPay() {
 	$('body').mLoading("show");
 	var type = ProfileInfo.onlineStyle == "APPLE" ? 4 : 1;
 	$.ajax({
@@ -2314,7 +2362,7 @@ function apilyPay(){
 			jsonStr: '{"request":{"id":' + netUserId + ',"orderNo":"' + $(".onlinePayBtn").attr("orderNo") +
 				'","language":"' + obtLanguage + '","payChannel":"1"}}'
 		},
-		success: function(data) {
+		success: function (data) {
 			// $('body').mLoading("hide");
 			var res = JSON.parse(data);
 			console.log(res);
@@ -2329,18 +2377,18 @@ function apilyPay(){
 					jsonStr: '{"request":{"subject":"' + subject + '","totalAmount":"' + res.payAmount + '","exMechantNO":"' +
 						res.exMechantNO + '","type":"' + type + '"}}'
 				},
-				success: function(data) {
+				success: function (data) {
 					// $('body').mLoading("hide");
 					var res = JSON.parse(data);
 					console.log(res);
 					$('body').append(res);
 				},
-				error: function() {
+				error: function () {
 					// alert('fail');
 				}
 			});
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
@@ -2349,7 +2397,7 @@ function apilyPay(){
 /*文件上传*/
 function uploadFile(res) {
 	openUploadPop();
-	$("#file").change(function(event) {
+	$("#file").change(function (event) {
 		// 获取当前选中的文件
 		var file = $("#file")[0].files[0];
 		// console.log(file);
@@ -2389,7 +2437,7 @@ function uploadFile(res) {
 			return false;
 		}
 	});
-	$(".sureUploadFileBtn").unbind("click").click(function() {
+	$(".sureUploadFileBtn").unbind("click").click(function () {
 		if ($('#file')[0].files.length != 1) {
 			alert(get_lan("uploadFilePop").uploadRemind3)
 			return;
@@ -2409,7 +2457,7 @@ function uploadFile(res) {
 				data: formData,
 				processData: false, //tell jQuery not to process the data
 				contentType: false, //tell jQuery not to set contentType。
-				success: function(res) {
+				success: function (res) {
 					$('body').mLoading("hide");
 					console.log(res);
 					if (res.isSuccess) {
@@ -2419,13 +2467,13 @@ function uploadFile(res) {
 						alert(res.errorMsg);
 					}
 				},
-				error: function() {
+				error: function () {
 					alert('fail');
 				}
 			})
 		}
 	})
-	$(".closeUploadFileBtn").unbind("click").click(function() {
+	$(".closeUploadFileBtn").unbind("click").click(function () {
 		closeUploadPop();
 	})
 }
@@ -2442,7 +2490,7 @@ function CheckHotelTrip(orderRes, type) {
 			url: $.session.get('obtCompany') + "/SystemService.svc/CheckHotelTripOrder",
 			jsonStr: '{"orderNo":"' + orderRes.OrderNo + '","id":' + netUserId + '}'
 		},
-		success: function(data) {
+		success: function (data) {
 			$('body').mLoading("hide");
 			if (data == '' || ProfileInfo.onlineStyle == "APPLE") {
 				// alert('没有权限')
@@ -2461,7 +2509,7 @@ function CheckHotelTrip(orderRes, type) {
 				}
 			}
 		},
-		error: function() {}
+		error: function () { }
 	});
 };
 
@@ -2488,7 +2536,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 			jsonStr: '{"request":{"id":' + netUserId + ',"orderNo":"' + orderRes.OrderNo + '","language":"' + obtLanguage +
 				'"}}'
 		},
-		success: function(data) {
+		success: function (data) {
 			$('body').mLoading("hide");
 			var res = JSON.parse(data);
 			console.log(res);
@@ -2512,7 +2560,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 							<select class="GKRemarkSelect"></select>\
 						</div>\
 						');
-						$(".bookhotelBtn").unbind("click").click(function() {
+						$(".bookhotelBtn").unbind("click").click(function () {
 							var goOnBookHotelInfo = {
 								"ArriveCityCode": res.HotelCityCode,
 								"ArriveCity": obtLanguage == "EN" ? res.HotelCityNameEN : res.HotelCityNameCN,
@@ -2538,17 +2586,17 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 						');
 					}
 
-					$(".closeGKbookingIcon,.closeGKBookingBtn").unbind("click").click(function() {
+					$(".closeGKbookingIcon,.closeGKBookingBtn").unbind("click").click(function () {
 						closeGKbookingPop();
 					})
-					res.remark.Items.map(function(item) {
+					res.remark.Items.map(function (item) {
 						$(".GKRemarkSelect").append('\
                         <option value="' + res.remark.Index + '-' + item.Key +
 							'-' + item.OperationType + '">' + item.Value + '</option>\
                     ')
 					})
 					$(".sureGKBookingBtn").attr("state", "chooseRemark");
-					$(".sureGKBookingBtn").unbind("click").click(function() {
+					$(".sureGKBookingBtn").unbind("click").click(function () {
 						if ($(this).attr("state") == "chooseRemark") {
 							$(".sureGKBookingBtn").removeAttr("state");
 							$(".sureGKBookingBtn").attr("remarkInfo", $(".GKRemarkSelect").val());
@@ -2640,7 +2688,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 									hideIfNoPrevNext: true,
 									showOtherMonths: true,
 									selectOtherMonths: true,
-									onSelect: function() {
+									onSelect: function () {
 										var departureValue = new Date($(".GKCheckInInput").val().replace(/-/g, "/"));
 										$(".GKCheckOutInput").datepicker('destroy');
 										$(".GKCheckOutInput").datepicker({
@@ -2665,7 +2713,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 									var d = dd.getDate() < 10 ? '0' + dd.getDate() : dd.getDate();
 									return y + "-" + m + "-" + d;
 								}
-								$(".searchGkBtn").unbind("click").click(function() {
+								$(".searchGkBtn").unbind("click").click(function () {
 									if ($(".GKCityInput").attr("code") && $(".GKHotelInput").val() != "") {
 										$('body').mLoading("show");
 										var queryKey = $(".GKCityInput").attr("code") + ',' + $(".GKHotelInput").val();
@@ -2677,12 +2725,12 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 												url: $.session.get('obtCompany') + "/SystemService.svc/QueryCityLocalHotelPost",
 												jsonStr: '{"id":' + netUserId + ',"language":"' + obtLanguage + '","queryKey":"' + queryKey + '"}'
 											},
-											success: function(data) {
+											success: function (data) {
 												var res = JSON.parse(data);
 												console.log(res);
 												$('body').mLoading("hide");
 												$(".searchGkList").html("");
-												res.map(function(item, index) {
+												res.map(function (item, index) {
 													var name = obtLanguage == "CN" ? item.NameCN : item.NameEN;
 													$(".searchGkList").append(
 														'\
@@ -2699,7 +2747,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 												})
 												$(".sureGKBookingBtn").attr("state", "hotelInfo");
 											},
-											error: function() {
+											error: function () {
 												// alert('fail');
 											}
 										});
@@ -2763,7 +2811,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 									jsonStr: '{"request":{"id":' + netUserId + ',"language":"' + obtLanguage + '","remarkInfo":"' +
 										remarkInfo + '","hotelInfo":"' + hotelInfo + '","orderNo":"' + orderRes.OrderNo + '"}}'
 								},
-								success: function(data) {
+								success: function (data) {
 									var res = JSON.parse(data);
 									console.log(res);
 									$('body').mLoading("hide");
@@ -2782,7 +2830,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 										alert(res.message);
 									}
 								},
-								error: function() {
+								error: function () {
 									// alert('fail');
 								}
 							});
@@ -2810,7 +2858,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 									jsonStr: '{"request":{"id":' + netUserId + ',"orderNo":"' + $(".onlinePayBtn").attr("orderNo") +
 										'","language":"' + obtLanguage + '","payChannel":"1"}}'
 								},
-								success: function(data) {
+								success: function (data) {
 									// $('body').mLoading("hide");
 									var res = JSON.parse(data);
 									console.log(res);
@@ -2826,18 +2874,18 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 												'","exMechantNO":"' +
 												res.exMechantNO + '","type":"' + type + '"}}'
 										},
-										success: function(data) {
+										success: function (data) {
 											// $('body').mLoading("hide");
 											var res = JSON.parse(data);
 											console.log(res);
 											$('body').append(res);
 										},
-										error: function() {
+										error: function () {
 											// alert('fail');
 										}
 									});
 								},
-								error: function() {
+								error: function () {
 									// alert('fail');
 								}
 							});
@@ -2849,7 +2897,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 							} else if (!ProfileInfo.CreditCardYeepay && !ProfileInfo.CloseCreditCardGateway) {
 								yeePay(orderDetaile);
 							} else {
-								onlinePay(orderDetaile,"","CreditCardPay");
+								onlinePay(orderDetaile, "", "CreditCardPay");
 							}
 						}
 						// onlinePay(orderRes);
@@ -2861,7 +2909,7 @@ function HotelGKBooking(orderRes, clickType, showMore) {
 				alert(res.message);
 			}
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
@@ -2877,14 +2925,14 @@ function ticket(orderRes) {
 			url: $.session.get('obtCompany') + "/OrderService.svc/TicketPost",
 			jsonStr: '{"orderNo":"' + orderRes.OrderNo + '","type":"M","id":' + netUserId + '}'
 		},
-		success: function(data) {
+		success: function (data) {
 			var res = JSON.parse(data);
 			console.log(res);
 			$('body').mLoading("hide");
 			alert(get_lan("orderInfo").ticketRemind);
 			location.reload();
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
@@ -2926,7 +2974,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 		console.log(remarks)
 		$(".remarkInfoBody").html('');
 		var redTips = false;
-		remarks.map(function(item, index) {
+		remarks.map(function (item, index) {
 			var colorRed = item.Input.indexOf("4") != -1 || item.Input == "" ? "" : "colorRed";
 			var starIcon = item.Input.indexOf("4") != -1 || item.Input == "" ? "" : "*";
 			if (ProfileInfo.onlineStyle != "APPLE") {
@@ -2953,7 +3001,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 						'\
                         <div class="remarkLi flexRow">\
                           <div id="liTittle' + item
-						.Index + '" class="liTittle ellipsis ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
+							.Index + '" class="liTittle ellipsis ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
 						'</div>\
                           <div class="liContent">\
                             <select class="remarkSelect" index="' +
@@ -2973,7 +3021,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 						'\
                         <div class="remarkLi flexRow">\
                           <div id="liTittle' + item
-						.Index + '" class="liTittle ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
+							.Index + '" class="liTittle ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
 						'</div>\
                           <div class="liContent">\
                             <select class="remarkSelect" index="' +
@@ -3021,7 +3069,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 		for (var i = 0; i < $(".remarkSelect").length; i++) {
 			var index = parseInt($(".remarkSelect").eq(i).attr("index"));
 			if (remarks[index].Items.length != 0) {
-				remarks[index].Items.map(function(item) {
+				remarks[index].Items.map(function (item) {
 					var itemValue = item.Value == null || item.Value == "" ? item.Key : item.Value;
 					$(".remarkSelect").eq(i).append('\
                         <option class="remarkOption" key="' + item.Key +
@@ -3031,21 +3079,21 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 			} else {
 				$(".remarkSelect").eq(i).hide();
 			}
-			$(".remarkSelect").eq(i).change(function() {
+			$(".remarkSelect").eq(i).change(function () {
 				var index = parseInt($(this).find("option:selected").attr("index"));
 				$(".remarkLiInput").eq(index).val($(this).find("option:selected").text());
 				$(".remarkLiInput").eq(index).attr('key', $(this).find("option:selected").attr("key"));
 			})
 		}
 		//选择remark关联其他remark
-		$(".remarkSelect").change(function() {
+		$(".remarkSelect").change(function () {
 			// console.log($(this).find("option:selected").attr("key"));
 			// console.log($(this).find("option:selected").attr("index"));
 			var selectKey = $(this).find("option:selected").attr("key");
 			var selectIndex = parseInt($(this).find("option:selected").attr("index"));
-			remarks[selectIndex].RelatedRemarkList.map(function(rItem) {
+			remarks[selectIndex].RelatedRemarkList.map(function (rItem) {
 				if (rItem.ChooseMainValue == selectKey) {
-					rItem.SubRemarkRuleList.map(function(sItem) {
+					rItem.SubRemarkRuleList.map(function (sItem) {
 						$("#remarkInput" + rItem.SubRemarkIndex + "").val("");
 						$("#remarkInput" + rItem.SubRemarkIndex + "").removeAttr("key");
 						if (sItem.SubRemarkRule == 1) {
@@ -3092,10 +3140,10 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 		//     ')
 		// }
 		/*关闭remark*/
-		$(".closeRemarkBtn").unbind("click").click(function() {
+		$(".closeRemarkBtn").unbind("click").click(function () {
 			closeRemarkPop();
 		})
-		$(".sureRemarkBtn").unbind("click").click(function() {
+		$(".sureRemarkBtn").unbind("click").click(function () {
 			var remarks = '';
 			var remarkCorrect = '';
 			for (var i = 0; i < $(".remarkLiInput").length; i++) {
@@ -3129,7 +3177,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 						jsonStr: '{"id":' + netUserId + ',"orderNo":"' + orderNo + '","customerId":"' + CustomerID +
 							'","remarkStr":"' + remarks.substring(0, remarks.length - 1) + '","Language":"' + obtLanguage + '"}'
 					},
-					success: function(data) {
+					success: function (data) {
 						$('body').mLoading("hide");
 						var res = JSON.parse(data);
 						console.log(res);
@@ -3140,7 +3188,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 							alert(res);
 						}
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -3154,7 +3202,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 						jsonStr: '{"id":' + netUserId + ',"orderNo":"' + orderNo + '","customerId":"' + CustomerID + '","remarks":"' +
 							remarks.substring(0, remarks.length - 1) + '","Language":"' + obtLanguage + '","isCopy":""}'
 					},
-					success: function(data) {
+					success: function (data) {
 						$('body').mLoading("hide");
 						var res = JSON.parse(data);
 						console.log(res);
@@ -3165,7 +3213,7 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 							alert(res.message);
 						}
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -3175,38 +3223,54 @@ function remarkInfoPop(CustomerID, employeeName, remarks, remarkType, orderRes, 
 }
 
 //删除TAnumber
-function deleteTAnumber(){
-	var TAnumberIndex= $.session.get("TAnumberIndex")
-	if(TAnumberIndex!=1){
+function deleteTAnumber() {
+	var TAnumberIndex = $.session.get("TAnumberIndex")
+	if (TAnumberIndex != 1) {
 		$.session.remove("TAnumber")
 	}
 }
 // 获取TAnumber
-function getTAnumber(callback){
-		var userid = netUserId.split("\"")[1]
-		$('body').mLoading("show")
-		$.ajax({
-			type: 'post',
-			url: $.session.get('ajaxUrl'),
-			dataType: 'json',
-			data: {
-				url: $.session.get('obtCompany') + "/SystemService.svc/GetTravelRequestByContinueBookPost",
-				jsonStr: '{"orderNo":"' + orderNo + '","id":"' + userid + '","language":"'+obtLanguage+'"}'
-			},
-			success: function(data) {
-				console.log(data)
+function getTAnumber(callback,type) {
+	var userid = netUserId.split("\"")[1]
+	$('body').mLoading("show")
+	$.ajax({
+		type: 'post',
+		url: $.session.get('ajaxUrl'),
+		dataType: 'json',
+		data: {
+			url: $.session.get('obtCompany') + "/SystemService.svc/GetTravelRequestByContinueBookPost",
+			jsonStr: '{"orderNo":"' + orderNo + '","id":"' + userid + '","language":"' + obtLanguage + '"}'
+		},
+		success: function (data) {
+			$('body').mLoading("hide")
+			if(type=='start'){
+				var res = JSON.parse(data)
+				if (res.code == "200"&&res.data!="") {
+					callback();
+				}
+			}else{
 				if (data == '' || data == null) {
 					// alert('没有权限')
 					// HotelGKBooking(orderRes,type,false);
 				} else {
-					var res=JSON.parse(data)
-					if(res.code=="200"){
-						$.session.set("TAnumber",res.data)
+					var res = JSON.parse(data)
+					if (res.code == "200") {
+						$.session.set("TAnumber", res.data)
 					}
 				}
-				callback()
+				callback();
+				// 这里获取到TAnumber按照原流程进行
+				//如果有审批单权限，但是没有返回审批单号，给出提示不能继续预定
+				if (ProfileInfo.HotelNoNeedTR && !res.data) {
+					var continueRemind = obtLanguage == "CN" ? "该订单无法继续预订" : "The order cannot continue book"
+					alert(continueRemind)
+					$('body').mLoading("hide")
+				} else {
+					callback()
+				}
 			}
-			})
+		}
+	})
 }
 //继续预订
 function goOnBook(orderRes) {
@@ -3235,7 +3299,7 @@ function goOnBook(orderRes) {
 		'</div>\
               </div>\
               <div class="continueLi hotelIconLi">\
-                <div class="continueLiImg hotelImg" name="hotel"></div>\
+                <div class="continueLiImg hotelImg" id="indexHotelTab" name="hotel"></div>\
                 <div class="continueLiText">' +
 		get_lan('continueUl').hotel +
 		'</div>\
@@ -3261,7 +3325,7 @@ function goOnBook(orderRes) {
 			url: $.session.get('obtCompany') + "/SystemService.svc/ProfilePost",
 			jsonStr: '{"key":' + netUserId + '}'
 		},
-		success: function(data) {
+		success: function (data) {
 			var res = JSON.parse(data);
 			console.log(res);
 			reasonNecessary = res.NoApprovalReason
@@ -3296,30 +3360,30 @@ function goOnBook(orderRes) {
 			// 	CheckHotelTrip()
 			// }
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
 
-	$(".goOnBookBtn").unbind("click").click(function() {
+	$(".goOnBookBtn").unbind("click").click(function () {
 		openGoOnBookPop();
-		$(".closeGoOnBookIcon").unbind("click").click(function() {
+		$(".closeGoOnBookIcon").unbind("click").click(function () {
 			closeGoOnBookPop();
 		})
-		$(".continueLiImg").unbind("click").click(function() {
+		$(".continueLiImg").unbind("click").click(function () {
 			$.session.set('trainTicketChanges', '');
 			$.session.set('goOnBookOrderNo', orderRes.OrderNo);
 			// 如果有TA单号,需要GetTravelRequestCityInfo接口获取行程
-			
+
 			if ($(this).attr("name") == "air") {
-				 getTAnumber(function(){
-					 if ($.session.get('TAnumber')) {
-					 	getTAtime("../../search/queryAir.html",1)
-					 	// GetTravelRequestCityInfo由getTAtime方法执行
-					 } else {
-					 	window.location.href = '../../search/queryAir.html';
-					 }
-				 })
+				getTAnumber(function () {
+					if ($.session.get('TAnumber')) {
+						getTAtime("../../search/queryAir.html", 1)
+						// GetTravelRequestCityInfo由getTAtime方法执行
+					} else {
+						window.location.href = '../../search/queryAir.html';
+					}
+				})
 			} else if ($(this).attr("name") == "hotel") {
 				if (ProfileInfo.HotelJumpHRS) {
 					window.open(ProfileInfo.HotelJumpHRS_Url);
@@ -3335,15 +3399,15 @@ function goOnBook(orderRes) {
 							url: $.session.get('obtCompany') + "/SystemService.svc/CheckHotelTripOrderNew",
 							jsonStr: '{"request":{"orderNo":' + orderno + ',"id":"' + userid + '","hotelType":"2"}}'
 						},
-						success: function(data) {
+						success: function (data) {
 							$('body').mLoading("hide");
 							if (data == '') {
 								// alert('没有权限')
-								getTAnumber(function(){
+								getTAnumber(function () {
 									if ($.session.get('TAnumber')) {
-										$.session.set('goOnBookHotelInfo',"");
-										getTAtime("../../search/queryHotel.html",2)
-									}else{
+										$.session.set('goOnBookHotelInfo', "");
+										getTAtime("../../search/queryHotel.html", 2)
+									} else {
 										window.location.href = '../../search/queryHotel.html';
 									}
 								})
@@ -3366,17 +3430,17 @@ function goOnBook(orderRes) {
 								console.log(goOnBookHotelInfo);
 								$.session.set('trainTicketChanges', '');
 								$.session.set('goOnBookHotelInfo', JSON.stringify(goOnBookHotelInfo));
-								
-								getTAnumber(function(){
+
+								getTAnumber(function () {
 									if ($.session.get('TAnumber')) {
-										$.session.set('goOnBookHotelInfo',"");
-										getTAtime("../../search/queryHotel.html",2)
-									}else{
+										$.session.set('goOnBookHotelInfo', "");
+										getTAtime("../../search/queryHotel.html", 2)
+									} else {
 										window.location.href = '../../search/queryHotel.html';
 									}
 								})
-								
-								
+
+
 							}
 						},
 					})
@@ -3395,20 +3459,20 @@ function goOnBook(orderRes) {
 							jsonStr: '{"request":{"orderNo":' + orderno + ',"id":"' + userid + '","hotelType":"2"}}'
 						},
 
-						success: function(data) {
+						success: function (data) {
 							$('body').mLoading("hide");
 
 							if (data == '') {
 								// alert('没有权限')
-								getTAnumber(function(){
+								getTAnumber(function () {
 									if ($.session.get('TAnumber')) {
-										$.session.set('goOnBookHotelInfo',"");
-										getTAtime("../../search/queryHotel.html",2)
-									}else{
+										$.session.set('goOnBookHotelInfo', "");
+										getTAtime("../../search/queryHotel.html", 2)
+									} else {
 										window.location.href = '../../search/queryHotel.html';
 									}
 								})
-								
+
 								// HotelGKBooking(orderRes,type,false);
 							} else {
 								var res = JSON.parse(data);
@@ -3428,11 +3492,11 @@ function goOnBook(orderRes) {
 								console.log(goOnBookHotelInfo);
 								$.session.set('trainTicketChanges', '');
 								$.session.set('goOnBookHotelInfo', JSON.stringify(goOnBookHotelInfo));
-								getTAnumber(function(){
+								getTAnumber(function () {
 									if ($.session.get('TAnumber')) {
-										getTAtime("../../search/queryHotel.html",2)
-										$.session.set('goOnBookHotelInfo',"");
-									}else{
+										getTAtime("../../search/queryHotel.html", 2)
+										$.session.set('goOnBookHotelInfo', "");
+									} else {
 										window.location.href = '../../search/queryHotel.html';
 									}
 								})
@@ -3455,9 +3519,9 @@ function goOnBook(orderRes) {
 					// }
 				}
 			} else if ($(this).attr("name") == "train") {
-				getTAnumber(function(){
+				getTAnumber(function () {
 					if ($.session.get('TAnumber')) {
-						getTAtime("../../search/queryTrain.html",4)
+						getTAtime("../../search/queryTrain.html", 4)
 					} else {
 						window.location.href = '../../search/queryTrain.html';
 					}
@@ -3465,9 +3529,15 @@ function goOnBook(orderRes) {
 				// window.location.href = '../../search/queryTrain.html';
 			}
 		})
+		// 2020.11.26 酒店跳转
+		if(ProfileInfo.HotelJumpHRSWeb){
+			$('#indexHotelTab').unbind("click").click(function(){
+				window.open(ProfileInfo.HRSWebsite);
+			})
+		}
 	})
 	// 判断
-	function getTAtime(url,searchType){
+	function getTAtime(url, searchType) {
 		// 0.全部 1.机票 2.酒店 3.租车 4.火车
 		var userid = netUserId.split("\"")[1]
 		console.log(netUserId.split("\""))
@@ -3479,7 +3549,7 @@ function goOnBook(orderRes) {
 				url: $.session.get('obtCompany') + "/SystemService.svc/GetTravelRequestCityInfo",
 				jsonStr: '{"travelRequestNo":"' + $.session.get('TAnumber') + '","key":"' + userid + '","count":""}'
 			},
-			success: function(data) {
+			success: function (data) {
 				$('body').mLoading("hide");
 				if (data == '') {
 					// alert('没有权限')
@@ -3488,82 +3558,95 @@ function goOnBook(orderRes) {
 					// HotelGKBooking(orderRes,type,false);
 				} else {
 					var res = JSON.parse(data);
-					var newRes=[]
-					for(var i=0;i<res.length-1;i=i+2){
-							var a=[]
+					console.log(res);
+					$.session.remove('TAOneCity')
+					if(res.length>1){
+						var newRes = []
+						for (var i = 0; i < res.length - 1; i = i + 2) {
+							var a = []
 							a.push(res[i])
-							a.push(res[i+1])
+							a.push(res[i + 1])
 							newRes.push(a)
-					}
-					
-					var domAirFlag=false,intlAirFlag=false;
-					var airFlag=false,hotelFlag=false,trainFlag=false;
-					newRes.map(function(item){
-						setDefaultCity(item)
-					})
-					
-					function setDefaultCity(res){
-						var travelObj = {
-							"ArriveCityCode": '',
-							"ArriveCityEN": '',
-							"ArriveCityCN": '',
-							"leaveCityCode": '',
-							"leaveCityEN": '',
-							"leaveCityCN": '',
-							"type": true,
-							"starTime": '',
-							"endTime": '',
 						}
-						var arriveType = true
-						var leaveType = true
-						// res type  0出发 1到达  res[0]和res[1] 一组 res[2]和res[3] 一组，但是一般只需要第一组就行
-						// serviceType 0.全部 1.机票 2.酒店 3.租车 4.火车
-						res.map(function(item) {
-							if (item.type == 0 || item.type == "0") {
-								travelObj.ArriveCityCode = item.Code
-								travelObj.ArriveCityCN = item.NameCN
-								travelObj.ArriveCityEN = item.NameEN
-								if (item.CountryId != 46 && item.CountryId != "46") {
-									arriveType = false
-								}
-								travelObj.starTime = item.StartTime
-							}
-							if (item.type == 1 || item.type == "1") {
-								travelObj.leaveCityCode = item.Code
-								travelObj.leaveCityCN = item.NameCN
-								travelObj.leaveCityEN = item.NameEN
-								if (item.CountryId != 46 && item.CountryId != "46") {
-									leaveType = false
-								}
-								travelObj.endTime = item.EndTime
-							}
+						console.log(newRes);
+						var domAirFlag = false, intlAirFlag = false;
+						var airFlag = false, hotelFlag = false, trainFlag = false;
+						newRes.map(function (item) {
+							setDefaultCity(item)
 						})
-						if (!arriveType || !leaveType) {
-							travelObj.type = false
+
+						if (!hotelFlag && searchType == 2) {
+							var hoteltips = obtLanguage == "CN" ? "该审批单无法预订酒店" : "The travel request cannot book hotel";
+							alert(hoteltips)
 						}
-						// serviceType 0.全部 1.机票 2.酒店 3.租车 4.火车
-						var serviceType = res.length > 0 ? res[0].serviceType : ""
-						if(!airFlag&& (serviceType == 0 || serviceType == 1) && searchType==1){
-							airFlag=true;
-							$.session.set('goOnBooktravelInfo', JSON.stringify(travelObj));
-							window.location.href = url;
+
+						function setDefaultCity(res) {
+							var travelObj = {
+								"ArriveCityCode": '',
+								"ArriveCityEN": '',
+								"ArriveCityCN": '',
+								"leaveCityCode": '',
+								"leaveCityEN": '',
+								"leaveCityCN": '',
+								"type": true,
+								"starTime": '',
+								"endTime": '',
+							}
+							var arriveType = true
+							var leaveType = true
+							// res type  0出发 1到达  res[0]和res[1] 一组 res[2]和res[3] 一组，但是一般只需要第一组就行
+							// serviceType 0.全部 1.机票 2.酒店 3.租车 4.火车
+							res.map(function (item) {
+								if (item.type == 0 || item.type == "0") {
+									travelObj.ArriveCityCode = item.Code
+									travelObj.ArriveCityCN = item.NameCN
+									travelObj.ArriveCityEN = item.NameEN
+									if (item.CountryId != 46 && item.CountryId != "46") {
+										arriveType = false
+									}
+									travelObj.starTime = item.StartTime
+								}
+								if (item.type == 1 || item.type == "1") {
+									travelObj.leaveCityCode = item.Code
+									travelObj.leaveCityCN = item.NameCN
+									travelObj.leaveCityEN = item.NameEN
+									if (item.CountryId != 46 && item.CountryId != "46") {
+										leaveType = false
+									}
+									travelObj.endTime = item.EndTime
+								}
+							})
+							if (!arriveType || !leaveType) {
+								travelObj.type = false
+							}
+							// serviceType 0.全部 1.机票 2.酒店 3.租车 4.火车
+							var serviceType = res.length > 0 ? res[0].serviceType : ""
+							if (!airFlag && (serviceType == 0 || serviceType == 1) && searchType == 1) {
+								airFlag = true;
+								$.session.set('goOnBooktravelInfo', JSON.stringify(travelObj));
+								window.location.href = url;
+							}
+							if (!hotelFlag && (serviceType == 0 || serviceType == 2) && searchType == 2) {
+								hotelFlag = true;
+								$.session.set('goOnBooktravelInfo', JSON.stringify(travelObj));
+								window.location.href = url;
+							}
+							if (!trainFlag && (serviceType == 0 || serviceType == 4) && searchType == 4) {
+								trainFlag = true;
+								$.session.set('goOnBooktravelInfo', JSON.stringify(travelObj));
+								window.location.href = url;
+							}
 						}
-						if(!hotelFlag&& (serviceType == 0 || serviceType == 2) && searchType==2){
-							hotelFlag=true;
-							$.session.set('goOnBooktravelInfo', JSON.stringify(travelObj));
-							window.location.href = url;
-						}
-						if(!trainFlag&& (serviceType == 0 || serviceType == 4) && searchType==4){
-							trainFlag=true;
-							$.session.set('goOnBooktravelInfo', JSON.stringify(travelObj));
-							window.location.href = url;
-						}
+					}else{
+						$.session.set('TAOneCity', '1');
+						$.session.set('goOnBookHotelInfo', '')
+						window.location.href = url;
 					}
 				}
 			},
 		})
 	}
-	
+
 	/*预订完成后*/
 	if (bookState == "finish") {
 		if (orderRes.ShowGoOnBook) {
@@ -3576,8 +3659,8 @@ function goOnBook(orderRes) {
 				$(".closeGoOnBookIcon").remove();
 			}
 		}
-		
-		
+
+
 		$(".finishRemind").css("color", "#999");
 		$(".bookRemind").css("color", "#5ba2ff");
 		$(".bookRemind").css("font-size", "16px");
@@ -3615,7 +3698,7 @@ function goOnBook(orderRes) {
 		$(".goOnBookBtn").click();
 		// $(".orderInfoTittle").append("<span style='margin-left:30px;'>TA No:" + $.session.get('TAnumber') + "</span>");
 		// 有TA单号显示继续预定按钮
-		if($.session.set('TAnumberIndex')==1){
+		if ($.session.set('TAnumberIndex') == 1) {
 			$(".menu").css("height", "40px");
 			$(".menu").html("<p>" + get_lan('approveBumber') + $.session.get('TAnumber') + "</p>");
 			$(".menu p").css({
@@ -3630,7 +3713,7 @@ function goOnBook(orderRes) {
 			$(".menusLi").remove();
 		}
 		$('.goOnBookBtn').removeClass('hide')
-		
+
 	}
 
 	function compareDate(date1) {
@@ -3655,7 +3738,7 @@ function checkRemark(orderRes, operationType) {
 			jsonStr: '{"id":' + netUserId + ',"orderNo":"' + orderRes.OrderNo + '","language":"' + obtLanguage + '"}'
 		},
 
-		success: function(data) {
+		success: function (data) {
 			$('body').mLoading("hide");
 			var res = JSON.parse(data);
 			console.log(res);
@@ -3678,7 +3761,7 @@ function checkRemark(orderRes, operationType) {
 				}
 			}
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
@@ -3843,7 +3926,7 @@ function approvalInfoPop(orderRes, operationType) {
 			jsonStr: '{"id":' + netUserId + ',"orderNo":"' + orderRes.OrderNo + '","maxLevel":"' + orderRes.ApprovalLevel +
 				'"}'
 		},
-		success: function(data) {
+		success: function (data) {
 			$('body').mLoading("hide");
 			var res = JSON.parse(data);
 			console.log(res);
@@ -3851,7 +3934,7 @@ function approvalInfoPop(orderRes, operationType) {
 			$(".selectBody").html('');
 
 			if (!orderRes.MoreApproversSubmit) {
-				res.Approvers.map(function(item, index) {
+				res.Approvers.map(function (item, index) {
 					$(".selectBody").append(
 						'\
                         <div class="flexRow" style="margin-top:5px;">\
@@ -3867,10 +3950,10 @@ function approvalInfoPop(orderRes, operationType) {
 					if (item.Value.length > 1) {
 						$(".ApproverSelect").eq(index).html('\
                             <option value="">' + get_lan("remarkPop")
-							.Choose + '</option>\
+								.Choose + '</option>\
                             ')
 					}
-					item.Value.map(function(vItem) {
+					item.Value.map(function (vItem) {
 						var name = obtLanguage == "CN" ? vItem.NameCN : vItem.NameEN
 						$(".ApproverSelect").eq(index).append('\
                             <option value="' + vItem.CustomerId +
@@ -3879,7 +3962,7 @@ function approvalInfoPop(orderRes, operationType) {
 					})
 				})
 			} else {
-				res.Approvers.map(function(item, index) {
+				res.Approvers.map(function (item, index) {
 					$(".selectBody").append(
 						'\
                         <div class="flexRow" style="margin-top:5px;">\
@@ -3895,7 +3978,7 @@ function approvalInfoPop(orderRes, operationType) {
 					if (item.Value.length > 2) {
 						$(".ApproverSelectBody").eq(index).addClass("autoScrollY");
 					}
-					item.Value.map(function(vItem) {
+					item.Value.map(function (vItem) {
 						var name = obtLanguage == "CN" ? vItem.NameCN : vItem.NameEN
 						$(".ApproverSelectBody").eq(index).append(
 							'\
@@ -3923,13 +4006,13 @@ function approvalInfoPop(orderRes, operationType) {
 			var popHeight = $(".approvalPop").height() % 2 == 1 ? $(".approvalPop").height() + 1 : $(".approvalPop").height();
 			$(".approvalPop").css("height", popHeight + 'px');
 
-			$(".closeApprovalBtn").unbind("click").click(function() {
+			$(".closeApprovalBtn").unbind("click").click(function () {
 				closeApprovalPop();
 			})
 			if (orderRes.ApproveWithoutChoose) {
 				$(".approveReason").removeAttr("checked");
 			}
-			$(".sureApprovalBtn").unbind("click").click(function() {
+			$(".sureApprovalBtn").unbind("click").click(function () {
 				// 11.28添加提交失败
 				// if(orderRes.ApprovalLevel!=res.Approvers.length){
 				// 	alert(get_lan("approvalPop").ApproveRemind2);
@@ -3980,10 +4063,10 @@ function approvalInfoPop(orderRes, operationType) {
 						data: {
 							url: $.session.get('obtCompany') + "/OrderService.svc/ApprovalSubmitNew",
 							jsonStr: '{"id":' + netUserId + ',"reasonContent":"' + $(".commentsBody").val().replace(/\n/g, " ").replace(
-									/\s/g, " ") + '","approvers":"' + approvers + '","key":"' + key + '","remarkKey":"no","isTicket":"' +
+								/\s/g, " ") + '","approvers":"' + approvers + '","key":"' + key + '","remarkKey":"no","isTicket":"' +
 								isTicket + '","language":"' + obtLanguage + '"}'
 						},
-						success: function(data) {
+						success: function (data) {
 							$('body').mLoading("hide");
 							var res = JSON.parse(data);
 							console.log(res);
@@ -4013,23 +4096,65 @@ function approvalInfoPop(orderRes, operationType) {
 								// }
 							}
 						},
-						error: function() {
+						error: function () {
 							// alert('fail');
 						}
 					});
 				}
 			})
 		},
-		error: function() {
+		error: function () {
 			// alert('fail');
 		}
 	});
 }
+/*隐藏证件信息*/
+function hideDocument(profile, document, rid) {
+	if (profile.HideMyPersonalInfo && document != "") {
+		if (rid == 1 && document.length > 10) {
+			var starLength = document.length - 10;
+			var starString = "";
+			for (var i = 0; i < starLength; i++) {
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0, 6) + starString + document.substring(document.length - 4, document.length);
+		} else if (document.length > 3) {
+			var starLength = document.length - 3;
+			var starString = "";
+			for (var i = 0; i < starLength; i++) {
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0, 1) + starString + document.substring(document.length - 2, document.length);
+		} else {
+			var DocumentNumber = document;
+		}
+	} else {
+		var DocumentNumber = document
+	}
+
+	return DocumentNumber;
+}
+/*end*/
+/*隐藏邮箱*/
+function hideEmail(profile, email) {
+	if (profile.HideMyPersonalInfo && email != "") {
+		var starLength = email.split("@")[0].length;
+		var starString = "";
+		for (var i = 0; i < starLength - 2; i++) {
+			starString += "*"
+		}
+		var profileEmail = email.substring(0, 1) + starString + email.substring(starLength - 1, starLength) + '@' + email.split("@")[1];
+	} else {
+		var profileEmail = email;
+	}
+	return profileEmail;
+}
+/*end*/
 //机票
 function segmentList(res) {
 	var orderInfo = res;
 	console.log(orderInfo)
-	res.Segment.map(function(sitem, index) {
+	res.Segment.map(function (sitem, index) {
 		var showTicketDate = sitem[0].TicketDate != '' ? "" : "hide";
 		var passengerString = '';
 		var showAirlineReference = sitem[0].AirlineReference != '' ? "" : "hide";
@@ -4041,6 +4166,7 @@ function segmentList(res) {
 		var fareAmountDetail = get_lan("orderDetails").nominalFare + sitem[0].NominalFare + '\n' + get_lan("orderDetails").tax +
 			sitem[0].TaxFee + ServiceFee;
 
+
 		$(".segmentList").append(
 			'\
 			<div class="segmentLi">\
@@ -4048,7 +4174,7 @@ function segmentList(res) {
                 <div style="margin-left:27px;">' +
 			passengerString + '</div>\
                 <div style="margin-left:30px;">' + get_lan('orderCustomerInfo').popDocuments +
-			sitem[0].Passengers[0].DocumentNo + '</div>\
+			hideDocument(ProfileInfo, sitem[0].Passengers[0].DocumentNo, sitem[0].Passengers[0].DocumentType) + '</div>\
 			    <div style="margin-left:27px;">' + sitem[0].DeparteDate +
 			'</div>\
 			    <div style="margin-left:30px;">' + get_lan('orderDetails').orderState +
@@ -4073,7 +4199,7 @@ function segmentList(res) {
 	    '
 		)
 		//<div style="margin-left:30px;">'+sitem[0].DeparteCity+' - '+sitem[0].ArriveCity+'</div>
-		sitem.map(function(item) {
+		sitem.map(function (item) {
 			var showBtn1 = sitem[0].AirCanChangeTicket ? "show" : "hide";
 			var showBtn2 = sitem[0].AirCanReFund ? "show" : "hide";
 			var showBtn3 = sitem[0].AirCanCancel ? "show" : "hide";
@@ -4082,14 +4208,14 @@ function segmentList(res) {
 			var showState = (item.StateCode == "HL" || item.StateCode == "HL1") ? "" : "hide"
 			var changeInfo = '';
 			var PassengersInfo = '';
-			sitem[0].Passengers.map(function(item) {
+			sitem[0].Passengers.map(function (item) {
 				changeInfo += item.PassengerID + '_' + item.TicketNo;
 				changeInfo += ',';
 				PassengersInfo += item.PassengerID + '_' + item.PassengerName;
 				PassengersInfo += ',';
 			})
 			var AirNewInsurancesInfo = '';
-			sitem[0].AirNewInsurances.map(function(aitem) {
+			sitem[0].AirNewInsurances.map(function (aitem) {
 				AirNewInsurancesInfo += aitem.AirInsuranceName + ' (' + aitem.InsuranceNameP + ') ' + aitem.AirInsuranceAmount +
 					'CNY,';
 			})
@@ -4108,7 +4234,7 @@ function segmentList(res) {
 				(item.Passengers[0].MealInfo != "" && item.Passengers.length <= 1) ? "" : "hide";
 			var passengersSeatInfo = '';
 			var passengerSeatInfo = '';
-			item.Passengers.map(function(pItem) {
+			item.Passengers.map(function (pItem) {
 				passengersSeatInfo += pItem.PassengerName + '  :  ';
 				passengersSeatInfo += pItem.SeatNum;
 				passengersSeatInfo += '  ' + pItem.MealInfo;
@@ -4204,6 +4330,13 @@ function segmentList(res) {
 				'">' + get_lan('orderDetails').endorse + '</div>\
 				')
 		})
+		getTAnumber(function(){
+			if(JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption){
+				$(".alterBtnAir").addClass("hide");
+			}
+		},'start');
+		
+
 
 		function GetDateDiff(startDate, endDate) {
 			var startTime = new Date(Date.parse(startDate.replace(/-/g, "/"))).getTime();
@@ -4213,7 +4346,7 @@ function segmentList(res) {
 		}
 	})
 	//机票在线选座
-	$(".segmentSelectSeat").unbind("click").click(function() {
+	$(".segmentSelectSeat").unbind("click").click(function () {
 		$('body').mLoading("show");
 		var flightInfo = $(this).attr("flightInfo");
 		var PassengersInfo = $(this).attr("PassengersInfo");
@@ -4232,7 +4365,7 @@ function segmentList(res) {
 					'","dstCity":"' + $(this).attr('dstCity') + '","flightNo":"' + $(this).attr('flightNo') + '","orgCity":"' + $(
 						this).attr('orgCity') + '","pnrCode":"' + $(this).attr('pnrCode') + '","id":' + netUserId + '}'
 			},
-			success: function(data) {
+			success: function (data) {
 				var res = JSON.parse(data);
 				console.log(res);
 				$('body').mLoading("hide");
@@ -4282,7 +4415,7 @@ function segmentList(res) {
 						get_lan("remarkPop").confirm + '</div>\
                         </div>\
                     ')
-					PassengersList.map(function(item) {
+					PassengersList.map(function (item) {
 						$(".seatCustomerList").append(
 							'\
                             <div class="seatCustomerLi ellipsis" customerId="' + item.split('_')[0] +
@@ -4293,12 +4426,12 @@ function segmentList(res) {
 					})
 					$(".seatCustomerLi").eq(0).addClass("seatCustomerLiActive");
 					seatInfo(res, pnrCode, orderNo, flightNo);
-					$(".cancelSeatBtn").unbind("click").click(function() {
+					$(".cancelSeatBtn").unbind("click").click(function () {
 						closeSelectSeatPop();
 					})
 				}
 			},
-			error: function() {
+			error: function () {
 				// alert('fail');
 			}
 		});
@@ -4307,7 +4440,7 @@ function segmentList(res) {
 	function seatInfo(res, pnrCode, orderNo, flightNo) {
 		$(".seatContentBodyTittle").css("width", (res[0].columnsField.length + 2) * 60 + 'px');
 		$(".seatContentBodyContent").css("width", (res[0].columnsField.length + 2) * 60 + 20 + 'px');
-		res[0].columnsField.map(function(item) {
+		res[0].columnsField.map(function (item) {
 			var codeField = item.codeField == "走道" ? "" : item.codeField
 			$(".seatContentBodyTittle").append('\
                 <div class="columnsField">' + codeField +
@@ -4317,7 +4450,7 @@ function segmentList(res) {
 		$(".seatContentBodyTittle").append('\
             <div class="columnsField"></div>\
         ')
-		res[0].rowsField.map(function(item) {
+		res[0].rowsField.map(function (item) {
 			$(".seatContentBodyContent").append('\
                 <div class="seatContentBodyContentLi flexRow" codeField="' +
 				item.codeField + '"></div>\
@@ -4325,22 +4458,22 @@ function segmentList(res) {
 		})
 		var columnsField = res[0].columnsField;
 		var rowsField = [];
-		res[0].rowsField.map(function(item) {
+		res[0].rowsField.map(function (item) {
 			rowsField.push(item);
 		})
 		console.log(rowsField);
-		rowsField.map(function(item, index) {
+		rowsField.map(function (item, index) {
 			$(".seatContentBodyContentLi").eq(index).html('\
                 <div class="seatInfo">' + item.codeField +
 				'</div>\
             ')
 			item.columnsField = res[0].columnsField;
-			item.columnsField.map(function(cItem, cIndex) {
+			item.columnsField.map(function (cItem, cIndex) {
 				$(".seatContentBodyContentLi").eq(index).append(
 					'\
                     <div class="seatInfo"></div>\
                     ')
-				item.seatsField.map(function(sItem, sIndex) {
+				item.seatsField.map(function (sItem, sIndex) {
 					if (cItem.codeField == sItem.codeField && cItem.descriptionField == 1) {
 						if (sItem.isAvailField) {
 							$(".seatContentBodyContentLi").eq(index).children(".seatInfo").eq(cIndex + 1).append(
@@ -4363,7 +4496,7 @@ function segmentList(res) {
 				'</div>\
             ')
 		})
-		var dragX = function(obj) {
+		var dragX = function (obj) {
 			obj.bind("mousedown", start);
 
 			function start(event) {
@@ -4393,7 +4526,7 @@ function segmentList(res) {
 		}
 		dragX($(".seatContentBody"));
 		/*点击座位*/
-		$(".seatInfo .seatIcon1").unbind("click").click(function() {
+		$(".seatInfo .seatIcon1").unbind("click").click(function () {
 			if ($(this).hasClass("seatIcon1")) {
 				if ($(".seatInfo .seatIcon3").length != 0) {
 					$(".seatInfo .seatIcon3").removeAttr("customerId");
@@ -4405,7 +4538,7 @@ function segmentList(res) {
 				$(".seatCustomerLiActive").children(".seatCustomerLiText").text($(this).attr("seatNo"));
 			}
 		})
-		$(".seatCustomerLi").unbind("click").click(function() {
+		$(".seatCustomerLi").unbind("click").click(function () {
 			var that = this;
 			if (!$(that).hasClass("seatCustomerLiActive")) {
 				$(".seatCustomerLi").removeClass("seatCustomerLiActive");
@@ -4422,7 +4555,7 @@ function segmentList(res) {
 				}
 			}
 		})
-		$(".confirmSeatBtn").unbind("click").click(function() {
+		$(".confirmSeatBtn").unbind("click").click(function () {
 			if ($(".seatInfo .seatIcon4").length + $(".seatInfo .seatIcon3").length != $(".seatCustomerLi").length) {
 				alert(get_lan("selectSeatPop").selectRemind);
 			} else {
@@ -4444,7 +4577,7 @@ function segmentList(res) {
 						jsonStr: '{"request":{"id":' + netUserId + ',"pnrCode":"' + pnrCode + '","orderNo":"' + orderNo +
 							'","flightNo":"' + flightNo + '","seatList":' + seatList + ',"language":"' + obtLanguage + '"}}'
 					},
-					success: function(data) {
+					success: function (data) {
 						var res = JSON.parse(data);
 						console.log(res);
 						if (res != "OK") {
@@ -4455,7 +4588,7 @@ function segmentList(res) {
 							// closeSelectSeatPop();
 						}
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -4463,7 +4596,7 @@ function segmentList(res) {
 		})
 	}
 	//在线值机
-	$('.airCheckInBtn').unbind('click').click(function() {
+	$('.airCheckInBtn').unbind('click').click(function () {
 		$('body').mLoading("show");
 		$.ajax({
 			type: 'post',
@@ -4473,7 +4606,7 @@ function segmentList(res) {
 				url: $.session.get('obtCompany') + "/SystemService.svc/GetCheckInNew",
 				jsonStr: '{"Airline":"' + $(this).attr('AirlineCode') + '","AirType":"3"}'
 			},
-			success: function(data) {
+			success: function (data) {
 				var res = JSON.parse(data);
 				console.log(res);
 				$('body').mLoading("hide");
@@ -4481,13 +4614,13 @@ function segmentList(res) {
 					window.open(res);
 				}
 			},
-			error: function() {
+			error: function () {
 				// alert('fail');
 			}
 		});
 	})
 	//取消订单
-	$(".cancelBtnAir").unbind("click").click(function() {
+	$(".cancelBtnAir").unbind("click").click(function () {
 		var itemID = $(this).attr("ItemId");
 		var pnrCode = $(this).attr("orderNo");
 		var cancelMessage = confirm(get_lan("orderDetails").cancelRemind);
@@ -4501,7 +4634,7 @@ function segmentList(res) {
 					url: $.session.get('obtCompany') + "/OrderService.svc/DeleteAirItemPost",
 					jsonStr: '{"itemID":"' + itemID + '","pnrCode":"' + pnrCode + '","id":' + netUserId + '}'
 				},
-				success: function(data) {
+				success: function (data) {
 					$('body').mLoading("hide");
 					var res = JSON.parse(data)
 					console.log(res);
@@ -4512,22 +4645,49 @@ function segmentList(res) {
 						alert(res);
 					}
 				},
-				error: function() {
+				error: function () {
 					// alert('fail');
 				}
 			});
 		}
 	})
 	//退票
-	$(".ChangeTicketBtnAir").unbind("click").click(function() {
+	$(".ChangeTicketBtnAir").unbind("click").click(function () {
+		var index = parseInt($(this).attr("index"));
+		// 获取退票费
+		var tktType = res.Segment[index][0].IsDomestic ? "D" : "I"
+		var ticketNo = res.Segment[index][0].Passengers[0].TicketNo
+		var ticket = {}
+		$('body').mLoading("show");
+		$.ajax({
+			type: 'post',
+			url: $.session.get('ajaxUrl'),
+			dataType: 'json',
+			async: false,
+			data: {
+				url: $.session.get('obtCompany') + "/OrderService.svc/GetAirTicketRefundInfo",
+				jsonStr: '{"ticketNo":"' + ticketNo + '","tktType":"' + tktType + '","key":' + netUserId + '}'
+			},
+			success: function (data) {
+				$('body').mLoading("hide");
+				ticket = JSON.parse(data)
+				console.log(ticket);
+			},
+			error: function () {
+				// alert('fail');
+			}
+		});
+		if(ticket.code == "502"){
+			alert(ticket.errorMsg);
+			return false;
+		}
 		if ($(this).attr("IsDomestic") == "false" && ProfileInfo.onlineStyle == "BCD") {
 			alert(get_lan("intlRefundRemind"));
 			return false;
 		}
-		
-		var index = parseInt($(this).attr("index"));
+
 		var refundTicketInfoBody = '';
-		res.Segment[index].map(function(item) {
+		res.Segment[index].map(function (item) {
 			refundTicketInfoBody +=
 				'\
             <div class="refundTicketInfo">\
@@ -4556,8 +4716,8 @@ function segmentList(res) {
 			refundTicketInfoBody +
 			'\
             </div>\
-			<p class="refundBrokerage hide" style="padding-top: 20px;">'+get_lan("refundTicketPop").refundBrokerage+'<span class="money" style="color:#ED8322;float:right">-</span></p>\
-			<p class="refundMoney hide" style="padding-top: 20px;">'+get_lan("refundTicketPop").refundMoney+'<span class="money" style="color:#ED8322;font-size:18px;float:right">-</span></p>\
+			<p class="refundBrokerage hide" style="padding-top: 20px;">'+ get_lan("refundTicketPop").refundBrokerage + '<span class="money" style="color:#ED8322;float:right">-</span></p>\
+			<p class="refundMoney hide" style="padding-top: 20px;">'+ get_lan("refundTicketPop").refundMoney + '<span class="money" style="color:#ED8322;font-size:18px;float:right">-</span></p>\
             <div class="refundTicketLimit">\
               <div class="refundTicketLimitTittle">' +
 			get_lan("refundTicketPop").refundTicketLimit + '</div>\
@@ -4579,39 +4739,17 @@ function segmentList(res) {
               </div>\
             </div>\
             ')
-			// 获取退票费
-			var tktType=res.Segment[index][0].IsDomestic?"D":"I"
-			var ticketNo=res.Segment[index][0].Passengers[0].TicketNo
-			$('body').mLoading("show");
-			$.ajax({
-				type: 'post',
-				url: $.session.get('ajaxUrl'),
-				dataType: 'json',
-				data: {
-					url: $.session.get('obtCompany') + "/OrderService.svc/GetAirTicketRefundInfo",
-					jsonStr: '{"ticketNo":"' + ticketNo + '","tktType":"' + tktType + '","key":' + netUserId + '}'
-				},
-				success: function(data) {
-					$('body').mLoading("hide");
-					var ticket = JSON.parse(data)
-					console.log(ticket);
-					if (ticket.code == "200") {
-					// "refundBrokerage":"预计航空公司手续费",
-					// "refundMoney":"预计退款金额",
-					$('.refundBrokerage').removeClass("hide")
-					$('.refundMoney').removeClass("hide")
-						$('.refundBrokerage .money').text(ticket.refundInfo.deduction+""+ticket.refundInfo.currencyType)
-						$('.refundMoney .money').text(ticket.refundInfo.refundPrice+""+ticket.refundInfo.currencyType)
-					} 
-				},
-				error: function() {
-					// alert('fail');
-				}
-			});
-			
-			
+		if (ticket.code == "200") {
+			// "refundBrokerage":"预计航空公司手续费",
+			// "refundMoney":"预计退款金额",
+			$('.refundBrokerage').removeClass("hide")
+			$('.refundMoney').removeClass("hide")
+			$('.refundBrokerage .money').text(ticket.refundInfo.deduction + "" + ticket.refundInfo.currencyType)
+			$('.refundMoney .money').text(ticket.refundInfo.refundPrice + "" + ticket.refundInfo.currencyType)
+		}
+
 		openRefundTicketPop();
-		$(".closeRefundTicketBtn").unbind("click").click(function() {
+		$(".closeRefundTicketBtn").unbind("click").click(function () {
 			closeRefundTicketPop();
 		})
 		$(".refundTicketReason").append('<br><br><span style="color:#3083fb;font-size:16px;">' + get_lan("refundTicketPop")
@@ -4623,7 +4761,7 @@ function segmentList(res) {
 			$(".refundTicketReason").css("color", "red");
 			$(".refundTicketReason").css("margin-top", "80px");
 		}
-		$(".sureRefundTicketBtn").unbind("click").click(function() {
+		$(".sureRefundTicketBtn").unbind("click").click(function () {
 			if ($(".refundReason").eq(0).prop("checked")) {
 				$('body').mLoading("show");
 				$.ajax({
@@ -4635,7 +4773,7 @@ function segmentList(res) {
 						jsonStr: '{"isConfirmRefund":"true","Language":"' + obtLanguage + '","id":' + netUserId + ',"orderId":"' +
 							res.Segment[index][0].AirItemId + '"}'
 					},
-					success: function(data) {
+					success: function (data) {
 						var res = JSON.parse(data);
 						console.log(res);
 						$('body').mLoading("hide");
@@ -4647,7 +4785,7 @@ function segmentList(res) {
 							location.reload();
 						}
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -4662,14 +4800,14 @@ function segmentList(res) {
 						jsonStr: '{"isConfirmRefund":"true","Language":"' + obtLanguage + '","id":' + netUserId + ',"orderId":"' +
 							res.Segment[index][0].AirItemId + '"}'
 					},
-					success: function(data) {
+					success: function (data) {
 						var res = JSON.parse(data);
 						console.log(res);
 						$('body').mLoading("hide");
 						alert(res);
 						location.reload();
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -4684,7 +4822,7 @@ function segmentList(res) {
 						jsonStr: '{"isConfirmRefund":"true","Language":"' + obtLanguage + '","id":' + netUserId + ',"orderId":"' +
 							res.Segment[index][0].AirItemId + '"}'
 					},
-					success: function(data) {
+					success: function (data) {
 						var res = JSON.parse(data);
 						console.log(res);
 						$('body').mLoading("hide");
@@ -4696,7 +4834,7 @@ function segmentList(res) {
 							location.reload();
 						}
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -4704,7 +4842,7 @@ function segmentList(res) {
 		})
 	})
 	//改签机票
-	$(".alterBtnAir").unbind("click").click(function() {
+	$(".alterBtnAir").unbind("click").click(function () {
 		if ($(this).attr("IsDomestic") == "true" && ProfileInfo.onlineStyle == "BCD" && $(this).attr("isSamePNR") == "true") {
 			alert(get_lan("intlRefundRemind"));
 			return false;
@@ -4718,11 +4856,11 @@ function segmentList(res) {
 			return false;
 		}
 		openAlterPop();
-		$(".closeAlterTicketBtn").unbind("click").click(function() {
+		$(".closeAlterTicketBtn").unbind("click").click(function () {
 			closeAlterPop();
 		})
 		var alterTicketInfoBody = '';
-		res.Segment[index].map(function(item) {
+		res.Segment[index].map(function (item) {
 			alterTicketInfoBody += '\
             <div class="alterTicketInfo">\
              <div class="alterFlightNo">' +
@@ -4760,8 +4898,9 @@ function segmentList(res) {
 			get_lan("alterTicketPop").alterTicketLimit + '</div>\
               <div class="alterTicketLimitBody">' + res.Segment[
 				index][res.Segment[index].length - 1].Rebooking + '<span class="domAlterRemindText hide"><br>' + get_lan(
-				"alterTicketPop").domAlterRemind + '</span></div>\
+					"alterTicketPop").domAlterRemind + '</span></div>\
             </div>\
+			<p style="font-size: 12px;font-weight: 400;color: #3083fb;line-height: 17px;">'+ get_lan("alterTicketPop").AlterRemindLine + '</p>\
             ')
 		if (IsDomestic == 'true') {
 			var alterInputBody =
@@ -4879,13 +5018,13 @@ function segmentList(res) {
                   <option berthType="0">' + get_lan(
 					'alterTicketPop').cabins.cabin1 + '</option>\
                   <option berthType="1">' + get_lan(
-					'alterTicketPop').cabins.cabin2 + '</option>\
+						'alterTicketPop').cabins.cabin2 + '</option>\
                   <option berthType="2">' + get_lan(
-					'alterTicketPop').cabins.cabin3 + '</option>\
+							'alterTicketPop').cabins.cabin3 + '</option>\
                   <option berthType="3">' + get_lan(
-					'alterTicketPop').cabins.cabin4 + '</option>\
+								'alterTicketPop').cabins.cabin4 + '</option>\
                   <option berthType="23">' + get_lan(
-					'alterTicketPop').cabins.cabin5 + '</option>\
+									'alterTicketPop').cabins.cabin5 + '</option>\
                 </select>\
                 ')
 			if (ProfileInfo.DomesticHideAllDay) {
@@ -4929,9 +5068,9 @@ function segmentList(res) {
                   <option berthType="1">' + get_lan(
 					'alterTicketPop').cabins.cabin2 + '</option>\
                   <option berthType="2">' + get_lan(
-					'alterTicketPop').cabins.cabin3 + '</option>\
+						'alterTicketPop').cabins.cabin3 + '</option>\
                   <option berthType="3">' + get_lan(
-					'alterTicketPop').cabins.cabin4 + '</option>\
+							'alterTicketPop').cabins.cabin4 + '</option>\
                 </select>\
             ')
 		}
@@ -4940,14 +5079,16 @@ function segmentList(res) {
 			$("#alterTimeInput").remove();
 			$("#alterReturnTimeInput").remove();
 		}
-		if (ProfileInfo.onlineStyle == "APPLE") {
-			var minDate = 1;
-			$("#alterDateInput").val(getNextDay(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date()
-				.getDate()));
-		} else {
-			var minDate = 0;
-			$("#alterDateInput").val(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
-		}
+		// if (ProfileInfo.onlineStyle == "APPLE") {
+		// 	var minDate = 1;
+		// 	$("#alterDateInput").val(getNextDay(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date()
+		// 		.getDate()));
+		// } else {
+		// 	var minDate = 0;
+		// 	$("#alterDateInput").val(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
+		// }
+		var minDate = 0;
+		$("#alterDateInput").val(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate());
 		if (res.Segment[index].length == 1) {
 			$("#alterDateInput").datepicker({
 				dateFormat: 'yy-mm-dd',
@@ -4969,7 +5110,7 @@ function segmentList(res) {
 				hideIfNoPrevNext: true,
 				showOtherMonths: true,
 				selectOtherMonths: true,
-				onSelect: function() {
+				onSelect: function () {
 					var departureValue = new Date($("#alterDateInput").val().replace(/-/g, "/"));
 					$("#alterReturnDateInput").datepicker('destroy');
 					$("#alterReturnDateInput").datepicker({
@@ -5001,12 +5142,12 @@ function segmentList(res) {
 		var alterPopHeight = $(".alterPop").height() % 2 == 1 ? $(".alterPop").height() + 1 : $(".alterPop").height();
 		$(".alterPop").css("height", alterPopHeight + 'px');
 
-		$(".sureAlterTicketBtn").unbind("click").click(function() {
-			if (new Date($("#alterDateInput").val().replace(/-/g, "\/")) <= new Date(res.DateTimeNowString.replace(/-/g,
-					"\/"))) {
+		$(".sureAlterTicketBtn").unbind("click").click(function () {
+			if (new Date($("#alterDateInput").val().replace(/-/g, "\/")) < new Date(res.DateTimeNowString.replace(/-/g,
+				"\/"))) {
 				return false;
 			}
-			
+
 			var alterMessage = confirm(get_lan("orderDetails").alterMessage);
 			if (alterMessage == true) {
 				$('body').mLoading("show");
@@ -5018,7 +5159,7 @@ function segmentList(res) {
 						url: $.session.get('obtCompany') + "/SystemService.svc/CanTicketChangePost",
 						jsonStr: '{"type":"1","Language":"CN","id":' + netUserId + ',"changeInfo":"' + changeInfo + '"}'
 					},
-					success: function(data) {
+					success: function (data) {
 						$('body').mLoading("hide");
 						var res = JSON.parse(data)
 						console.log(res);
@@ -5030,11 +5171,13 @@ function segmentList(res) {
 									}
 									// 12.27缓存飞机的OrderNo
 									$.session.set('changeOrderNo', orderInfo.OrderNo);
+									// 缓存飞机的乘客语言
+									$.session.set('changeOrderPassengerLanguage', orderInfo.Segment[0][0].Passengers[0].PassengerLanguage);
 									if (IsDomestic == 'true') {
 										if ($(".sureAlterTicketBtn").attr("startlimit") && parseInt($(".sureAlterTicketBtn").attr("startlimit")) >
 											0) {
 											if (datedifference(getNowFormatDate(), $('#alterDateInput').val()) < parseInt($(".sureAlterTicketBtn")
-													.attr("startlimit"))) {
+												.attr("startlimit"))) {
 												var mymessage = confirm($(".sureAlterTicketBtn").attr("Message"));
 												if (mymessage == true) {
 													if ($(".sureAlterTicketBtn").attr("CanSearch") != "true") {
@@ -5109,7 +5252,7 @@ function segmentList(res) {
 													var DepartureSelectValue = ' ' + $("#alterTimeInput  option:selected").val() + ':00:00';
 												}
 												searchDomInfo.queryKey = orderInfo.Segment[index][0].DeparteCityCode + ',' + orderInfo.Segment[index]
-													[0].ArriveCityCode + ',' + $('#alterDateInput').val() + DepartureSelectValue + ',' + sameAirline
+												[0].ArriveCityCode + ',' + $('#alterDateInput').val() + DepartureSelectValue + ',' + sameAirline
 											}
 											$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
 											window.location.href = '../../domesticAir/airTicketList.html';
@@ -5143,10 +5286,10 @@ function segmentList(res) {
 													var ReturnSelectValue = ' ' + $("#alterReturnTimeInput  option:selected").val() + ':00:00';
 												}
 												searchDomInfo.queryKey = orderInfo.Segment[index][0].DeparteCityCode + ',' + orderInfo.Segment[index]
-													[0].ArriveCityCode + ',' + $('#alterDateInput').val() + DepartureSelectValue + ',' + sameAirline;
+												[0].ArriveCityCode + ',' + $('#alterDateInput').val() + DepartureSelectValue + ',' + sameAirline;
 												searchDomInfo.queryKeyReturn = orderInfo.Segment[index][0].ArriveCityCode + ',' + orderInfo.Segment[
 													index][0].DeparteCityCode + ',' + $('#alterDateInput').val() + DepartureSelectValue + ',' + $(
-													'#alterReturnDateInput').val() + ReturnSelectValue + ',' + sameAirline;
+														'#alterReturnDateInput').val() + ReturnSelectValue + ',' + sameAirline;
 											}
 											$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
 											window.location.href = '../../domesticAir/airTicketList.html';
@@ -5201,7 +5344,7 @@ function segmentList(res) {
 							alert(get_lan('orderDetails').alterRemind);
 						}
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
@@ -5211,7 +5354,7 @@ function segmentList(res) {
 }
 //酒店
 function hotelList(res) {
-	res.Hotel.map(function(hitem, index) {
+	res.Hotel.map(function (hitem, index) {
 		if (hitem.CancelPolicy == null) {
 			hitem.CancelPolicy = ""
 		}
@@ -5247,6 +5390,7 @@ function hotelList(res) {
 			</div>\
 	    '
 		)
+		var showBus = hitem.ShuttleBusInfoList&&hitem.ShuttleBusInfoList.length>0?"":"hide";
 		$(".hotelDetailsList").eq(index).append(
 			'\
 	    	<div class="hotelDetailsLi">\
@@ -5279,19 +5423,62 @@ function hotelList(res) {
 				'orderDetails').LastTime + '</div>' + hitem.LastTime +
 			'</div>\
               <div class="hotelInfo flexRow">\
-                <div class="hotelRooms" style="width:220px;">' +
-			get_lan('orderDetails').Rooms + hitem.Rooms +
-			'</div>\
-                <div class="hotelNights flexRow"><img class="searchInputImg" src="../orders/images/nights.png" style="display:none">' +
-			get_lan('orderDetails').Nights + hitem.Nights +
-			'</div>\
+                <div class="hotelRooms" style="width:220px;">' + get_lan('orderDetails').Rooms + hitem.Rooms + '</div>\
+                <div class="hotelNights flexRow"><img class="searchInputImg" src="../orders/images/nights.png" style="display:none">' +get_lan('orderDetails').Nights + hitem.Nights +'</div>\
                 <div class="hotelWifi flexRow hide"><img class="searchInputImg" src="../orders/images/wifi.png" style="display:none">Wifi</div>\
-              </div>\
+			  </div>\
+			  <div class="hotelBusInfo flexRow '+showBus+'" style="min-height:0px;">\
+				<div style="width:220px;">'+get_lan('orderDetails').busInfo+'</div>\
+				<div style="width:500px;">\
+					<div class="hotelBusList"></div>\
+					<div class="hotelBusHide hide"></div>\
+					<div style="color:#3083FB;"><span class="busShowMore" style="cursor:pointer;" type="hide">'+get_lan('orderDetails').showMore+'</span></div>\
+				</div>\
+			  </div>\
               <div class="CabinCustomerName flexRow ' +
 			showCabinCustomer + '"><div style="width:220px;">' + get_lan('orderDetails').CabinCustomerName + '</div>' + hitem
-			.CabinCustomerName + '</div>\
+				.CabinCustomerName + '</div>\
 	    	</div>\
-	    ')
+		')
+		if(hitem.ShuttleBusInfoList){
+			if(hitem.ShuttleBusInfoList.length<3){
+				$(".busShowMore").eq(index).addClass("hide");
+			}
+			hitem.ShuttleBusInfoList.map(function(bItem,bIndex){
+				if(bIndex<2){
+					$(".hotelBusList").eq(index).append('\
+					<div class="flexRow" style="margin-bottom:10px;">\
+					  <div style="width:140px;">'+bItem.DepTime+'</div>\
+					  <div>\
+						<div class="flexRow"><img class="hotelBusIcon" src="./images/busDeparture.png">'+bItem.Departure+'</div>\
+						<div class="flexRow"><img class="hotelBusIcon" src="./images/busDestination.png">'+bItem.Destination+'</div>\
+					  </div>\
+					</div>\
+					')
+				}else{
+					$(".hotelBusHide").eq(index).append('\
+					<div class="flexRow" style="margin-bottom:10px;">\
+					  <div style="width:140px;">'+bItem.DepTime+'</div>\
+					  <div>\
+						<div class="flexRow"><img class="hotelBusIcon" src="./images/busDeparture.png">'+bItem.Departure+'</div>\
+						<div class="flexRow"><img class="hotelBusIcon" src="./images/busDestination.png">'+bItem.Destination+'</div>\
+					  </div>\
+					</div>\
+					')
+				}
+			})
+			$(".busShowMore").eq(index).unbind("click").click(function(){
+				if($(this).attr("type")=="hide"){
+					$(".hotelBusHide").eq(index).removeClass("hide");
+					$(this).text(get_lan("orderDetails").retract);
+					$(this).attr("type","show");
+				}else if($(this).attr("type")=="show"){
+					$(".hotelBusHide").eq(index).addClass("hide");
+					$(this).text(get_lan("orderDetails").showMore);
+					$(this).attr("type","hide");
+				}
+			})
+		}
 		$(".hotelBtnList").eq(index).html('\
 	    	<div class="hotelBtn cancelBtnHotel ' + showBtn1 + '" ItemId="' + hitem.HotelItemId +
 			'" orderNo="' + hitem.orderNo + '">' + get_lan('orderDetails').orderCancel +
@@ -5304,7 +5491,7 @@ function hotelList(res) {
 	    ')
 	})
 	//取消订单
-	$(".cancelBtnHotel").unbind("click").click(function() {
+	$(".cancelBtnHotel").unbind("click").click(function () {
 		var itemID = $(this).attr("ItemId");
 		var orderNo = $(this).attr("orderNo");
 		var cancelMessage = confirm(get_lan("orderDetails").cancelRemind);
@@ -5318,7 +5505,7 @@ function hotelList(res) {
 					url: $.session.get('obtCompany') + "/OrderService.svc/DeleteHotelItemPost",
 					jsonStr: '{"hotelItemID":"' + itemID + '","orderNo":"' + orderNo + '","id":' + netUserId + '}'
 				},
-				success: function(data) {
+				success: function (data) {
 					$('body').mLoading("hide");
 					var res = JSON.parse(data);
 					console.log(res);
@@ -5329,7 +5516,7 @@ function hotelList(res) {
 						alert(get_lan("orderDetails").cancelUnSuccess);
 					}
 				},
-				error: function() {
+				error: function () {
 					// alert('fail');
 				}
 			});
@@ -5345,7 +5532,7 @@ function trainList(res) {
 	var orderInfo = res;
 	console.log(orderInfo)
 	// ',' + sitem[0].Passengers[0].DocumentNo + ',' + orderInfo.OrderCustomerDetailList[0].CompanyId
-	res.Train.map(function(titem, index) {
+	res.Train.map(function (titem, index) {
 		var showBtn1 = titem.TrainCanReIssue && res.HideTrainChange ? "show" : "hide";
 		// 11月12日，res.HideTrainChange=true时显示改签按钮
 		var showBtn2 = titem.TrainCanReFund ? "show" : "hide";
@@ -5356,6 +5543,8 @@ function trainList(res) {
 			  <div class="trainLiTittle flexRow">\
                 <div style="margin-left:27px;">' +
 			titem.nameP + '</div>\
+			<div style="margin-left:30px;">' + get_lan('orderCustomerInfo').popDocuments +
+			titem.customerDocment + '</div>\
 			    <div style="margin-left:27px;">' + titem.TrainDate +
 			'</div>\
 			    <div style="margin-left:50px;">' + titem.TrainDeparte + ' - ' + titem.TrainArrive +
@@ -5375,8 +5564,9 @@ function trainList(res) {
 		)
 		var SeatNoStr = titem.SeatNo ? '&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').SeatNo + titem.SeatNo : "";
 		var CoachNoStr = titem.CoachNo ? '&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').CoachNo + titem.CoachNo : "";
-		var TicketNoStr = titem.TrainTicketNo ? '&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').trainTicketNo + titem.TrainTicketNo :
-			"";
+		var TicketNoStr = titem.TrainTicketNo ? '&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').trainTicketNo + titem.TrainTicketNo : "";
+		var TicketGateStr = titem.TicketGate ? '&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').TicketGate + titem.TicketGate : "";
+
 		$(".trainDetailsList").eq(index).append('\
 	    	<div class="trainDetailsLi">\
 	    	  <div class="trainType">' +
@@ -5397,6 +5587,7 @@ function trainList(res) {
 			TicketNoStr +
 			CoachNoStr +
 			SeatNoStr +
+			TicketGateStr +
 			'</div>\
 	    	</div>\
 	    ')
@@ -5426,8 +5617,13 @@ function trainList(res) {
 		// orderInfo.OrderNo + ',' + sitem[0].PnrCode + ',' + sitem[0].NominalFare.split('CNY')[0] + ',' + sitem[0].CabinCode +
 		// ',' + sitem[0].AirItemId + '"
 	})
+	getTAnumber(function(){
+		if(JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption){
+			$(".alterBtnTrain").addClass("hide");
+		}
+	},'start');
 	//取消订单
-	$(".cancelBtnTrain").unbind("click").click(function() {
+	$(".cancelBtnTrain").unbind("click").click(function () {
 		var itemID = $(this).attr("ItemId");
 		var pnrCode = $(this).attr("orderNo");
 		var cancelMessage = confirm(get_lan("orderDetails").cancelRemind);
@@ -5441,7 +5637,7 @@ function trainList(res) {
 					url: $.session.get('obtCompany') + "/OrderService.svc/DeleteTrainItemPost",
 					jsonStr: '{"itemID":"' + itemID + '","pnrCode":"' + pnrCode + '","id":' + netUserId + '}'
 				},
-				success: function(data) {
+				success: function (data) {
 					$('body').mLoading("hide");
 					var res = JSON.parse(data)
 					console.log(res);
@@ -5452,14 +5648,49 @@ function trainList(res) {
 						alert(res);
 					}
 				},
-				error: function() {
+				error: function () {
 					// alert('fail');
 				}
 			});
 		}
 	})
 	//退票
-	$(".ChangeTicketBtnTrain").unbind("click").click(function() {
+	// 获取退票费
+	function getTrainRefund(trainId) {
+		$('body').mLoading("show");
+		$.ajax({
+			type: 'post',
+			url: $.session.get('ajaxUrl'),
+			dataType: 'json',
+			data: {
+				url: $.session.get('obtCompany') + "/OrderService.svc/GetTrainRefundFare",
+				jsonStr: '{"id":' + netUserId + ',"itemId":"' + trainId + '","language":"' + obtLanguage + '"}'
+			},
+			success: function (data) {
+				var res = JSON.parse(data);
+				console.log(res);
+				$('body').mLoading("hide");
+				if (res.code == 200) {
+					$('.refundBrokerageTrain').removeClass('hide')
+					$('.refundMoneyTrain').removeClass('hide')
+					$('.refundTips').removeClass('hide')
+					$('.refundBrokerageTrain .money').text(res.refundFee + " " + ProfileInfo.OfficeCurrency)
+					$('.refundMoneyTrain .money').text(res.refundServiceFee + " " + ProfileInfo.OfficeCurrency)
+					// 苹果更换字体颜色
+					if (ProfileInfo.onlineStyle == "APPLE") {
+						$('.refundBrokerageTrain .money').css('color', "#3083FB")
+						$('.refundMoneyTrain .money').css('color', "#3083FB")
+					}
+				} else {
+					alert(res.message)
+				}
+			},
+			error: function () {
+				// alert('fail');
+			}
+		});
+	}
+	$(".ChangeTicketBtnTrain").unbind("click").click(function () {
 		var index = parseInt($(this).attr("index"));
 		if (obtLanguage == "CN") {
 			var refundTicketLimitBodyText =
@@ -5478,7 +5709,6 @@ function trainList(res) {
               3. For the situation, using local ID card to purcahse the ticket and enter the gate by using the local ID card then out with not taking the rail. Please confirm with the raiway staff with following the instruction given by them to refund the ticket.\
             '
 		}
-
 		$(".refundTicketBody").html('\
             <div class="refundTicketPassenger">' + get_lan("refundTicketPop").refundTicketPassenger +
 			' ' + res.Train[index].nameP +
@@ -5495,6 +5725,9 @@ function trainList(res) {
              <div class="refundArriveCity">' + res.Train[index].TrainArrive +
 			'</div>\
             </div>\
+			<p class="refundBrokerage refundBrokerageTrain hide" style="padding-top: 20px;text-align:right;">'+ get_lan("refundTicketPop").refundAmount + '<span class="money" style="color:#ED8322;font-size:16px;padding-left:10px;width: 110px;display: inline-block;">-</span></p>\
+			<p class="refundMoney refundMoneyTrain hide" style="padding-top: 10px;text-align:right;">'+ get_lan("refundTicketPop").refundFee + '<span class="money" style="color:#ED8322;font-size:16px;padding-left:10px;width: 110px;display: inline-block;">-</span></p>\
+			<p class="refundTips hide" style="padding-top: 10px;text-align:right;color:#999999;font-size: 12px;border-bottom: 1px solid #ECECEC;padding-bottom: 12px;"><img class="tipsIcon" style="display: inline-block;height: 14px;width: 14px;position: relative;top: 2px;" src="../orders/images/icon_hotts.png"/>'+ get_lan("refundTicketPop").refundTips + '</p>\
             <div class="refundTicketLimit">\
               <div class="refundTicketLimitTittle">' +
 			get_lan("refundTicketPop").refundTicketLimit +
@@ -5505,11 +5738,13 @@ function trainList(res) {
               </div>\
             </div>\
             ')
+		//火车票退票费 icon_hotts
+		getTrainRefund(res.Train[index].TrainItemId)
 		openRefundTicketPop();
-		$(".closeRefundTicketBtn").unbind("click").click(function() {
+		$(".closeRefundTicketBtn").unbind("click").click(function () {
 			closeRefundTicketPop();
 		})
-		$(".sureRefundTicketBtn").unbind("click").click(function() {
+		$(".sureRefundTicketBtn").unbind("click").click(function () {
 			$('body').mLoading("show");
 			$.ajax({
 				type: 'post',
@@ -5519,7 +5754,7 @@ function trainList(res) {
 					url: $.session.get('obtCompany') + "/OrderService.svc/TrainRefundPost",
 					jsonStr: '{"id":' + netUserId + ',"trainItemId":"' + res.Train[index].TrainItemId + '",}'
 				},
-				success: function(data) {
+				success: function (data) {
 					var res = JSON.parse(data);
 					console.log(res);
 					$('body').mLoading("hide");
@@ -5531,14 +5766,14 @@ function trainList(res) {
 						location.reload();
 					}
 				},
-				error: function() {
+				error: function () {
 					// alert('fail');
 				}
 			});
 		})
 	})
 	//改签火车票
-	$(".alterBtnTrain").unbind("click").click(function() {
+	$(".alterBtnTrain").unbind("click").click(function () {
 		var index = parseInt($(this).attr("index"));
 		var changeInfo = $(this).attr("changeInfo");
 		console.log(changeInfo)
@@ -5554,7 +5789,7 @@ function trainList(res) {
 
 
 		openAlterPop();
-		$(".closeAlterTicketBtn").unbind("click").click(function() {
+		$(".closeAlterTicketBtn").unbind("click").click(function () {
 			closeAlterPop();
 		})
 		$(".alterTicketTittle").text(get_lan("alterTicketPop").alterTicketTittleTrain);
@@ -5621,7 +5856,7 @@ function trainList(res) {
 			selectOtherMonths: true,
 		});
 		// $("#alterDateInputTrain").val(new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate());
-		$(".sureAlterTicketBtn").unbind("click").click(function() {
+		$(".sureAlterTicketBtn").unbind("click").click(function () {
 			$.session.set('trainTicketChanges', JSON.stringify(orderDetaile.Train));
 			canChangeTrain()
 		})
@@ -5638,7 +5873,7 @@ function trainList(res) {
 					url: $.session.get('obtCompany') + "/SystemService.svc/CanTicketChangePost",
 					jsonStr: '{"type":"4","Language":"CN","id":' + netUserId + ',"changeInfo":"' + changeInfo + '"}'
 				},
-				success: function(data) {
+				success: function (data) {
 					$('body').mLoading("hide");
 					var res = JSON.parse(data)
 					console.log(res);
@@ -5655,7 +5890,7 @@ function trainList(res) {
 									jsonStr: '{"trainItemId":"' + trainItemId + '","Language":"' + obtLanguage + '","id":' + netUserId +
 										',"searchTime":"' + searchTime + '","type":"2"}'
 								},
-								success: function(data) {
+								success: function (data) {
 									$('body').mLoading("hide");
 									var res = JSON.parse(data)
 									console.log(res);
@@ -5667,6 +5902,15 @@ function trainList(res) {
 									if (orderInfo.BookInOrgOrderForAT) {
 										$.session.set('goOnBookOrderNo', orderInfo.OrderNo);
 									}
+
+									if (!ProfileInfo.SearchTrainWithTimeDetail) {
+										var DepartureSelectValue = ''
+										var domTime = ''
+									} else {
+										var DepartureSelectValue = ' ' + orderInfo.Train[index].TrainDeparteTime.split(':')[0] + ':00:00';
+										var domTime = orderInfo.Train[index].TrainDeparteTime.split(':')[0]
+									}
+
 									var searchTrainInfo = {
 										'type': 'oneWay',
 										'departureCityText': orderInfo.Train[index].TrainDeparte,
@@ -5677,6 +5921,8 @@ function trainList(res) {
 										'queryKey': orderInfo.Train[index].TrainDeparte + ',' + orderInfo.Train[index].TrainArrive + ',' +
 											$('#alterDateInputTrain').val() + ',' + $("#alterCabinSelect").val(),
 										'alterTicketInfo': alterTicketInfo,
+										'domqueryKey': orderInfo.Train[index].TrainDeparteCode + ',' + orderInfo.Train[index].TrainArriveCode + ',' + $('#alterDateInputTrain').val() + DepartureSelectValue + ',' + $("#alterCabinSelect").val() + ',ALL',
+										'domTime': domTime,
 									}
 									// 1.可以加判断 苹果searchTrainInfo.goOnBookOrderNo为空
 									// 2.bookTrainTicket页面  获取乘客信息
@@ -5684,7 +5930,7 @@ function trainList(res) {
 									window.location.href = '../../train/trainTicketList.html';
 									// }
 								},
-								error: function() {
+								error: function () {
 									// alert('fail');
 								}
 							});
@@ -5694,7 +5940,7 @@ function trainList(res) {
 						return false;
 					}
 				},
-				error: function() {
+				error: function () {
 					// alert('fail');
 				}
 			});
@@ -5705,7 +5951,7 @@ function trainList(res) {
 /*2020-2-16  租车*/
 function carList(res) {
 	var orderInfo = res;
-	res.Car.map(function(cItem, cIndex) {
+	res.Car.map(function (cItem, cIndex) {
 		var showBtn = cItem.CarCanCancel ? "show" : "hide";
 		$(".carList").append(
 			'\
@@ -5761,7 +6007,7 @@ function carList(res) {
 	    	')
 	})
 	//取消订单
-	$(".cancelBtnCar").unbind("click").click(function() {
+	$(".cancelBtnCar").unbind("click").click(function () {
 		var itemID = $(this).attr("ItemId");
 		var orderNo = $(this).attr("orderNo");
 		var cancelMessage = confirm(get_lan("orderDetails").cancelRemind);
@@ -5775,7 +6021,7 @@ function carList(res) {
 					url: $.session.get('obtCompany') + "/OrderService.svc/DeleteCarItemPost",
 					jsonStr: '{"carItemID":"' + itemID + '","orderNo":"' + orderNo + '","id":' + netUserId + '}'
 				},
-				success: function(data) {
+				success: function (data) {
 					$('body').mLoading("hide");
 					var res = JSON.parse(data)
 					console.log(res);
@@ -5786,7 +6032,7 @@ function carList(res) {
 						alert(res);
 					}
 				},
-				error: function() {
+				error: function () {
 					// alert('fail');
 				}
 			});
@@ -5915,7 +6161,7 @@ function onlyOnePayment(orderDetaile) {
 				jsonStr: '{"request":{"id":' + netUserId + ',"orderNo":"' + $(".onlinePayBtn").attr("orderNo") +
 					'","language":"' + obtLanguage + '","payChannel":"1"}}'
 			},
-			success: function(data) {
+			success: function (data) {
 				// $('body').mLoading("hide");
 				var res = JSON.parse(data);
 				console.log(res);
@@ -5930,18 +6176,18 @@ function onlyOnePayment(orderDetaile) {
 						jsonStr: '{"request":{"subject":"' + subject + '","totalAmount":"' + res.payAmount + '","exMechantNO":"' +
 							res.exMechantNO + '","type":"' + type + '"}}'
 					},
-					success: function(data) {
+					success: function (data) {
 						// $('body').mLoading("hide");
 						var res = JSON.parse(data);
 						console.log(res);
 						$('body').append(res);
 					},
-					error: function() {
+					error: function () {
 						// alert('fail');
 					}
 				});
 			},
-			error: function() {
+			error: function () {
 				// alert('fail');
 			}
 		});
@@ -5953,7 +6199,7 @@ function onlyOnePayment(orderDetaile) {
 		} else if (!ProfileInfo.CreditCardYeepay && !ProfileInfo.CloseCreditCardGateway) {
 			yeePay(orderDetaile);
 		} else {
-			onlinePay(orderDetaile,"","CreditCardPay");
+			onlinePay(orderDetaile, "", "CreditCardPay");
 		}
 	}
 }

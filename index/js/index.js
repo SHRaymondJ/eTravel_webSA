@@ -127,8 +127,6 @@ var cn = {
 		'keyWordRemind': '请先选择城市',
 		'isDirect': '仅查询直飞',
 		'codeShare': '代码共享航班',
-		'alternate': '显示候补舱位',
-		'packagePrice': '打包价',
 		'addAirIntl': "添加航程",
 		'multipleRemind': "请先填写完",
 		'domHotel': "国内",
@@ -178,6 +176,9 @@ var cn = {
 	'footer': {
 		'industryNews': '业界动态',
 		'companyNews': '公司新闻',
+		'scan': '扫一扫，了解更多',
+		'WeChat': '微信公众号',
+		'APP': 'APP下载',
 	},
 	'accountRemind': '账号过期，请重新登陆',
 	'contactType': "技术支持，请联系 BCD helpdesk：021-61327099 &nbsp;9:00-18:00(工作日)",
@@ -230,8 +231,6 @@ var en = {
 		'keyWordRemind': 'Please choose the city first.',
 		'isDirect': 'Direct Flight',
 		'codeShare': 'Codeshare',
-		'alternate': 'Alternate Class',
-		'packagePrice': 'Package Price',
 		'addAirIntl': "Add Segment",
 		'multipleRemind': "Please fill out first.",
 		'domHotel': "Domestic",
@@ -282,6 +281,11 @@ var en = {
 	'footer': {
 		'industryNews': 'Industry News',
 		'companyNews': 'Company News',
+		// 'scan': 'Scan to learn more',
+		'scan': 'Learn more',
+		// 'WeChat': 'WeChat Official Account',
+		'WeChat': 'Official Account',
+		'APP': 'App Download',
 	},
 	'accountRemind': 'Account expired, please re login.',
 	'contactType': "For technical support, please contact BCD helpdesk：021-61327099 &nbsp;9:00-18:00(working day)",
@@ -341,6 +345,32 @@ $(function() {
 			$('#cover2').remove()
 		})
 	}
+	/*2020-10-9*/
+	if(ProfileInfo.PointInfo&&ProfileInfo.PointInfo.PointRuleList){
+		ProfileInfo.PointInfo.PointRuleList.map(function(item){
+			if(item.PointTypeId==1&&(item.RegionType=="ALL"||item.RegionType=="D")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				if(obtLanguage=="CN"){
+					$(".domPointsRemind").text("ⓘ 提前"+item.RuleValue+"天预订，您将获得"+item.PointValue+"积分");
+					$(".domPointsRemind").removeClass("hide");
+				}else if(obtLanguage=="EN"){
+					$(".domPointsRemind").text("ⓘ Try to book "+item.RuleValue+" days in advance, to earn "+item.PointValue+" points");
+					$(".domPointsRemind").removeClass("hide");
+				}
+			}
+		})
+		ProfileInfo.PointInfo.PointRuleList.map(function(item){
+			if(item.PointTypeId==1&&(item.RegionType=="ALL"||item.RegionType=="I")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				if(obtLanguage=="CN"){
+					$(".intlPointsRemind").text("ⓘ 提前"+item.RuleValue+"天预订，您将获得"+item.PointValue+"积分");
+					$(".intlPointsRemind").removeClass("hide");
+				}else if(obtLanguage=="EN"){
+					$(".intlPointsRemind").text("ⓘ Try to book "+item.RuleValue+" days in advance, to earn "+item.PointValue+" points");
+					$(".intlPointsRemind").removeClass("hide");
+				}
+			}
+		})
+	}
+	/*end*/
 
 	// showIndustryNews();//业界动态
 	// $.ajax(
@@ -368,6 +398,8 @@ $(function() {
 /*首页选择审批单*/
 if (ProfileInfo.HasTravelRequest && ProfileInfo.IndexTravelRequest && !TAnumber && !$.session.get('TAsearchOnly')) {
 	indexTANumber();
+}else if(ProfileInfo.HasTravelRequest && !ProfileInfo.IndexTravelRequest){
+
 }
 
 function indexTANumber() {
@@ -401,11 +433,12 @@ function indexTANumber() {
 			</div>\
 			<div class="TAchoosePassenger flexRow"></div>\
 			<div style="box-sizing: border-box;padding:10px;font-size: 15px;line-height:24px;height:410px;">\
-			<div style="width:800px;height:40px;margin-left:30px;background:#F2F6FF;line-height:40px;font-size:16px;box-sizing:border-box;padding-left:20px;">' +
-		travelApplication +
-		'</div>\
-			<div class="travelApplicationList" style="width:800px;height:290px;margin-left:30px;overflow-y: scroll;"></div>\
-			<div class="travelApplicationBtn" style="cursor:pointer;width:150px;height:36px;margin:13px auto;text-align:center;line-height:36px;color:#fff;background:#041D5C;font-size:18px;border-radius:5px;">' +
+			<div class="travelList" style="width:800px;height:40px;margin-left:30px;background:#F2F6FF;line-height:40px;font-size:16px;box-sizing:border-box;padding-left:20px;">' +
+		travelApplication + 
+		'<span class="TAselectedCustomer" style="margin-left:15px;color:#666666;font-size: 14px;" companyid="" customerid="" employeename=""></span>\
+		</div>\
+			<div class="travelApplicationList" style="width:800px;height:290px;margin-left:30px;overflow-y: auto;"></div>\
+			<div class="travelApplicationBtn" style="cursor:pointer;width:150px;height:36px;margin:13px auto;text-align:center;line-height:36px;color:#fff;background:#041D5C;font-size:16px;border-radius:4px;">' +
 		searchOnly + '</div>\
 			</div>\
 		</div>\
@@ -448,22 +481,24 @@ function indexTANumber() {
 					// alert(res.Message);
 					$(".travelApplicationList").append(
 						'\
-					<div class="applicationLi" style="width:778px;height:40px;line-height:40px;font-size:16px;box-sizing:border-box;padding-left:20px;">' +
+					<div class="applicationLi" style="width:778px;height:40px;line-height:40px;font-size:14px;box-sizing:border-box;padding-left:20px;">' +
 						applicationRemind + '</div>\
 					')
 				} else if (res.customerTRs.length != 0) {
 					res.customerTRs.map(function(item) {
 						$(".travelApplicationList").append(
 							'\
-							<div class="applicationLi flexRow" style="width:778px;height:50px;line-height:50px;font-size:16px;box-sizing:border-box;padding-left:20px;position:relative;">\
+							<div class="applicationLi flexRow" style="width:778px;min-height:50px;line-height:50px;font-size:16px;box-sizing:border-box;padding-left:20px;position:relative;">\
 							<div style="color:#1E66AE">' +
 							item.TravelRequestNo + '</div>\
-							<div style="margin-left:20px;">' + item.StartTime + '~' + item.EndTime +
-							'</div>\
+							<div style="margin-left:20px;">\
+								<div>' + item.StartTime + '~' + item.EndTime +'</div>\
+								<div style="font-size: 14px;color: #666666;line-height: 20px;"> '+ item.TravelRequestName +'</div>\
+							</div>\
 							<div style="margin-left:20px;">' + item.CityInfos[0].OrgCity + '~' + item.CityInfos[0].DstCity +
 							'</div>\
 							<div class="selectApplication" TravelRequestNo="' + item.TravelRequestNo +
-							'" style="cursor:pointer;position:absolute;width:100px;height:30px;line-height:30px;color:#fff;top:10px;right:20px;background:#041D5C;text-align:center;border-radius:5px;">' +
+							'" style="cursor:pointer;position:absolute;width:100px;height:30px;line-height:30px;color:#fff;top:10px;right:20px;background:#041D5C;text-align:center;border-radius:4px;">' +
 							select + '</div>\
 							</div>\
 						')
@@ -489,6 +524,10 @@ function indexTANumber() {
 						// $(".requestCover").remove();
 						location.reload();
 					})
+					if(ProfileInfo.HasTravelRequest && !ProfileInfo.IndexTravelRequest){
+						$(".selectApplication").remove();
+						$(".selectApplication").unbind("click");
+					}
 				}
 
 			},
@@ -505,12 +544,12 @@ function indexTANumber() {
 			var profileName = obtLanguage == "CN" ? ProfileInfo.CustomerCN : ProfileInfo.CustomerEN;
 			$(".TAchoosePassenger").html(
 				'\
-				<div style="width:230px;height:50px;font-size:14px;line-height:50px;margin-left:40px;">' + customer +
+				<div style="width:230px;height:50px;font-size:14px;line-height:50px;margin-left:40px;display:none">' + customer +
 				'<span class="TAselectedCustomer" style="margin-left:15px;" CompanyID="'+ProfileInfo.CompanyID+'" CustomerID="'+ProfileInfo.ID+'" employeeName="'+ProfileInfo.CustomerCN+'">' + profileName +
 				'</span></div>\
-				<div class="selectPassengerBody" style="width: 380px;height: 32px;margin-top: 10px;border: 1px solid #041E5B;border-radius: 4px;position: relative;">\
+				<div class="selectPassengerBody" style="width: 380px;height: 32px;margin-top: 10px;margin-left:40px;border: 1px solid #cccccc;border-radius: 4px;position: relative;">\
 					<input type="text" class="selectPassengerInput" autocomplete="off" placeholder="'+selectPassengerRemind+'" style="width: 300px;height: 30px;border: 0;position: absolute;top: 0;left: 2px;outline: none;">\
-					<div class="selectPassengerSearch btnBackColor" style="width: 80px;height: 26px;line-height: 26px;position: absolute;right: -135px;top: 3px;color: #fff;text-align: center;cursor: pointer;font-size: 14px;border-radius: 10px;">'+search+'</div>\
+					<div class="selectPassengerSearch btnBackColor" style="width: 80px;height: 26px;line-height: 26px;position: absolute;right: -135px;top: 3px;color: #fff;text-align: center;cursor: pointer;font-size: 14px;border-radius: 4px;">'+search+'</div>\
 					<div class="selectPassengerArrow" style="width: 40px;height: 32px;line-height: 32px;position: absolute;right: 0;top: 0;color: #000;text-align: center;cursor: pointer;">▼</div>\
 					<div class="selectPassengerList autoScrollY" style="width: 378px;height: 200px;position: absolute;top: 32px;left: 0;background-color: #fff;border: 1px solid #979797;z-index: 10;display: none;"></div>\
 				</div>\
@@ -606,7 +645,10 @@ function indexTANumber() {
 			customerTARequest(customerId);
 			$(".selectPassengerList").css("display","none");
         })
-    }
+	}
+	if(ProfileInfo.HasTravelRequest && !ProfileInfo.IndexTravelRequest){
+		$(".travelApplicationBtn").remove();
+	}
 }
 
 function TAchooseCustomer(nameLike, callback) {
@@ -666,6 +708,15 @@ function showContent() {
 	}else{
 		var TitleStr='<div class="pendTab mainFontColor hide" style="cursor:pointer;">' + get_lan('table').pendingApproval +'<div class="ApproveLengthIcon hide"></div></div>'
 	}
+
+	if(ProfileInfo.HideQRCode){
+		var appDownloadBoxHtml = '';
+	}else{
+		var appDownloadBoxHtml = '<div class="QRgroup l" id="app_download_box">\
+									<img src="./../staticFile/index/pic_appQR.png" alt="">\
+									<div class="tac">'+get_lan('footer').APP+'</div>\
+								</div>';
+	}
 	
 	$("#main").html(
 		'\
@@ -690,13 +741,13 @@ function showContent() {
             </div>\
             <div class="orderTittle flexRow autoCenter">\
                 <div class="myOrderTab mainFontColor orderTittleActive" style="margin: 0 56px 0 13px;cursor:pointer;">' +
-		get_lan('table').myOrders +
-		'</div>'
+				get_lan('table').myOrders +
+				'</div>'
                 +TitleStr+
                 '<span linkState="myOrders" class="moreOrderText">\
                     ' +
-		get_lan('table').more +
-		'\
+					get_lan('table').more +
+					'\
                 </span>\
                 <img src="../index/images/rightArrow.png" class="rightArrow" linkState="myOrders"/>\
             </div>\
@@ -704,11 +755,11 @@ function showContent() {
 				<div class="autoScrollY" id="tableBody">\
 				</div>\
 				<div class="rightGroup" style="float: right;">\
-					<div class="picGroup" style="height:274px;width:220px"><img class="picGroupImg" src="../staticFile/index.png"/><a class="picHref" href="javascript:volid(0);" target="_blank"></a></div>\
 					<div class="videoGroup" style=""> \
 						<img class="videoImg" src=""/>\
 						<div class="videoPlay"></div>\
 					</div>\
+					<div class="picGroup" style="height:274px;width:220px"><img class="picGroupImg" src="../staticFile/index.png"/><a class="picHref" href="javascript:volid(0);" target="_blank"></a></div>\
 				</div>\
             </div>\
             <div class="reminder hide">\
@@ -719,29 +770,29 @@ function showContent() {
                 </div>\
             </div>\
         </article>\
-        <footer class="indexFooter">\
-            <div class="autoCenter">\
-                <div class="flexRow newsBody">\
-                    <div class="industryNews">\
-                        <div class="newsTittle"><span>' +
-		get_lan('footer').industryNews +
-		'</span>：</div>\
-                    </div>\
-                    <div class="companyNews">\
-                        <div class="newsTittle"><span>' +
-		get_lan('footer').companyNews +
-		'</span>：</div>\
-                    </div>\
-                </div>\
-                <div class="copyright">' +
-		appleStr +
-		'\
-                <span class="etravelText">Powered by eTravel</span>\
-                </div>\
-            </div>\
-        </footer>\
+		<footer class="indexFooter">\
+		    <div class="autoCenter clearfix">\
+		        <div class="newsBody ">\
+							<div class="imgGroup l"><img src="./../staticFile/index/pic_news.png" alt=""></div>\
+							<div class="newsGroup l">\
+								<div class="newsList"></div>\
+							</div>\
+							<div class="QRright l clearfix">\
+								<div class="screenText l" >'+get_lan('footer').scan+'</div>\
+								<div class="QRgroup l">\
+									<img src="./../staticFile/index/pic_weQR.png" alt="">\
+									<div class="tac">'+get_lan('footer').WeChat+'</div>\
+								</div>' +
+								 appDownloadBoxHtml +
+							 '</div>\
+		        </div>\
+		    </div>\
+		</footer>\
     '
 	)
+	
+	
+	
 	/*首页审批单*/
 	if (ProfileInfo.HasTravelRequest && ProfileInfo.IndexTravelRequest) {
 		// #F6AA25 改为 #041e5b
@@ -759,6 +810,14 @@ function showContent() {
 				get_lan("table").taTab + '</div>\
 			')
 		}
+	}
+	if(ProfileInfo.HasTravelRequest && !ProfileInfo.IndexTravelRequest){
+		$(".orderTittle").append(
+			'\
+			<div class="srpitLine"></div>'+
+		'<div class="taTab mainFontColor" style="margin: 0 56px 0 40px;cursor:pointer;color:#041e5b;">' +
+			get_lan("table").taTab + '</div>\
+		')
 	}
 	$(".taTab").unbind("click").click(function() {
 		indexTANumber();
@@ -903,7 +962,6 @@ function showContent() {
 		// 	// $('.orderTittle').addClass('hide')
 		// 	// $('.autoScrollY').addClass('hide')
 		// }
-
 		$($(".menusLi")[1]).hide()
 		$('.moreOrderText').hide()
 		$('.rightArrow').hide()
@@ -1089,11 +1147,11 @@ function searchBody() {
 	$('.searchBody').html(
 		'\
         <ul class="tabBar flexRow">\
-            <li class="tab airDom tabActive specificFontColor">' + get_lan(
+            <li class="tab airDom specificFontColor">' + get_lan(
 			'searchBody').airDom + '</li>\
             <li class="tab airIntl specificFontColor" style="width: 125px;">' +
 		get_lan('searchBody').airIntl + '</li>\
-            <li class="tab Hotel specificFontColor">' + get_lan('searchBody')
+            <li class="tab Hotel specificFontColor" id="indexHotelTab">' + get_lan('searchBody')
 		.hotel + '</li>\
             <li class="tab appleHotel specificFontColor hide">' + get_lan('searchBody').hotel +
 		'</li>\
@@ -1105,17 +1163,20 @@ function searchBody() {
         <div class="searchPage airDomBody">\
             <div class="domTabBar mainFontColor">\
                 <span style="position:relative">\
-                  <input type="radio" id="domOneWay" name="domTrip" checked="checked">\
-				  <label for="domOneWay" style="margin-left:15px;cursor: pointer;">'
-					+get_lan('searchBody').oneWay +
-					'</label>\
+                  <input type="radio" id="domOneWay" name="domTrip" checked="checked"><label for="domOneWay" style="margin-left:15px;cursor: pointer;">' +
+		get_lan('searchBody').oneWay +
+		'</label>\
                 </span>\
                 <span style="position:relative">\
                   <input type="radio" id="domRoundTrip" name="domTrip" style="margin-left:56px"><label for="domRoundTrip" style="margin-left:71px;cursor: pointer;">' +
 		get_lan('searchBody').roundTrip +
 		'</label>\
                 </span>\
+				<span style="position:relative">\
+				          <input type="radio" id="domMultiple" name="domTrip" style="margin-left:56px"><label for="domMultiple" style="margin-left:71px;cursor: pointer;">' +get_lan('searchBody').Multiple +'</label>\
+				</span>\
             </div>\
+<div class="domnotMultiple">\
             <div class="cityStyle flexRow">\
                 <div class="cityTittle">' +
 		get_lan('searchBody').from +
@@ -1298,47 +1359,146 @@ function searchBody() {
                     <option value="23">23:00</option>\
                   </select>\
                 </div>\
-            </div>\
+			</div>\
+			<div class="pointsRemindBody hide domPointsRemind"></div>\
             <div class="cabinStyle flexRow domCabinInfo">\
                 <div class="cabinTittle domCabinTittle">' +
 				get_lan('searchBody').cabin +
 				'</div>\
-                <select type="text" id="domCabin">\
-                  <option berthType="0">' + get_lan('searchBody').cabins.cabin1 + '</option>\
-				  <option berthType="1">' + get_lan('searchBody').cabins.cabin2 +'</option>\
-				  <option berthType="2">' + get_lan('searchBody').cabins.cabin3 +'</option>\
-				  <option berthType="3">' + get_lan('searchBody').cabins.cabin4 +'</option>\
-				  <option berthType="23">' + get_lan('searchBody').cabins.cabin5 +'</option>\
-                </select>\
-                <input type="checkbox" class="domCodeShareCheckBox" style="margin:7px 5px 0 25px;">\
-                <span class="domCodeShareText" style="font-weight:bold;">' +
+						<select type="text" id="domCabin">\
+						<option berthType="0">' + get_lan(
+					'searchBody').cabins.cabin1 + '</option>\
+						<option berthType="1">' + get_lan('searchBody').cabins.cabin2 +
+				'</option>\
+						<option berthType="2">' + get_lan('searchBody').cabins.cabin3 +
+				'</option>\
+						<option berthType="3">' + get_lan('searchBody').cabins.cabin4 +
+				'</option>\
+						<option berthType="23">' + get_lan('searchBody').cabins.cabin5 +
+				'</option>\
+						</select>\
+						<input type="checkbox" class="domCodeShareCheckBox" style="margin:7px 5px 0 25px;">\
+						<span class="domCodeShareText" style="font-weight:bold;">' +
 				get_lan('searchBody').codeShare +
 				'</span>\
-                <input type="checkbox" class="domDirectCheckBox" style="margin:7px 5px 0 5px;" >\
-                <span class="domDirectText" style="font-weight:bold;">' +
-				get_lan('searchBody').isDirect +
-				'</span>\
+                <input type="checkbox" class="domDirectCheckBox" style="margin:7px 5px 0 5px;" checked>\
+                <span class="domDirectText" style="font-weight:bold;">' +get_lan('searchBody').isDirect +'</span>\
             </div>\
-			<div class="cabinStyle flexRow" style="新选项">\
-			    <div class="cabinTittle domCabinTittle">' +
-				'</div>\
-			    <select type="text" style="width:146px;opacity:0">\
-			    </select>\
-			    <input type="checkbox" class="alternateCheckBox" checked style="margin:7px 5px 0 25px;">\
-			    <span class="alternateText" style="font-weight:bold;">' +
-				get_lan('searchBody').alternate +
-				'</span>\
-			    <input type="checkbox" class="packagePriceCheckBox" style="margin:7px 5px 0 5px;" >\
-			    <span class="packagePriceText" style="font-weight:bold;">' +
-				get_lan('searchBody').packagePrice +
-				'</span>\
-			</div>\
+</div>\
+<div class="domMultiple hide">\
+	<div class="domAirMultipleBody hide">\
+	      <div class="domAirMultipleLi flexRow">\
+	        <div class="MultipleLiIcon">1</div>\
+	        <div class="MultipleLiText">' +
+	get_lan('searchBody').departure +
+	'</div>\
+	        <input class="MultipleLiInput domMultipleDeparture">\
+	        <div class="MultipleLiText">' +
+	get_lan('searchBody').arrival +
+	'</div>\
+	        <input class="MultipleLiInput domMultipleArrivel" inputIndex="0">\
+	        <div class="MultipleLiText">' +
+	get_lan('searchBody').departureDate +
+	'</div>\
+	        <div class="MultipleLiInputBody flexRow">\
+	          <input class="MultipleLiInput domMultipleDepartureDate">\
+	          <select type="text" class="domMultipleSelect">\
+	            <option value="all" class="intlAllDay">' +
+	get_lan("searchBody").allDay +
+	'</option>\
+	            <option value="0">0:00</option>\
+	            <option value="1">1:00</option>\
+	            <option value="2">2:00</option>\
+	            <option value="3">3:00</option>\
+	            <option value="4">4:00</option>\
+	            <option value="5">5:00</option>\
+	            <option value="6">6:00</option>\
+	            <option value="7">7:00</option>\
+	            <option value="8">8:00</option>\
+	            <option value="9">9:00</option>\
+	            <option value="10">10:00</option>\
+	            <option value="11">11:00</option>\
+	            <option value="12">12:00</option>\
+	            <option value="13">13:00</option>\
+	            <option value="14">14:00</option>\
+	            <option value="15">15:00</option>\
+	            <option value="16">16:00</option>\
+	            <option value="17">17:00</option>\
+	            <option value="18">18:00</option>\
+	            <option value="19">19:00</option>\
+	            <option value="20">20:00</option>\
+	            <option value="21">21:00</option>\
+	            <option value="22">22:00</option>\
+	            <option value="23">23:00</option>\
+	          </select>\
+	        </div>\
+	      </div>\
+	      <div class="domAirMultipleLi flexRow">\
+	        <div class="MultipleLiIcon">2</div>\
+	        <div class="MultipleLiText">' +
+	get_lan('searchBody').departure +
+	'</div>\
+	        <input class="MultipleLiInput domMultipleDeparture">\
+	        <div class="MultipleLiText">' +
+	get_lan('searchBody').arrival +
+	'</div>\
+	        <input class="MultipleLiInput domMultipleArrivel" inputIndex="1">\
+	        <div class="MultipleLiText">' +
+	get_lan('searchBody').departureDate +
+	'</div>\
+	        <div class="MultipleLiInputBody flexRow">\
+	          <input class="MultipleLiInput domMultipleDepartureDate">\
+	          <select type="text" class="domMultipleSelect">\
+	            <option value="all" class="intlAllDay">' +
+	get_lan("searchBody").allDay +
+	'</option>\
+	            <option value="0">0:00</option>\
+	            <option value="1">1:00</option>\
+	            <option value="2">2:00</option>\
+	            <option value="3">3:00</option>\
+	            <option value="4">4:00</option>\
+	            <option value="5">5:00</option>\
+	            <option value="6">6:00</option>\
+	            <option value="7">7:00</option>\
+	            <option value="8">8:00</option>\
+	            <option value="9">9:00</option>\
+	            <option value="10">10:00</option>\
+	            <option value="11">11:00</option>\
+	            <option value="12">12:00</option>\
+	            <option value="13">13:00</option>\
+	            <option value="14">14:00</option>\
+	            <option value="15">15:00</option>\
+	            <option value="16">16:00</option>\
+	            <option value="17">17:00</option>\
+	            <option value="18">18:00</option>\
+	            <option value="19">19:00</option>\
+	            <option value="20">20:00</option>\
+	            <option value="21">21:00</option>\
+	            <option value="22">22:00</option>\
+	            <option value="23">23:00</option>\
+	          </select>\
+	        </div>\
+		  </div>\
+		  <div class="pointsRemindBody hide domPointsRemind"></div>\
+	      <div class="flexRow cabinStyle domMultiCabinInfo" style="margin-top:5px;margin-bottom:40px">\
+	        <div class="MultipleLiIcon" style="background:#fff;"></div>\
+	        <div class="MultipleLiText">' +
+	get_lan('searchBody').cabin +
+	'</div>\
+	        <select type="text" id="domCabin">\
+			' + optionStr +'\
+	        </select>\
+			<input type="checkbox" class="domDirectCheckBox" style="margin:7px 5px 0 5px;" checked>\
+			 <span class="domDirectText" style="font-weight:bold;line-height: 30px;">' +get_lan('searchBody').isDirect +'</span>\
+	      </div>\
+	    </div>\
+</div>\
             <div class="searchDomBtn btnBackColor" state="oneWay">' + get_lan(
 			'searchBody').search +
 		'</div>\
         </div>\
         <div class="searchPage airIntlBody">\
-            <div class="intlTabBar mainFontColor" style="width:380px;">\
+            <div class="intlTabBar mainFontColor">\
                 <span style="position:relative" class="oneWayIntl">\
                   <input type="radio" id="intlOneWay" name="intlTrip" checked="checked"><label for="intlOneWay" style="margin-left:15px;cursor: pointer;">' +
 		get_lan('searchBody').oneWay +
@@ -1489,23 +1649,24 @@ function searchBody() {
 					  <option value="11">±11H</option>\
 					  <option value="12">±12H</option>\
 					</select>\
-                </div>\
+				</div>\
+				<div class="pointsRemindBody hide intlPointsRemind"></div>\
                 <div class="cabinStyle flexRow">\
                     <div class="cabinTittle">' +
-		get_lan('searchBody').cabin +
-		'</div>\
-                    <select type="text" id="intlCabin">\
-                      \
-                      ' +
-		optionStr +
-		'\
-                      \
-                    </select>\
-                    <div class="intlDirectCheckBoxBody flexRow">\
-                      <div class="cabinTittle" style="text-align:right;padding-right: 10px;width:102px;"><input type="checkbox" class="intlDirectCheckBox"></div>\
-                      <span style="font-weight:bold;">' +
-		get_lan('searchBody').isDirect +
-		'</span>\
+					get_lan('searchBody').cabin +
+					'</div>\
+								<select type="text" id="intlCabin">\
+								\
+								' +
+					optionStr +
+					'\
+								\
+								</select>\
+								<div class="intlDirectCheckBoxBody flexRow">\
+								<div class="cabinTittle" style="text-align:right;padding-right: 10px;width:102px;"><input type="checkbox" class="intlDirectCheckBox"></div>\
+								<span style="font-weight:bold;">' +
+					get_lan('searchBody').isDirect +
+					'</span>\
                     </div>\
                 </div>\
             </div>\
@@ -1605,6 +1766,7 @@ function searchBody() {
               <div class="addAirIntlBody specificFontColor"><span style="font-weight:bold;margin-right:15px;font-size:16px;">+</span>' +
 		get_lan("searchBody").addAirIntl +
 		'</div>\
+		<div class="pointsRemindBody hide intlPointsRemind"></div>\
               <div class="flexRow" style="margin-top:5px;">\
                 <div class="MultipleLiIcon" style="background:#fff;"></div>\
                 <div class="MultipleLiText">' +
@@ -1657,17 +1819,17 @@ function searchBody() {
                 <div class="dateTittle">' +
 		get_lan('searchBody').hotelPrice +
 		'</div>\
-                <input type="text" id="hotelPrice" value="￥0-5000" minPrice="0" maxPrice="5000">\
+                <input type="text" id="hotelPrice" value="0-5000'+ProfileInfo.OfficeCurrency+'" minPrice="0" maxPrice="5000">\
                	<div class="hotelPriceBody">\
                		<div class="hotelPriceLi" minPrice="0" maxPrice="5000">' +
 		get_lan('searchBody').all +
 		'</div>\
-               		<div class="hotelPriceLi" minPrice="0" maxPrice="150">￥0-150</div>\
-               		<div class="hotelPriceLi" minPrice="151" maxPrice="300">￥151-300</div>\
-               		<div class="hotelPriceLi" minPrice="301" maxPrice="450">￥301-450</div>\
-               		<div class="hotelPriceLi" minPrice="451" maxPrice="600">￥451-600</div>\
-               		<div class="hotelPriceLi" minPrice="601" maxPrice="1000">￥601-1000</div>\
-               		<div class="hotelPriceLi" minPrice="1000" maxPrice="5000">￥1000+</div>\
+               		<div class="hotelPriceLi" minPrice="0" maxPrice="150">0-150'+ProfileInfo.OfficeCurrency+'</div>\
+               		<div class="hotelPriceLi" minPrice="151" maxPrice="300">151-300'+ProfileInfo.OfficeCurrency+'</div>\
+               		<div class="hotelPriceLi" minPrice="301" maxPrice="450">301-450'+ProfileInfo.OfficeCurrency+'</div>\
+               		<div class="hotelPriceLi" minPrice="451" maxPrice="600">451-600'+ProfileInfo.OfficeCurrency+'</div>\
+               		<div class="hotelPriceLi" minPrice="601" maxPrice="1000">601-1000'+ProfileInfo.OfficeCurrency+'</div>\
+               		<div class="hotelPriceLi" minPrice="1000" maxPrice="5000">1000+'+ProfileInfo.OfficeCurrency+'</div>\
                	</div>\
                 <div class="dateTittle">' +
 		get_lan('searchBody').hotelAddress +
@@ -1793,11 +1955,73 @@ function searchBody() {
                 <div class="dateTittle">' +
 		get_lan('searchBody').departureDate +
 		'</div>\
+		<div class="trainDateBody trainReturnDateBody flexRow">\
                 <input type="text" id="trainDepartureDate" readonly="readonly">\
+						<select type="text" class="trainDepartureSelect">\
+				            <option value="all" class="trainAllDay">' +
+				get_lan("searchBody").allDay +
+				'</option>\
+				            <option value="0">0:00</option>\
+				            <option value="1">1:00</option>\
+				            <option value="2">2:00</option>\
+				            <option value="3">3:00</option>\
+				            <option value="4">4:00</option>\
+				            <option value="5">5:00</option>\
+				            <option value="6">6:00</option>\
+				            <option value="7">7:00</option>\
+				            <option value="8">8:00</option>\
+				            <option value="9">9:00</option>\
+				            <option value="10">10:00</option>\
+				            <option value="11">11:00</option>\
+				            <option value="12">12:00</option>\
+				            <option value="13">13:00</option>\
+				            <option value="14">14:00</option>\
+				            <option value="15">15:00</option>\
+				            <option value="16">16:00</option>\
+				            <option value="17">17:00</option>\
+				            <option value="18">18:00</option>\
+				            <option value="19">19:00</option>\
+				            <option value="20">20:00</option>\
+				            <option value="21">21:00</option>\
+				            <option value="22">22:00</option>\
+				            <option value="23">23:00</option>\
+				          </select>\
+						  </div>\
                 <div class="dateTittle trainDateTittle" style="color:#9B9B9B;">' +
 		get_lan('searchBody').returnDate +
 		'</div>\
+		<div class="trainDateBody trainReturnDateBody flexRow">\
                 <input type="text" id="trainReturnDate" disabled="disabled">\
+					<select type="text" class="trainReturnSelect" disabled="disabled">\
+					            <option value="all" class="trainAllDay">' +
+					get_lan("searchBody").allDay +
+					'</option>\
+					            <option value="0">0:00</option>\
+					            <option value="1">1:00</option>\
+					            <option value="2">2:00</option>\
+					            <option value="3">3:00</option>\
+					            <option value="4">4:00</option>\
+					            <option value="5">5:00</option>\
+					            <option value="6">6:00</option>\
+					            <option value="7">7:00</option>\
+					            <option value="8">8:00</option>\
+					            <option value="9">9:00</option>\
+					            <option value="10">10:00</option>\
+					            <option value="11">11:00</option>\
+					            <option value="12">12:00</option>\
+					            <option value="13">13:00</option>\
+					            <option value="14">14:00</option>\
+					            <option value="15">15:00</option>\
+					            <option value="16">16:00</option>\
+					            <option value="17">17:00</option>\
+					            <option value="18">18:00</option>\
+					            <option value="19">19:00</option>\
+					            <option value="20">20:00</option>\
+					            <option value="21">21:00</option>\
+					            <option value="22">22:00</option>\
+					            <option value="23">23:00</option>\
+					          </select>\
+						</div>\
             </div>\
             <div class="cabinStyle flexRow">\
                 <div class="cabinTittle">' +
@@ -1882,15 +2106,15 @@ function searchBody() {
 						<div class="hotelPriceLi" minPrice="1000" maxPrice="5000">1000+</div>'
 			)
 		} else {
-			$("#hotelPrice").val("￥0-5000")
+			$("#hotelPrice").val("0-5000"+ProfileInfo.OfficeCurrency)
 			$(".hotelPriceBody").html('<div class="hotelPriceLi" minPrice="0" maxPrice="5000">' + get_lan('searchBody').all +
 				'</div>\
-						<div class="hotelPriceLi" minPrice="0" maxPrice="150">￥0-150</div>\
-						<div class="hotelPriceLi" minPrice="151" maxPrice="300">￥151-300</div>\
-						<div class="hotelPriceLi" minPrice="301" maxPrice="450">￥301-450</div>\
-						<div class="hotelPriceLi" minPrice="451" maxPrice="600">￥451-600</div>\
-						<div class="hotelPriceLi" minPrice="601" maxPrice="1000">￥601-1000</div>\
-						<div class="hotelPriceLi" minPrice="1000" maxPrice="5000">￥1000+</div>'
+						<div class="hotelPriceLi" minPrice="0" maxPrice="150">0-150'+ProfileInfo.OfficeCurrency+'</div>\
+						<div class="hotelPriceLi" minPrice="151" maxPrice="300">151-300'+ProfileInfo.OfficeCurrency+'</div>\
+						<div class="hotelPriceLi" minPrice="301" maxPrice="450">301-450'+ProfileInfo.OfficeCurrency+'</div>\
+						<div class="hotelPriceLi" minPrice="451" maxPrice="600">451-600'+ProfileInfo.OfficeCurrency+'</div>\
+						<div class="hotelPriceLi" minPrice="601" maxPrice="1000">601-1000'+ProfileInfo.OfficeCurrency+'</div>\
+						<div class="hotelPriceLi" minPrice="1000" maxPrice="5000">1000+'+ProfileInfo.OfficeCurrency+'</div>'
 			)
 		}
 		$(".hotelPriceLi").on('mousedown', function() {
@@ -1900,10 +2124,6 @@ function searchBody() {
 		})
 
 	})
-
-
-
-
 
 	for (var i = 0; i < 24; i++) {
 		$("#carFromHour,#carToHour").append('\
@@ -1923,7 +2143,7 @@ function searchBody() {
 	//         <option value="'+i+'">'+i+'</option>\
 	//         ')
 	// }
-	//<option berthType="">'+get_lan('searchBody').cabins.cabin1+'</option>\
+	//<option berthType="">'+get_lan('searchBody').cabins.cabin1+'</option>
 	$(".selectTimeStyle").remove();
 	$("#hotelAddress").on('input propertychange', function() {
 		$("#hotelAddress").removeAttr("key");
@@ -1941,7 +2161,7 @@ function searchBody() {
 		},
 		success: function(data) {
 			var res = JSON.parse(data);
-			console.log(res);
+			console.log('isDomesticAir='+res.isDomesticAir+' isInterAir='+res.isInterAir+' isHotel='+res.isHotel+' isTrain='+res.isTrain);
 
 			var accessInfo = {
 				"isDomesticAir": res.isDomesticAir,
@@ -1950,18 +2170,52 @@ function searchBody() {
 				"isTrain": res.isTrain,
 			}
 			$.session.set('accessInfo', JSON.stringify(accessInfo));
-
+			var flag = 0;
 			if (!res.isDomesticAir) {
 				$(".airDom ").hide();
+				$('.airDomBody').hide();
+			}else{
+				if(flag==0){
+					$('.airDomBody').show();
+					$('.airDom ').addClass('tabActive');
+					flag=1;
+				}
 			}
 			if (!res.isInterAir) {
 				$(".airIntl ").hide();
+				$('.airIntlBody').hide();
+			}else{
+				if(flag==0){
+					$('.airIntlBody').show();
+					$("#intlRoundTrip").click();
+					$('.airIntl ').addClass('tabActive');
+					flag=1;
+				}
 			}
 			if (!res.isHotel) {
 				$(".Hotel ").hide();
+				$('.hotelBody').hide();
+			}else{
+				if(flag==0){
+					$('.Hotel ').addClass('tabActive');
+					if (ProfileInfo.HotelJumpHRS) {
+						window.open(ProfileInfo.HotelJumpHRS_Url);
+						$(".tab").eq(0).click();
+					} else {
+						$('.hotelBody').show();
+					}
+					flag=1;
+				}
 			}
 			if (!res.isTrain) {
 				$(".Train").hide();
+				$('.trainBody').hide();
+			}else{
+				if(flag==0){
+					$('.Train ').addClass('tabActive');
+					$('.trainBody').show();
+					flag=1;
+				}
 			}
 			if (!res.isDomesticAir && !res.isInterAir && !res.isHotel && !res.isTrain) {
 				$(".searchBody").hide();
@@ -1984,9 +2238,20 @@ function searchBody() {
 			if (res.SearchInterAirWTime && res.DomesticHideAllDay) {
 				$(".intlAllDay").remove();
 				$("#intlDepartureSelect").val("8");
-				// $("#intlReturnSelect").val("8"); //为何显示返回的时候是8:00
 				$("#intlReturnSelect").val("17");
 				$(".MultipleSelect").val("8");
+				$('.domMultipleSelect').val('8')
+			}
+			
+			if (res.SearchTrainWithTimeDetail) {
+				$(".trainAllDay").remove();
+				// domDepartureSelect
+				$(".trainDepartureSelect").val("8");
+				$('.trainReturnSelect').val('17')
+			}
+			if(res.HideInterMutiple){
+				$('#intlMultipleTrip+label').remove()
+				$('#intlMultipleTrip').remove()
 			}
 			chooseDom(); //国内机票
 			chooseIntl(); //国际机票
@@ -2032,19 +2297,32 @@ function searchBody() {
 		}
 	});
 	/*根据profile的改变*/
-	// if (!ProfileInfo.isCodeShare) {
-	// 	//代码航班
-	// 	$(".domCodeShareText").remove();
-	// 	$(".domCodeShareCheckBox").remove();
-	// }
+	if (!ProfileInfo.isCodeShare) {
+		$(".domCodeShareText").remove();
+		$(".domCodeShareCheckBox").remove();
+	}
 	if (!ProfileInfo.QueryDomesticTicketsWithTime) {
 		$("#domDepartureSelect,#domReturnSelect").remove();
+	}
+	if (!ProfileInfo.SearchTrainWithTimeDetail) {
+		$(".trainDepartureSelect,.trainReturnSelect").remove();
 	}
 	if (!ProfileInfo.ShowDomesticTimeSlt) {
 		$(".plusMinus").remove();
 	}
 	if (!ProfileInfo.SearchInterAirWTime) {
 		$("#intlDepartureSelect,#intlReturnSelect,.MultipleSelect").remove();
+	}
+	//隐藏租车公司权限
+	if(ProfileInfo.HideCarRentalCompany){
+		$('.carLine').remove()
+	}
+	// 方糖，隐藏舱位类型选择，国内国际
+	if(ProfileInfo.NeedSpecialPolicy){
+		$("#domCabin  option:first").prop("selected", 'selected');
+		$("#domCabin").attr('disabled','disabled')
+		$("#intlCabin  option:first").prop("selected", 'selected');
+		$("#intlCabin").attr('disabled','disabled')
 	}
 	$('.searchPage').hide();
 	$('.airDomBody').show();
@@ -2083,6 +2361,12 @@ function searchBody() {
 	if (TAnumber != undefined && TAnumber != "") {
 		getCity()
 	}
+	// 2020.11.26 酒店跳转
+	if(ProfileInfo.HotelJumpHRSWeb){
+		$('#indexHotelTab').unbind("click").click(function(){
+			window.open(ProfileInfo.HRSWebsite);
+		})
+	}
 }
 /*2020-2-11 apple酒店提醒*/
 function appleHotelPop(callback) {
@@ -2113,6 +2397,8 @@ function chooseDom() {
 		$(this).click(function() {
 			var discount = $(this).attr('id');
 			if (discount == "domOneWay") {
+				$('.domnotMultiple').show()
+				$('.domMultiple').hide()
 				$(".domDateTittle,#domReturnDate,#domReturnSelect").css('color', '#9b9b9b');
 				$(".domDateBody").eq(1).css('border', '1px solid #9b9b9b');
 				$("#domDepartureDate").datepicker('destroy');
@@ -2141,6 +2427,8 @@ function chooseDom() {
 				$('.searchDomBtn').attr('state', 'oneWay')
 			}
 			if (discount == "domRoundTrip") {
+				$('.domnotMultiple').show()
+				$('.domMultiple').hide()
 				$(".domDateTittle,#domReturnDate,#domReturnSelect").css('color', '#000');
 				$(".domDateBody").eq(1).css('border', '1px solid #000');
 				$("#domReturnDate").val(getNextDay($("#domDepartureDate").val()));
@@ -2154,6 +2442,12 @@ function chooseDom() {
 				dateChoose("domDepartureDate", "domReturnDate");
 				$('.searchDomBtn').attr('state', 'roundTrip');
 			}
+			if(discount=='domMultiple'){
+				$('.domnotMultiple').hide()
+				$('.domMultiple').show()
+				$('.domAirMultipleBody').show()
+				$('.searchDomBtn').attr('state', 'multiple')
+			}
 		});
 	});
 	// 12.04修改
@@ -2163,7 +2457,7 @@ function chooseDom() {
 	});
 	$("#returnPlusMinus").attr('disabled', 'disabled')
 	$("#domReturnSelect").attr('disabled', 'disabled')
-	$('.plusMinus').val('3')
+	$('.plusMinus').val('12')//3改成12
 	GrayDepartPlusMinus()
 	// 2020.1.20 新增国际机票
 	// $("#returnPlusMinusintel").css({
@@ -2173,12 +2467,16 @@ function chooseDom() {
 	// $("#returnPlusMinus").attr('disabled', 'disabled')
 	// $("#domReturnSelect").attr('disabled', 'disabled')
 
-	$('#DepartPlusMinusintel').val('5')
-	$('#returnPlusMinusintel').val('5')
+	$('#DepartPlusMinusintel').val('12')//5改成12
+	$('#returnPlusMinusintel').val('12')
 	GrayIntelDepartPlusMinus()
 
 	$("#domDepartureCity").kuCity();
 	$("#domArrivalCity").kuCity();
+	//国内多段
+	$('.domMultipleDeparture').kuCity()
+	$('.domMultipleArrivel').kuCity()
+	
 	$("#domDepartureDate").datepicker({
 		dateFormat: 'yy-mm-dd',
 		changeMonth: true,
@@ -2191,57 +2489,67 @@ function chooseDom() {
 	});
 	$("#domDepartureDate").val(GetDateStr(0));
 	$("#domReturnDate").val(GetDateStr(1));
+	// 国内票多段时间
+	$(".domMultipleDepartureDate").eq(0).val(GetDateStr(0));
+	domMultipleDepartureDate();
 	/*apple*/
 	if (ProfileInfo.onlineStyle == "APPLE") {
 		$("#domCabin").remove();
 		$(".domCabinTittle").remove();
+		
+		$('.domTabBar span').eq(2).remove()
 	}
 	/*交换*/
 	$(".switchIconDom").unbind("click").click(function() {
 		cityConversion("domDepartureCity", "domArrivalCity")
 	})
 	$(".searchDomBtn").unbind("click").click(function() {
-
-		if ($('#domDepartureCity').attr("code") && $('#domArrivalCity').attr("code")) {
-			if ($(this).attr("startlimit") && parseInt($(this).attr("startlimit")) > 0) {
-				if (datedifference(getNowFormatDate(), $('#domDepartureDate').val()) < parseInt($(this).attr("startlimit"))) {
-					if ($(this).attr("Message").indexOf("\\n") != -1) {
-						var mymessage = confirm($(this).attr("Message").split("\\n").join('\n'));
-					} else {
-						var mymessage = confirm($(this).attr("Message"));
-					}
-					if (mymessage == true) {
-						if ($(this).attr("CanSearch") != "true") {
+		// var btnState=$('.searchDomBtn').attr('state')
+		//单程往返
+		var that = this;
+		var hasDom=false;
+		if($('#domDepartureCity').attr("code") && $('#domArrivalCity').attr("code")){
+			hasDom=true;
+		}
+		var hasmultiple=false;
+		if($('.domMultipleDeparture').eq(0).attr('code') && $('.domMultipleDeparture').eq(1).attr('code')&&$('.domMultipleArrivel').eq(0).attr('code') && $('.domMultipleArrivel').eq(1).attr('code')){
+			hasmultiple=true;
+		}
+		if (hasDom || hasmultiple) {
+			var cityList = '"' + $('#domDepartureCity').attr("code") + '","' + $('#domArrivalCity').attr("code") + '"';
+			tools.appleRemindPop(cityList, 1, netUserId, function() {
+				var starDom = $('input[name="domTrip"]:checked').attr('id')=="domMultiple"?$('.domMultipleDepartureDate').eq(0).val():$('#domDepartureDate').val()
+				if ($(that).attr("startlimit") && parseInt($(that).attr("startlimit")) > 0) {
+					if (datedifference(getNowFormatDate(), starDom) < parseInt($(that).attr("startlimit"))) {
+						if ($(that).attr("Message").indexOf("\\n") != -1) {
+							var mymessage = confirm($(that).attr("Message").split("\\n").join('\n'));
+						} else {
+							var mymessage = confirm($(that).attr("Message"));
+						}
+						if (mymessage == true) {
+							if ($(that).attr("CanSearch") != "true") {
+								return false;
+							}
+						} else {
 							return false;
 						}
-					} else {
-						return false;
 					}
 				}
-			}
 
-			if (ProfileInfo.onlineStyle == "APPLE") {
-				var r = confirm(get_lan("appleSearchRemind"));
-				if (r == false) {
-					return false;
+				if (ProfileInfo.onlineStyle == "APPLE") {
+					var r = confirm(get_lan("appleSearchRemind"));
+					if (r == false) {
+						return false;
+					}
+					var berthtype = 1;
+					searchDom(berthtype)
+				} else {
+					var berthtype = $("#domCabin  option:selected").attr("berthtype");
+					searchDom(berthtype)
 				}
-				var berthtype = 1;
-				var cityList = '"' + $('#domDepartureCity').attr("code") + '","' + $('#domArrivalCity').attr("code") + '"';
-				tools.appleRemindPop(cityList, 1, netUserId, function() {
-					searchDom(berthtype)
-				});
-			} else {
-				var cityList = '"' + $('#domDepartureCity').attr("code") + '","' + $('#domArrivalCity').attr("code") + '"';
-				var berthtype = $("#domCabin  option:selected").attr("berthtype");
-				// searchDom(berthtype);
-				tools.appleRemindPop(cityList, 1, netUserId, function() {
-					searchDom(berthtype)
-				});
-			}
+			});
 
 			function searchDom(berthtype) {
-				var alternateStr=$('.alternateCheckBox').is(':checked')?"Y":""
-				
 				if ($(".searchDomBtn").attr("state") == "oneWay") {
 					var searchDomInfo = {
 						'type': 'oneWay',
@@ -2254,13 +2562,10 @@ function chooseDom() {
 							'#domDepartureDate').val() + ',' + 'ALL',
 						'showCabins': berthtype,
 						'codeShare': $('.domCodeShareCheckBox').is(':checked'),
-							'isDirect': $('.domCabinInfo .domDirectCheckBox').is(':checked'),
-						'isNotOpenedClassNeeded': alternateStr,//候补
-						'packagePrice': $('.packagePriceCheckBox').is(':checked'),//打包价
-						
+						'isDirect': $('.domCabinInfo .domDirectCheckBox').is(':checked'),
 					}
 					if (ProfileInfo.QueryDomesticTicketsWithTime) {
-						if ($("#domDepartureSelect  option:selected").val() == "all") {
+						if ($("#domDepartureSelect  option:selected").val() == "all" || $("#domDepartureSelect  option:selected").val() == undefined) {
 							var DepartureSelectValue = ''
 						} else {
 							var DepartureSelectValue = ' ' + $("#domDepartureSelect  option:selected").val() + ':00:00';
@@ -2293,16 +2598,14 @@ function chooseDom() {
 						'showCabins': berthtype,
 						'codeShare': $('.domCodeShareCheckBox').is(':checked'),
 						'isDirect': $('.domCabinInfo .domDirectCheckBox').is(':checked'),
-						'isNotOpenedClassNeeded': alternateStr,//候补
-						'packagePrice': $('.packagePriceCheckBox').is(':checked'),//打包价
 					}
 					if (ProfileInfo.QueryDomesticTicketsWithTime) {
-						if ($("#domDepartureSelect  option:selected").val() == "all") {
+						if ($("#domDepartureSelect  option:selected").val() == "all" || $("#domDepartureSelect  option:selected").val() == undefined) {
 							var DepartureSelectValue = ''
 						} else {
 							var DepartureSelectValue = ' ' + $("#domDepartureSelect  option:selected").val() + ':00:00';
 						}
-						if ($("#domReturnSelect  option:selected").val() == "all") {
+						if ($("#domReturnSelect  option:selected").val() == "all" || $("#domReturnSelect  option:selected").val() == undefined) {
 							var ReturnSelectValue = ''
 						} else {
 							var ReturnSelectValue = ' ' + $("#domReturnSelect  option:selected").val() + ':00:00';
@@ -2332,6 +2635,29 @@ function chooseDom() {
 							',' + $('#domDepartureDate').val() + DepartureSelectValue + ',' + $('#domReturnDate').val() +
 							ReturnSelectValue +
 							',ALL';
+					}
+					$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
+					window.location.href = '../../domesticAir/airTicketList.html';
+				}else if($(".searchDomBtn").attr("state") == "multiple"){
+					var searchDomInfo = {
+						'type': 'multiple',
+						'departureCityText': $('.domMultipleDeparture').eq(0).val(),
+						'arrivalCityText':  $('.domMultipleArrivel').eq(0).val(),
+						'lastDepartureCityText':  $('.domMultipleDeparture').eq(1).val(),
+						'lastCityText':  $('.domMultipleArrivel').eq(1).val(),
+						'departureCity': $('.domMultipleDeparture').eq(0).attr('code'),
+						'arrivalCity': $('.domMultipleArrivel').eq(0).attr("code"),
+						'lastDepartureCity': $('.domMultipleDeparture').eq(1).attr('code'),
+						'lastCity': $('.domMultipleArrivel').eq(1).attr('code'),
+						'date': $('.domMultipleDepartureDate').eq(0).val(),
+						'returndate':$('.domMultipleDepartureDate').eq(1).val(),
+						'queryKey': $('.domMultipleDeparture').eq(0).attr('code') + ',' + $('.domMultipleArrivel').eq(0).attr('code') + ',' + $(
+							'.domMultipleDepartureDate').eq(0).val() + ',' + 'ALL',
+						'queryKeyReturn': $('.domMultipleDeparture').eq(1).attr('code') + ',' + $('.domMultipleArrivel').eq(1).attr('code') + ','+$(
+							'.domMultipleDepartureDate').eq(0).val() +','+ $('.domMultipleDepartureDate').eq(1).val(),
+						'showCabins': berthtype,
+						'codeShare': $('.domCodeShareCheckBox').is(':checked'),
+						'isDirect': $('.domMultiCabinInfo .domDirectCheckBox').is(':checked'),
 					}
 					$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
 					window.location.href = '../../domesticAir/airTicketList.html';
@@ -2539,174 +2865,159 @@ function chooseIntl() {
 
 	/*搜索国际机票*/
 	$(".searchIntlBtn").unbind("click").click(function() {
+		var that = this;
 		if ($(".searchIntlBtn").attr("state") == "oneWay" || $(".searchIntlBtn").attr("state") == "roundTrip") {
-			if ($('#intlDepartureCity').attr("code") && $('#intlArrivalCity').attr("code")) {
-				if ($(this).attr("startlimit") && parseInt($(this).attr("startlimit")) > 0) {
-					if (datedifference(getNowFormatDate(), $('#intlDepartureDate').val()) < parseInt($(this).attr("startlimit"))) {
-						if ($(this).attr("Message").indexOf("\\n") != -1) {
-							var mymessage = confirm($(this).attr("Message").split("\\n").join('\n'));
-						} else {
-							var mymessage = confirm($(this).attr("Message"));
-						}
-						if (mymessage == true) {
-							if ($(this).attr("CanSearch") != "true") {
+			var cityList = '"' + $('#intlDepartureCity').attr("code") + '","' + $('#intlArrivalCity').attr("code") + '"';
+			//先调继续搜索接口看有没有弹窗
+			tools.appleRemindPop(cityList, 1, netUserId, function() {
+				if ($('#intlDepartureCity').attr("code") && $('#intlArrivalCity').attr("code")) {
+					if ($(that).attr("startlimit") && parseInt($(that).attr("startlimit")) > 0) {
+						if (datedifference(getNowFormatDate(), $('#intlDepartureDate').val()) < parseInt($(that).attr("startlimit"))) {
+							if ($(that).attr("Message").indexOf("\\n") != -1) {
+								var mymessage = confirm($(that).attr("Message").split("\\n").join('\n'));
+							} else {
+								var mymessage = confirm($(that).attr("Message"));
+							}
+							if (mymessage == true) {
+								if ($(that).attr("CanSearch") != "true") {
+									return false;
+								}
+							} else {
 								return false;
 							}
-						} else {
-							return false;
 						}
 					}
-				}
-				if (ProfileInfo.onlineStyle == "APPLE") {
-					var r = confirm(get_lan("appleSearchRemind"));
-					if (r == false) {
-						return false;
-					} else {
-						var cityList = '"' + $('#intlDepartureCity').attr("code") + '","' + $('#intlArrivalCity').attr("code") + '"';
-						tools.appleRemindPop(cityList, 1, netUserId, function() {
+					if (ProfileInfo.onlineStyle == "APPLE") {
+						var r = confirm(get_lan("appleSearchRemind"));
+						if (r == false) {
+							return false;
+						} else {
 							searchIntl()
-						});
+						}
+					} else {
+						searchIntl()
+					}
+
+					function searchIntl() {
+						if (!$(".transitCityBody").hasClass("hide") && $("#transitCity").attr("code")) {
+							var transitCityCode = $("#transitCity").attr("code");
+							var isDirect = false;
+						} else if (!$(".transitCityBody").hasClass("hide") && !$("#transitCity").attr("code")) {
+							alert(get_lan('searchRemind'));
+							return false;
+						} else {
+							var transitCityCode = "";
+							var isDirect = $('.intlDirectCheckBox').is(':checked');
+						}
+						if ($(".searchIntlBtn").attr("state") == "oneWay") {
+							if (ProfileInfo.onlineStyle != "APPLE") {
+								var r = confirm(get_lan("appleIntlRemind"))
+								if (r == false) {
+									return false;
+								}
+							}
+							var searchIntlInfo = {
+								'type': 'oneWay',
+								'departureCityText': $('#intlDepartureCity').val(),
+								'arrivalCityText': $('#intlArrivalCity').val(),
+								'departureCity': $('#intlDepartureCity').attr("code"),
+								'arrivalCity': $('#intlArrivalCity').attr("code"),
+								'date': $('#intlDepartureDate').val(),
+								'queryKey': $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") + ',' + $(
+									'#intlDepartureDate').val(),
+								'showCabins': $("#intlCabin  option:selected").attr("berthtype"),
+								'isDirect': isDirect,
+								'transitCityCode': transitCityCode,
+							}
+
+							if (ProfileInfo.SearchInterAirWTime) {
+								if ($("#intlDepartureSelect  option:selected").val() == "all" || $("#intlDepartureSelect  option:selected").val() == undefined) {
+									var DepartureSelectValue = ''
+								} else {
+									var DepartureSelectValue = ' ' + $("#intlDepartureSelect  option:selected").val() + ':00:00';
+								}
+								searchIntlInfo.queryKey = $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") +
+									',' +
+									$('#intlDepartureDate').val() + DepartureSelectValue;
+							}
+							// 2020.1.20 国际机票  时间筛选
+							if (ProfileInfo.ShowDomesticTimeSlt) {
+								if ($('#intlDepartureSelect').val() == 'all') {
+									$.session.set('searchIntelDay', '');
+								} else {
+									$.session.set('searchIntelDay', $('#DepartPlusMinusintel').val());
+								}
+								// if ($('#domReturnSelect').val() == 'all') {
+								// 	$.session.set('searchDomesticReturnDay', '');
+								// } else {
+								// 	$.session.set('searchDomesticReturnDay', $('#returnPlusMinus').val());
+								// }
+							} else {
+								$.session.set('searchIntelDay', '');
+								// $.session.set('searchDomesticReturnDay', '');
+							}
+							$.session.set('searchIntlInfo', JSON.stringify(searchIntlInfo));
+							window.location.href = '../../intlAir/airTicketList.html';
+						} else if ($(".searchIntlBtn").attr("state") == "roundTrip") {
+							var searchIntlInfo = {
+								'type': 'roundTrip',
+								'departureCityText': $('#intlDepartureCity').val(),
+								'arrivalCityText': $('#intlArrivalCity').val(),
+								'departureCity': $('#intlDepartureCity').attr("code"),
+								'arrivalCity': $('#intlArrivalCity').attr("code"),
+								'date': $('#intlDepartureDate').val(),
+								'returndate': $('#intlReturnDate').val(),
+								'queryKey': $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") + ',' + $(
+									'#intlDepartureDate').val(),
+								'queryKeyReturn': $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") + ',' + $(
+									'#intlDepartureDate').val() + ',' + $('#intlReturnDate').val(),
+								'showCabins': $("#intlCabin  option:selected").attr("berthtype"),
+								'isDirect': isDirect,
+								'transitCityCode': transitCityCode,
+							}
+							if (ProfileInfo.SearchInterAirWTime) {
+								if ($("#intlDepartureSelect option:selected").val() == "all" || $("#intlDepartureSelect option:selected").val() ==undefined) {
+									var DepartureSelectValue = ''
+								} else {
+									var DepartureSelectValue = ' ' + $("#intlDepartureSelect option:selected").val() + ':00:00';
+								}
+								if ($("#intlReturnSelect option:selected").val() == "all" || $("#intlReturnSelect option:selected").val() == undefined) {
+									var ReturnSelectValue = ''
+								} else {
+									var ReturnSelectValue = ' ' + $("#intlReturnSelect option:selected").val() + ':00:00';
+								}
+								searchIntlInfo.queryKey = $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") +
+									',' +
+									$('#intlDepartureDate').val() + DepartureSelectValue;
+								searchIntlInfo.queryKeyReturn = $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") +
+									',' + $('#intlDepartureDate').val() + DepartureSelectValue + ',' + $('#intlReturnDate').val() +
+									ReturnSelectValue;
+							}
+							// 2020.1.20 国际机票  时间筛选
+							if (ProfileInfo.ShowDomesticTimeSlt) {
+								if ($('#intlDepartureSelect').val() == 'all') {
+									$.session.set('searchIntelDay', '');
+								} else {
+									$.session.set('searchIntelDay', $('#DepartPlusMinusintel').val());
+								}
+								if ($('#intlReturnSelect').val() == 'all') {
+									$.session.set('searchIntelReturnDay', '');
+								} else {
+									$.session.set('searchIntelReturnDay', $('#returnPlusMinusintel').val());
+								}
+							} else {
+								$.session.set('searchIntelDay', '');
+								$.session.set('searchIntelReturnDay', '');
+							}
+							$.session.set('searchIntlInfo', JSON.stringify(searchIntlInfo));
+							window.location.href = '../../intlAir/airTicketList.html?intlState=1';
+						}
 					}
 				} else {
-					searchIntl();
+					alert(get_lan('searchRemind'));
 				}
-
-				function searchIntl() {
-					if (!$(".transitCityBody").hasClass("hide") && $("#transitCity").attr("code")) {
-						var transitCityCode = $("#transitCity").attr("code");
-						var isDirect = false;
-					} else if (!$(".transitCityBody").hasClass("hide") && !$("#transitCity").attr("code")) {
-						alert(get_lan('searchRemind'));
-						return false;
-					} else {
-						var transitCityCode = "";
-						var isDirect = $('.intlDirectCheckBox').is(':checked');
-					}
-					if ($(".searchIntlBtn").attr("state") == "oneWay") {
-						if (ProfileInfo.onlineStyle != "APPLE") {
-							var r = confirm(get_lan("appleIntlRemind"))
-							if (r == false) {
-								return false;
-							}
-						}
-						var searchIntlInfo = {
-							'type': 'oneWay',
-							'departureCityText': $('#intlDepartureCity').val(),
-							'arrivalCityText': $('#intlArrivalCity').val(),
-							'departureCity': $('#intlDepartureCity').attr("code"),
-							'arrivalCity': $('#intlArrivalCity').attr("code"),
-							'date': $('#intlDepartureDate').val(),
-							'queryKey': $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") + ',' + $(
-								'#intlDepartureDate').val(),
-							'showCabins': $("#intlCabin  option:selected").attr("berthtype"),
-							'isDirect': isDirect,
-							'transitCityCode': transitCityCode,
-						}
-
-						if (ProfileInfo.SearchInterAirWTime) {
-							if ($("#intlDepartureSelect  option:selected").val() == "all") {
-								var DepartureSelectValue = ''
-							} else {
-								var DepartureSelectValue = ' ' + $("#intlDepartureSelect  option:selected").val() + ':00:00';
-							}
-							searchIntlInfo.queryKey = $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") +
-								',' +
-								$('#intlDepartureDate').val() + DepartureSelectValue;
-						}
-						// 2020.1.20 国际机票  时间筛选
-						if (ProfileInfo.ShowDomesticTimeSlt) {
-							if ($('#intlDepartureSelect').val() == 'all') {
-								$.session.set('searchIntelDay', '');
-							} else {
-								$.session.set('searchIntelDay', $('#DepartPlusMinusintel').val());
-							}
-							// if ($('#domReturnSelect').val() == 'all') {
-							// 	$.session.set('searchDomesticReturnDay', '');
-							// } else {
-							// 	$.session.set('searchDomesticReturnDay', $('#returnPlusMinus').val());
-							// }
-						} else {
-							$.session.set('searchIntelDay', '');
-							// $.session.set('searchDomesticReturnDay', '');
-						}
-						$.session.set('searchIntlInfo', JSON.stringify(searchIntlInfo));
-						window.location.href = '../../intlAir/airTicketList.html';
-					} else if ($(".searchIntlBtn").attr("state") == "roundTrip") {
-						var searchIntlInfo = {
-							'type': 'roundTrip',
-							'departureCityText': $('#intlDepartureCity').val(),
-							'arrivalCityText': $('#intlArrivalCity').val(),
-							'departureCity': $('#intlDepartureCity').attr("code"),
-							'arrivalCity': $('#intlArrivalCity').attr("code"),
-							'date': $('#intlDepartureDate').val(),
-							'returndate': $('#intlReturnDate').val(),
-							'queryKey': $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") + ',' + $(
-								'#intlDepartureDate').val(),
-							'queryKeyReturn': $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") + ',' + $(
-								'#intlDepartureDate').val() + ',' + $('#intlReturnDate').val(),
-							'showCabins': $("#intlCabin  option:selected").attr("berthtype"),
-							'isDirect': isDirect,
-							'transitCityCode': transitCityCode,
-						}
-						if (ProfileInfo.SearchInterAirWTime) {
-							if ($("#intlDepartureSelect option:selected").val() == "all") {
-								var DepartureSelectValue = ''
-							} else {
-								var DepartureSelectValue = ' ' + $("#intlDepartureSelect option:selected").val() + ':00:00';
-							}
-							if ($("#intlReturnSelect option:selected").val() == "all") {
-								var ReturnSelectValue = ''
-							} else {
-								var ReturnSelectValue = ' ' + $("#intlReturnSelect option:selected").val() + ':00:00';
-							}
-							searchIntlInfo.queryKey = $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") +
-								',' +
-								$('#intlDepartureDate').val() + DepartureSelectValue;
-							searchIntlInfo.queryKeyReturn = $('#intlDepartureCity').attr("code") + ',' + $('#intlArrivalCity').attr("code") +
-								',' + $('#intlDepartureDate').val() + DepartureSelectValue + ',' + $('#intlReturnDate').val() +
-								ReturnSelectValue;
-						}
-						// 2020.1.20 国际机票  时间筛选
-						if (ProfileInfo.ShowDomesticTimeSlt) {
-							if ($('#intlDepartureSelect').val() == 'all') {
-								$.session.set('searchIntelDay', '');
-							} else {
-								$.session.set('searchIntelDay', $('#DepartPlusMinusintel').val());
-							}
-							if ($('#intlReturnSelect').val() == 'all') {
-								$.session.set('searchIntelReturnDay', '');
-							} else {
-								$.session.set('searchIntelReturnDay', $('#returnPlusMinusintel').val());
-							}
-						} else {
-							$.session.set('searchIntelDay', '');
-							$.session.set('searchIntelReturnDay', '');
-						}
-						$.session.set('searchIntlInfo', JSON.stringify(searchIntlInfo));
-						window.location.href = '../../intlAir/airTicketList.html?intlState=1';
-					}
-				}
-			} else {
-				alert(get_lan('searchRemind'));
-			}
+			});
 		} else if ($(".searchIntlBtn").attr("state") == "multiple") {
-			if ($(this).attr("startlimit") && parseInt($(this).attr("startlimit")) > 0) {
-				if (datedifference(getNowFormatDate(), $('.MultipleDepartureDate ').eq(0).val()) < parseInt($(this).attr(
-						"startlimit"))) {
-					if ($(this).attr("Message").indexOf("\\n") != -1) {
-						var mymessage = confirm($(this).attr("Message").split("\\n").join('\n'));
-					} else {
-						var mymessage = confirm($(this).attr("Message"));
-					}
-					if (mymessage == true) {
-						if ($(this).attr("CanSearch") != "true") {
-							return false;
-						}
-					} else {
-						return false;
-					}
-				}
-			}
 			var orgList = '';
 			var dstList = '';
 			var dateList = '';
@@ -2756,15 +3067,37 @@ function chooseIntl() {
 				alert(get_lan('searchRemind'));
 				return false;
 			}
-			if (ProfileInfo.onlineStyle == "APPLE") {
+			// if (ProfileInfo.onlineStyle == "APPLE") {
 				var cityList = cityList.substring(0, cityList.length - 1);
 				console.log(Array.from(new Set(cityList.split(','))));
 				tools.appleRemindPop(cityList, 1, netUserId, function() {
-					searchMultipleIntl(orgList, dstList, dateList)
+					if ($(that).attr("startlimit") && parseInt($(that).attr("startlimit")) > 0) {
+						if (datedifference(getNowFormatDate(), $('.MultipleDepartureDate ').eq(0).val()) < parseInt($(that).attr(
+								"startlimit"))) {
+							if ($(that).attr("Message").indexOf("\\n") != -1) {
+								var mymessage = confirm($(that).attr("Message").split("\\n").join('\n'));
+							} else {
+								var mymessage = confirm($(that).attr("Message"));
+							}
+							if (mymessage == true) {
+								if ($(that).attr("CanSearch") != "true") {
+									return false;
+								}else{
+									searchMultipleIntl(orgList, dstList, dateList)
+								}
+							} else {
+								return false;
+							}
+						}else{
+							searchMultipleIntl(orgList, dstList, dateList)
+						}
+					}else{
+						searchMultipleIntl(orgList, dstList, dateList)
+					}
 				});
-			} else {
-				searchMultipleIntl(orgList, dstList, dateList);
-			}
+			// } else {
+			// 	searchMultipleIntl(orgList, dstList, dateList);
+			// }
 
 			function searchMultipleIntl(orgList, dstList, dateList) {
 				var searchIntlInfo = {
@@ -2779,6 +3112,79 @@ function chooseIntl() {
 			}
 		}
 	})
+}
+//国内多段时间
+function domMultipleDepartureDate(type) {
+	if(type!="add"){
+		$(".domMultipleDepartureDate").datepicker('destroy')
+	}
+	for (var i = 0; i < $(".domMultipleDepartureDate").length; i++) {
+		if (i == $(".domMultipleDepartureDate").length - 2) {
+			var dateIndex = i;
+			$(".domMultipleDepartureDate").eq(dateIndex + 1).val($(".domMultipleDepartureDate").eq(dateIndex).val());
+			var mindate = 0,
+				maxdate = 365
+			if (TAnumber != undefined && TAnumber != "") {
+				// mindate = TAminDate
+				var minTime=new Date().getTime()
+				var minTime2
+				if(TAminDate==0){
+					minTime2=new Date().getTime()
+				}else{
+					minTime2=new Date(TAminDate.replace(/-/g,"/")).getTime()
+				}
+				mindate=minTime<minTime2?TAminDate:new Date()
+				maxTime = TAmaxDate
+				maxdate = TAmaxDate
+				if(type!="add"){
+					var t=new Date(mindate)
+					var y=t.getFullYear()
+					var m=t.getMonth()+1<10?0+""+(t.getMonth()+1):t.getMonth()+1
+					var d=t.getDate()
+					$(".domMultipleDepartureDate").eq(dateIndex).val(y+'-'+m+'-'+d);
+				}
+				$(".domMultipleDepartureDate").eq(dateIndex + 1).val($(".domMultipleDepartureDate").eq(dateIndex).val());
+			}
+			$(".domMultipleDepartureDate").eq(dateIndex).datepicker({
+				dateFormat: 'yy-mm-dd',
+				changeMonth: true,
+				minDate: mindate, // 当前日期之后的 0 天，就是当天
+				maxDate: maxdate, // 当前日期之后的 0 天，就是当天
+				hideIfNoPrevNext: true,
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				changeYear: true,
+				onSelect: function() {
+					// MultipleDepartureDate();
+					$(".domMultipleDepartureDate").eq(dateIndex + 1).val($(".domMultipleDepartureDate").eq(dateIndex).val());
+					$(".domMultipleDepartureDate").eq(dateIndex + 1).datepicker('destroy');
+					$(".domMultipleDepartureDate").eq(dateIndex + 1).datepicker({
+						dateFormat: 'yy-mm-dd',
+						changeMonth: true,
+						minDate: $(".domMultipleDepartureDate").eq(dateIndex + 1).val(), // 当前日期之后的 0 天，就是当天
+						maxDate: maxdate, // 当前日期之后的 0 天，就是当天
+						hideIfNoPrevNext: true,
+						showOtherMonths: true,
+						selectOtherMonths: true,
+						changeYear: true,
+					});
+				}
+			});
+			$(".domMultipleDepartureDate").eq(dateIndex + 1).datepicker({
+				dateFormat: 'yy-mm-dd',
+				changeMonth: true,
+				minDate: $(".domMultipleDepartureDate").eq(dateIndex + 1).val(), // 当前日期之后的 0 天，就是当天
+				maxDate: maxdate, // 当前日期之后的 0 天，就是当天
+				hideIfNoPrevNext: true,
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				changeYear: true,
+				onSelect: function() {
+					// MultipleDepartureDate();
+				}
+			});
+		}
+	}
 }
 // 多段 时间
 function MultipleDepartureDate(type) {
@@ -3261,6 +3667,7 @@ function chooseHotel() {
 			$(".keyWordBody").hide();
 		})
 	$(".searchHotelBtn").unbind("click").click(function() {
+		var that = this;
 		if ($(this).attr("state") == "domHotel") {
 			var hotelCityCode = $('#hotelCity').attr("code");
 			var hotelCityText = $('#hotelCity').val();
@@ -3271,88 +3678,97 @@ function chooseHotel() {
 			var hotelState = "intlHotel";
 		}
 		if (hotelCityCode) {
-			if ($(this).attr("startlimit") && parseInt($(this).attr("startlimit")) > 0) {
-				if (datedifference(getNowFormatDate(), $('#hotelDepartureDate').val()) < parseInt($(this).attr("startlimit"))) {
-					if ($(this).attr("CanSearch") != "true") {
-						if ($(this).attr("Message").indexOf("\\n") != -1) {
-							alert($(this).attr("Message").split("\\n").join('\n'));
-						} else {
-							alert($(this).attr("Message"));
-						}
-						return false;
-					}else{
-						if ($(this).attr("Message").indexOf("\\n") != -1) {
-							var mymessage = confirm($(this).attr("Message").split("\\n").join('\n'));
-						} else {
-							var mymessage = confirm($(this).attr("Message"));
-						}
-						if (mymessage == true) {
-							if ($(this).attr("CanSearch") != "true") {
+			var cityList = '"' + hotelCityCode + '"';
+			tools.appleRemindPop(cityList, 2, netUserId, function() {
+				if ($(that).attr("startlimit") && parseInt($(that).attr("startlimit")) > 0) {
+					if (datedifference(getNowFormatDate(), $('#hotelDepartureDate').val()) < parseInt($(that).attr("startlimit"))) {
+						if ($(that).attr("CanSearch") != "true") {
+							if ($(that).attr("Message").indexOf("\\n") != -1) {
+								alert($(that).attr("Message").split("\\n").join('\n'));
+							} else {
+								alert($(that).attr("Message"));
+							}
+							return false;
+						}else{
+							if ($(that).attr("Message").indexOf("\\n") != -1) {
+								var mymessage = confirm($(that).attr("Message").split("\\n").join('\n'));
+							} else {
+								var mymessage = confirm($(that).attr("Message"));
+							}
+							if (mymessage == true) {
+								if ($(that).attr("CanSearch") != "true") {
+									return false;
+								}else{
+									// searchAppleHotel(hotelCityCode, hotelCityText, hotelState)
+									continueSearchHotel(hotelCityCode,hotelCityText,hotelState)
+								}
+							} else {
 								return false;
 							}
-						} else {
-							return false;
 						}
+					}else{
+						continueSearchHotel(hotelCityCode,hotelCityText,hotelState)
 					}
+				}else{
+					continueSearchHotel(hotelCityCode,hotelCityText,hotelState)
 				}
-			}
-			
-			
-			
-			var hotelAreaTypeID = $("#keyWordInput").attr("hoteltype") && $("#keyWordInput").attr("hoteltype") != 5 ? $(
-				"#keyWordInput").attr("relationId") + '-' + $("#keyWordInput").attr("hoteltype") : '';
-			if ($("#keyWordInput").attr("hoteltype") == 5) {
-				var hotelname = $("#keyWordInput").attr("key").split(",").join(' ');
-			} else if (!$("#keyWordInput").attr("hoteltype")) {
-				var hotelname = $("#keyWordInput").val();
-			} else {
-				var hotelname = "";
-			}
-			if ($(this).attr("state") == "domHotel") {
-				if ($("#hotelAddress").val() != "") {
-					if ($("#hotelAddress").attr("key")) {
-						var address = $("#hotelCity").val() + $("#hotelAddress").attr("key").split(",").join(' ');
-					} else {
-						var address = $("#hotelCity").val() + $("#hotelAddress").val().split(",").join(' ');
-					}
-				} else {
-					var address = "";
-				}
-			} else if ($(this).attr("state") == "intlHotel") {
-				if ($("#hotelAddress").val() != "") {
-					if ($("#hotelAddress").attr("key")) {
-						var address = $("#hotelIntlCity").val() + $("#hotelAddress").attr("key").split(",").join(' ');
-					} else {
-						var address = $("#hotelIntlCity").val() + $("#hotelAddress").val().split(",").join(' ');
-					}
-				} else {
-					var address = "";
-				}
-			}
-			var stars = '0-';
-			console.log(stars);
-			for (var i = 0; i < $('input[name=hotelCheck]:checked').length; i++) {
-				stars += $('input[name=hotelCheck]:checked').eq(i).val();
-				stars += '-';
-			}
-			stars = stars.substring(0, stars.length - 1);
-			var queryKey = hotelCityCode + ',' + hotelAreaTypeID + ',' + hotelname + ',' + address + ',' + $(
-				"#hotelDepartureDate").val() + ',' + $("#hotelReturnDate").val() + ',' + stars + ',' + $("#hotelPrice").attr(
-				"minPrice") + ',' + $("#hotelPrice").attr("maxPrice") + ",1,1,1,2000,,";
-			var searchHotelInfo = {
-				'queryKey': queryKey,
-				'hotelCode': hotelCityCode,
-				'hotelCityText': hotelCityText,
-				'hotelState': hotelState,
-				'hotelAddressText': $("#hotelAddress").val(),
-				'hotelKeyWordText': $("#keyWordInput").val(),
-			}
-			$.session.set('searchHotelInfo', JSON.stringify(searchHotelInfo));
-			window.location.href = '../../hotel/hotelList.html';
+			});			
 		} else {
 			alert(get_lan('searchRemind'))
 		}
 	})
+	function continueSearchHotel(hotelCityCode,hotelCityText,hotelState){
+		var hotelAreaTypeID = $("#keyWordInput").attr("hoteltype") && $("#keyWordInput").attr("hoteltype") != 5 ? $(
+			"#keyWordInput").attr("relationId") + '-' + $("#keyWordInput").attr("hoteltype") : '';
+		if ($("#keyWordInput").attr("hoteltype") == 5) {
+			var hotelname = $("#keyWordInput").attr("key").split(",").join(' ');
+		} else if (!$("#keyWordInput").attr("hoteltype")) {
+			var hotelname = $("#keyWordInput").val();
+		} else {
+			var hotelname = "";
+		}
+		if (hotelState == "domHotel") {
+			if ($("#hotelAddress").val() != "") {
+				if ($("#hotelAddress").attr("key")) {
+					var address = $("#hotelCity").val() + $("#hotelAddress").attr("key").split(",").join(' ');
+				} else {
+					var address = $("#hotelCity").val() + $("#hotelAddress").val().split(",").join(' ');
+				}
+			} else {
+				var address = "";
+			}
+		} else if (hotelState == "intlHotel") {
+			if ($("#hotelAddress").val() != "") {
+				if ($("#hotelAddress").attr("key")) {
+					var address = $("#hotelIntlCity").val() + $("#hotelAddress").attr("key").split(",").join(' ');
+				} else {
+					var address = $("#hotelIntlCity").val() + $("#hotelAddress").val().split(",").join(' ');
+				}
+			} else {
+				var address = "";
+			}
+		}
+		var stars = '0-';
+		console.log(stars);
+		for (var i = 0; i < $('input[name=hotelCheck]:checked').length; i++) {
+			stars += $('input[name=hotelCheck]:checked').eq(i).val();
+			stars += '-';
+		}
+		stars = stars.substring(0, stars.length - 1);
+		var queryKey = hotelCityCode + ',' + hotelAreaTypeID + ',' + hotelname + ',' + address + ',' + $(
+			"#hotelDepartureDate").val() + ',' + $("#hotelReturnDate").val() + ',' + stars + ',' + $("#hotelPrice").attr(
+			"minPrice") + ',' + $("#hotelPrice").attr("maxPrice") + ",1,1,1,2000,,";
+		var searchHotelInfo = {
+			'queryKey': queryKey,
+			'hotelCode': hotelCityCode,
+			'hotelCityText': hotelCityText,
+			'hotelState': hotelState,
+			'hotelAddressText': $("#hotelAddress").val(),
+			'hotelKeyWordText': $("#keyWordInput").val(),
+		}
+		$.session.set('searchHotelInfo', JSON.stringify(searchHotelInfo));
+		window.location.href = '../../hotel/hotelList.html';
+	}
 	//apple酒店查询
 	$(".searchAppleHotelBtn").unbind("click").click(function() {
 		if ($(this).attr("state") == "domHotel") {
@@ -3406,7 +3822,7 @@ function chooseHotel() {
 							maxFare = res.maxFare;
 						}
 						// $('body').mLoading("hide");
-						// $("#hotelPrice").val('￥'+res.minFare+'-'+res.maxFare);
+						// $("#hotelPrice").val(ProfileInfo.OfficeCurrency+res.minFare+'-'+res.maxFare);
 						// $("#hotelPrice").attr("minPrice",res.minFare);
 						// $("#hotelPrice").attr("maxPrice",res.maxFare);
 						var queryKey = hotelCityCode + ',' + hotelAreaTypeID + ',' + hotelname + ',' + address + ',' + $(
@@ -3445,6 +3861,8 @@ function chooseTrain() {
 				$("#trainReturnDate").css('border', '1px solid #9b9b9b');
 				$("#trainDepartureDate").datepicker('destroy');
 				$("#trainReturnDate").datepicker('destroy');
+				$(".trainReturnSelect").css('border', '1px solid #9b9b9b');
+				$(".trainReturnSelect").attr("disabled","disabled")
 				// $("#trainDepartureDate").datepicker({
 				// 	dateFormat: 'yy-mm-dd',
 				// 	changeMonth: true,
@@ -3462,6 +3880,8 @@ function chooseTrain() {
 				$(".trainDateTittle,#trainReturnDate").css('color', '#000');
 				$("#trainReturnDate").css('border', '1px solid #000');
 				$("#trainReturnDate").val(getNextDay($("#trainDepartureDate").val()));
+				$(".trainReturnSelect").css('border', '1px solid #000');
+				$(".trainReturnSelect").removeAttr("disabled")
 				// $("#trainDepartureDate").val(GetDateStr(0));
 				// $("#trainReturnDate").val(GetDateStr(1));
 				$("#trainReturnDate").removeAttr("disabled")
@@ -3491,17 +3911,25 @@ function chooseTrain() {
 	$(".searchTrainBtn").unbind("click").click(function() {
 		$.session.set('trainTicketChanges', '');
 		if ($('#trainDepartureCity').attr("code") && $('#trainArrivalCity').attr("code")) {
-			if (ProfileInfo.onlineStyle == "APPLE") {
+			// if (ProfileInfo.onlineStyle == "APPLE") {
 				var cityList = '"' + $('#trainDepartureCity').val() + '","' + $('#trainArrivalCity').val() + '"';
 				tools.appleRemindPop(cityList, 4, netUserId, function() {
 					searchTrain()
 				});
-			} else {
-				searchTrain();
-			}
+			// } else {
+			// 	searchTrain();
+			// }
 
 			function searchTrain() {
 				if ($(".searchTrainBtn").attr("state") == "oneWay") {
+					//整点
+					if ($(".trainDepartureSelect option:selected").val() == "all" || $(".trainDepartureSelect option:selected").val() == undefined) {
+						var DepartureSelectValue = ''
+						var domTime=''//暂时没用
+					} else {
+						var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+						var domTime=$(".trainDepartureSelect  option:selected").val()
+					}
 					var searchTrainInfo = {
 						'type': 'oneWay',
 						'departureCityText': $('#trainDepartureCity').val(),
@@ -3511,11 +3939,30 @@ function chooseTrain() {
 						'date': $('#trainDepartureDate').val(),
 						'queryKey': $('#trainDepartureCity').val() + ',' + $('#trainArrivalCity').val() + ',' + $(
 								'#trainDepartureDate')
-							.val() + ',' + $("#trainCabin").val(),
+							.val() + DepartureSelectValue+',' + $("#trainCabin").val(),
+						'domqueryKey':$('#trainDepartureCity').attr('citycode') + ',' + $('#trainArrivalCity').attr('citycode') + ',' + $(
+								'#trainDepartureDate')
+							.val() + DepartureSelectValue+',' + $("#trainCabin").val()+ 'ALL',
+						'domTime':domTime,
 					}
 					$.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
 					window.location.href = '../../train/trainTicketList.html';
 				} else if ($(".searchTrainBtn").attr("state") == "roundTrip") {
+					//整点
+					if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect option:selected").val() == undefined) {
+						var DepartureSelectValue = ''
+						var domTime=''
+					} else {
+						var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+						var domTime=$(".trainDepartureSelect  option:selected").val()
+					}
+					if ($(".trainReturnSelect option:selected").val() == "all" || $(".trainReturnSelect option:selected").val() == undefined) {
+						var ReturnSelectValue = ''
+						var domTimeReturn=''
+					} else {
+						var ReturnSelectValue = ' ' + $(".trainReturnSelect  option:selected").val() + ':00:00';
+						var domTimeReturn=$(".trainReturnSelect  option:selected").val()
+					}
 					var searchTrainInfo = {
 						'type': 'roundTrip',
 						'departureCityText': $('#trainDepartureCity').val(),
@@ -3524,11 +3971,17 @@ function chooseTrain() {
 						'arrivalCity': $('#trainArrivalCity').attr("code"),
 						'date': $('#trainDepartureDate').val(),
 						'returndate': $('#trainReturnDate').val(),
-						'queryKey': $('#trainDepartureCity').val() + ',' + $('#trainArrivalCity').val() + ',' + $(
-								'#trainDepartureDate')
-							.val() + ',' + $("#trainCabin").val(),
+						'queryKey': $('#trainDepartureCity').val() + ',' + $('#trainArrivalCity').val() + ',' + $('#trainDepartureDate')
+							.val() + DepartureSelectValue+',' + $("#trainCabin").val(),
 						'queryKeyReturn': $('#trainArrivalCity').val() + ',' + $('#trainDepartureCity').val() + ',' + $(
-							'#trainReturnDate').val() + ',' + $("#trainCabin").val(),
+							'#trainReturnDate').val() +ReturnSelectValue+ ',' + $("#trainCabin").val(),
+						'domqueryKey':$('#trainDepartureCity').attr('citycode') + ',' + $('#trainArrivalCity').attr('citycode') + ',' + $(
+								'#trainDepartureDate')
+							.val() + DepartureSelectValue+',' + $("#trainCabin").val()+ ',ALL',
+						'domqueryKeyReturn':$('#trainArrivalCity').attr('citycode') + ',' + $('#trainDepartureCity').attr('citycode') + ',' + $(
+							'#trainReturnDate').val() +ReturnSelectValue+ ',' + $("#trainCabin").val()+ ',ALL',
+						'domTime':domTime,
+						'domTimeReturn':domTimeReturn,
 					}
 					$.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
 					window.location.href = '../../train/trainTicketList.html';
@@ -3547,34 +4000,48 @@ function chooseCar() {
 	$("#carDeparture").kuCity();
 	$("#carArrival").kuCity();
 
-	$("#carFromHour").val(8);
-	$("#carToHour").val(17);
+	$("#carFromHour").val(10);
+	$("#carToHour").val(10);
 	/*租车公司*/
-	$.ajax({
-		type: 'post',
-		url: $.session.get('ajaxUrl'),
-		dataType: 'json',
-		data: {
-			url: $.session.get('obtCompany') + "/SystemService.svc/GetNewInformationsPost",
-			jsonStr: '{"id":'+netUserId+',"culture":"' + obtLanguage + '"}'
-		},
-		success: function(data) {
-			var res = JSON.parse(data);
-			//   console.log(res);
-			res.CarInformationList.map(function(item) {
-				$("#carCompany").append('\
-                  <option value="' + item.Code + '">' + item.Name +
-					'</option>\
-                  ')
-			})
-		},
-		error: function() {
-			// alert('fail');
+	// 更换接口  GetInformationsPost 换成 GetNewInformationsPost多一个参数id
+		if(!ProfileInfo.HideCarRentalCompany){//隐藏租车权限
+			$.ajax({
+				type: 'post',
+				url: $.session.get('ajaxUrl'),
+				dataType: 'json',
+				data: {
+					url: $.session.get('obtCompany') + "/SystemService.svc/GetCarRentalCompanyPost",
+					jsonStr: '{"id":'+netUserId+',"culture":"' + obtLanguage + '"}'
+				},
+				success: function(data) {
+					var res = JSON.parse(data);
+					//   console.log(res);
+					// res.CarInformationList.map(function(item) {
+					res.map(function(item) {
+						$("#carCompany").append('\
+						  <option value="' + item.Code + '">' + item.Name +
+							'</option>\
+						  ')
+					})
+				},
+				error: function() {
+					// alert('fail');
+				}
+			});
 		}
-	});
 	$(".searchCarBtn").unbind("click").click(function() {
 		if ($('#carDeparture').attr("code") && $('#carArrival').attr("code")) {
 			var carCompany=ProfileInfo.HideCarRentalCompany?"":$('#carCompany').val()
+			var isCitycar=false;
+			if($('#carDeparture').attr('vendervode')!=""){
+				carCompany=$('#carDeparture').attr('vendervode')
+				isCitycar=true
+			}
+			if($('#carArrival').attr('vendervode')!=""){
+				carCompany=$('#carArrival').attr('vendervode')
+				isCitycar=true
+			}
+			
 			var searchCarInfo = {
 				'departureCityText': $('#carDeparture').val(),
 				'arrivalCityText': $('#carArrival').val(),
@@ -3583,6 +4050,9 @@ function chooseCar() {
 				'date': $('#carFromDate').val() + ' ' + $("#carFromHour").val() + ':' + $("#carFromMin").val(),
 				'returndate': $('#carToDate').val() + ' ' + $("#carToHour").val() + ':' + $("#carToMin").val(),
 				'carCompany': carCompany,
+				'pickupAdd':$('#carDeparture').attr("locationcode"),
+				'returnAdd':$('#carArrival').attr("locationcode"),
+				'isCitycar':isCitycar,
 			}
 			$.session.set('searchCarInfo', JSON.stringify(searchCarInfo));
 			window.location.href = '../../car/carList.html';
@@ -3700,8 +4170,12 @@ function dateChoose(departure, returnDate) {
 							console.log(res);
 							$('body').mLoading("hide");
 							// 12.24  删除币种符号
-							// $("#hotelPrice").val('￥'+res.minFare+'-'+res.maxFare);
-							$("#hotelPrice").val(res.minFare + '-' + res.maxFare);
+							// $("#hotelPrice").val(''+res.minFare+'-'+res.maxFare+ProfileInfo.OfficeCurrency);
+							if ($(".searchHotelBtn").attr("state") == "intlHotel") {
+								$("#hotelPrice").val(res.minFare + '-' + res.maxFare);
+							}else{
+								$("#hotelPrice").val(''+res.minFare+'-'+res.maxFare+ProfileInfo.OfficeCurrency);
+							}
 							$("#hotelPrice").attr("minPrice", res.minFare);
 							$("#hotelPrice").attr("maxPrice", res.maxFare);
 						},
@@ -3999,6 +4473,7 @@ function myOrderTableInfo() {
 					}
 				}
 			} else {
+				$('#tableBody').mLoading("hide");
 				// alert(get_lan('accountRemind'));
 				// window.location.href='../../login/loginPage.html';
 			}
@@ -4076,9 +4551,8 @@ function pendingApproval() {
 			}
 			if (data != '') {
 				var res = JSON.parse(data);
-
-				console.log(res);
 				$('#tableBody').mLoading("hide");
+				console.log(res);
 				if (res.length == 0) {
 					$("#tableBody").html('\
                           <div class="ordersRemind">' + get_lan('tableRemind2') +
@@ -4113,7 +4587,7 @@ function pendingApproval() {
 						           <div class="ellipsis" style="width: 100px;border-right:1px solid #d8d8d8;box-sizing:border-box;"><span class="' +
 								tableCell + '">' + item.BookTime.split(' ')[0] +
 								'</span></div>\
-						           <table class="orderDetailsTable" border="0" style="width:700px;">\
+						           <table class="orderDetailsTable" border="0" style="width:580px;">\
 						             <tr>\
 						               <th style="width:40px;"></th>\
 						               <th style="width:170px;"></th>\
@@ -4144,7 +4618,7 @@ function pendingApproval() {
 										.ArrivalTime.length) + '</td>\
 						              <td>' + sItem[0].FlightNo +
 									'</td>\
-						              <td>' + sItem[0].DesAirport + '-' + sItem[0].OrgAirport +
+						              <td>' + sItem[0].OrgAirport + '-' + sItem[0].DesAirport +
 									'</td>\
 						              <td>' + sItem[0].AirFareAmount +
 									'</td>\
@@ -4204,7 +4678,7 @@ function pendingApproval() {
 						           <div class="ellipsis" style="min-width: 100px;max-width: 100px;border-right:1px solid #d8d8d8;box-sizing:border-box;display:none"></div>\
 						           <div class="ellipsis flexRow" style="align-items: center;justify-content: center;min-width: 100px;max-width: 100px;border-right:1px solid #d8d8d8;box-sizing:border-box;"><div class="">' + item.BookTime.split(' ')[0] +
 								'</div></div>\
-						           <table class="orderDetailsTable" border="0" style="width:700px;">\
+						           <table class="orderDetailsTable" border="0" style="width:580px;">\
 						             <tr>\
 						                        <th style="width:30px;"></th>\
 						                        <th style="width:180px;"></th>\
@@ -4233,7 +4707,7 @@ function pendingApproval() {
 										.ArrivalTime.length) + '</td>\
 						              <td>' + sItem[0].FlightNo +
 									'</td>\
-						              <td>' + sItem[0].DesAirport + '-' + sItem[0].OrgAirport +
+						              <td>' + sItem[0].OrgAirport + '-' + sItem[0].DesAirport +
 									'</td>\
 						              <td>' + sItem[0].AirFareAmount +
 									'</td>\
@@ -4373,11 +4847,11 @@ function showCompanyNews(companyId) {
 			var res = JSON.parse(data);
 			console.log(res);
 			res.companyNews.map(function(item, index) {
-				$(".companyNews").append('\
-                <div class="companyNewsLi" index="' + index +
-					'"><span style="text-decoration: underline;">' + item.Title + '</span><span style="margin-left:15px;">' +
-					res.companyNews[index].Time + '</span></div>\
-                ')
+				if(index<6){
+					$(".newsList").append('\<div class="newsLi" index="' + index +
+						'"><span class="l">' + item.Title + '</span><div class="line"></div> <span class="r">'+res.companyNews[index].Time+'</span></div>\
+					')
+				}
 			})
 			$(".articlePop").html(
 				'\
@@ -4389,7 +4863,7 @@ function showCompanyNews(companyId) {
 			if (obtLanguage == "EN") {
 				$(".articlePop").css("width", "800px");
 			}
-			$(".companyNewsLi").unbind("click").click(function() {
+			$(".newsLi").unbind("click").click(function() {
 				var index = parseInt($(this).attr("index"));
 				openArticlePop();
 				$(".articlePopHeaderBody").html('\

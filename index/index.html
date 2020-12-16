@@ -17,6 +17,15 @@
 	<link rel="stylesheet" type="text/css" href="../css/jquery.mloading.css">
 	<link rel="stylesheet" type="text/css" href="../index/css/banner.css">
 	<style type="text/css">
+			/* 城市列表被订单的loading遮盖问题 */
+		#main{
+			position: relative;
+			z-index: 1;
+		}
+		.autoCenter{
+			/* z-index: 10; */
+		}
+		/* end */
 		.kucity{
 			background-color: #fff;
 			width: 400px;
@@ -50,8 +59,12 @@
 			width: 710px;
 			background-color: #FFFFFF;
 			border-radius: 10px;
+			overflow: hidden;			
+		}
+		.tipsDiv{
 			padding: 10px;
-			
+			overflow-y: scroll;
+			max-height: 590px;
 		}
 		.tipsTitle{
 			    width: 100%;
@@ -103,7 +116,6 @@
 	<div id="cover"></div>
 	<div class="articlePop"></div>
 	<div id="main">
-		
 	</div>
 </body>
 <script type="text/javascript" src="../js/jquery.min.js"></script>

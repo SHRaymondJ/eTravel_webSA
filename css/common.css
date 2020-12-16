@@ -111,7 +111,8 @@ li{
     width: 150px;
     height: 45px;
     margin:15px 0 0 25px;
-    background-size: 100% 100%;
+    /* background-size: 100% 100%; */
+    background-size: auto 100%;
     background-repeat: no-repeat;
     background-image: url('../index/images/logoImg.jpg');
 }
@@ -179,12 +180,15 @@ li{
     margin-top: 12px;
 }
 .menusLi{
-    width: 110px;
+    /* width: 110px; */
+    min-width: 110px;
     height: 40px;
     line-height: 40px;
     text-align: center;
     color: #fff;
     cursor:pointer;
+	    padding: 0 16px;
+	    box-sizing: border-box;
 }
 .menu .active{
     background-color: #F58A00;
@@ -210,4 +214,10 @@ li{
     color: #1E66AE;
     cursor: pointer;
     font-weight: bold;
+}
+/*申请单tab*/
+.applicationTabActive{
+    color: #2D6BD2;
+    box-sizing: border-box;
+    border-bottom: 2px solid #2D6BD2;
 }

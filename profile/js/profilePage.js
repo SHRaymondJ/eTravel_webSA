@@ -2,6 +2,8 @@ var netUserId = $.session.get('netLoginId');
 var obtLanguage = $.session.get('obtLanguage')
 var TAorderNo = $.session.get('TAorderNo');
 var TAnumber = $.session.get('TAnumber');
+var regPhone = tools.regPhone;
+
 $(function() {
   showContent();
   $(".rightBox").addClass("hide");//先全部隐藏
@@ -64,6 +66,7 @@ var cn = {
         "remind":"请填写详细内容",
         // 'preferenceRemind':"个人喜好烦请再次与供应商确认。",
         'preferenceRemind':"在预订时，BCD将如实转达您的个人喜好，但最终以航空公司及酒店安排为准。",
+        'preferenceRemindPublic':"在预订时，将如实转达您的个人喜好，但最终以航空公司及酒店安排为准。",
     },
     'outOfOffice_box':{
         "outSetting":"外出设置",
@@ -116,6 +119,8 @@ var cn = {
         'modify':'修改',
 		'modifyNew':'修改',
         'remind':'请正确填写',
+        'points':"积分",
+        'ranking':"排名",
     },
     'PleaseSelect':"请选择",
     'firstPassword':"首次登陆，请修改密码",
@@ -189,6 +194,7 @@ var en = {
         "remind":"Please fill in the description",
         // 'preferenceRemind':"Please confirm your preference with the vendor directly.",
         'preferenceRemind':"Kindly notice your travel preference can not be guaranteed and it depends on the availability of airlines/hotels, etc",
+        'preferenceRemindPublic':"Kindly notice your travel preference can not be guaranteed and it depends on the availability of airlines/hotels, etc",
     },
     'outOfOffice_box':{
         "outSetting":"Out of Office Setting",
@@ -241,6 +247,8 @@ var en = {
         'woman':'Female',
         'save':'Save',
         'remind':'Please fill in correctly.',
+        'points':"Points",
+        'ranking':"Ranking",
     },
     'PleaseSelect':"Please Select",
     'firstPassword':"For the first time, please change the password. ",
@@ -544,6 +552,41 @@ function getProfileData(){
         }
       });
 }
+/*隐藏邮箱*/
+function hideEmail(profile,email){
+	if(profile.HideMyPersonalInfo&&email!=""){
+        var starLength = email.split("@")[0].length;
+        var starString = "";
+        for(var i=0;i<starLength-2;i++){
+            starString += "*"
+        }
+        var profileEmail = email.substring(0,1)+starString+email.substring(starLength-1,starLength)+'@'+email.split("@")[1];
+    }else{
+        var profileEmail = email;
+    }
+    return profileEmail;
+}
+/*end*/
+/*隐藏证件有效期*/
+function hideDocDate(profile,date){
+    if(profile.HideMyPersonalInfo&&date!=""){
+        var docDate = "****-**-**";
+    }else{
+        var docDate = date;
+    }
+    return docDate;
+}
+/*隐藏手机号*/
+function hidePhones(profile,phone){
+    if(profile.HideMyPersonalInfo&&phone!=""){
+        var profilePhone = "*******"+phone.substring(phone.length-4,phone.length)
+    }else{
+        var profilePhone = phone;
+    }
+    return profilePhone;
+}
+/*end*/
+/*end*/
 /*个人基本资料*/
 function showRightBox(res){
     var sex = res.Gender == "1"?get_lan("profileRight").man:get_lan("profileRight").woman;
@@ -560,12 +603,38 @@ function showRightBox(res){
 		var CompanyPhone=res.CompanyPhoneList[0].Telephone
 	}
 	
-	var spanWidth=obtLanguage=="CN"?"105px":"125px"
+    var spanWidth=obtLanguage=="CN"?"105px":"125px"
+    
+    /*隐藏基础信息*/
+	var profileBirthday = res.HideMyPersonalInfo&&res.Birthday!=""?"****_**_**":res.Birthday;
+	var profilePhone = res.HideMyPersonalInfo&&res.Phone!=""?"*******"+res.Phone.substring(res.Phone.length-4,res.Phone.length):res.Phone;
+	if(res.HideMyPersonalInfo&&res.Email!=""){
+		var starLength = res.Email.split("@")[0].length;
+		var starString = "";
+		for(var i=0;i<starLength-2;i++){
+			starString += "*"
+		}
+		var profileEmail = res.Email.substring(0,1)+starString+res.Email.substring(starLength-1,starLength)+'@'+res.Email.split("@")[1];
+	}else{
+		var profileEmail = res.Email;
+	}
+    /*end*/
+    var showPoints = res.PointInfo&&res.PointInfo!=null?"":"hide";
+    var TotalPoint = res.PointInfo&&res.PointInfo!=null?res.PointInfo.TotalPoint:"";
+    var RankNo = res.PointInfo&&res.PointInfo!=null?res.PointInfo.RankNo:"";
     $(".info_box").html(
         '<ul>\
             <li class="right_first_li">\
-            <span>'+get_lan('profileRight').Company+'</span>\
-            <span>'+CompanyName+'</span>\
+                <span>'+get_lan('profileRight').Company+'</span>\
+                <span>'+CompanyName+'</span>\
+                <div class="rightPoints flexRow '+showPoints+'">\
+                  <img src="./images/pointsIcon.png" style="width:18px;height:18px;display:block;margin-right:10px;">\
+                  '+get_lan("profileRight").points+' : '+TotalPoint+'\
+                </div>\
+                <div class="rightRanking flexRow '+showPoints+'">\
+                  <img src="./images/rankingIcon.png" style="width:18px;height:18px;display:block;margin-right:10px;">\
+                  '+get_lan("profileRight").ranking+' : '+RankNo+'\
+                </div>\
             </li>\
             <li  class="right_second_li">\
             </li>\
@@ -595,7 +664,7 @@ function showRightBox(res){
                 <div class="flexRow" style="width:390px;">\
                     <div style="width:'+spanWidth+';">'+get_lan('profileRight').Dateofbirth+'</div>\
 					<span>\
-					<input type="text" autocomplete="off" id="Birthday" class="gender_longinput  BirthdayInput" value="'+res.Birthday+'" style="font-size:15px;height:25px;border:0px solid grey" readonly>\
+					<input type="text" autocomplete="off" id="Birthday" class="gender_longinput  BirthdayInput" hideNo="'+res.Birthday+'" value="'+profileBirthday+'" style="font-size:15px;height:25px;border:0px solid grey" readonly>\
 					</span>\
 					<span class="span_edit"><a href="javascript:void(0)" state="edit" class="span_edit span_edit_a updateBirthday">'+get_lan('profileRight').modify+'</a></span>\
                 </div>\
@@ -605,13 +674,13 @@ function showRightBox(res){
         <ul>\
             <li class="contact_clone_li flexRow">\
             <div class="span_title" style="width:'+spanWidth+';">'+get_lan('profileRight').phoneNum+'</div>\
-            <span><input type="text" name="" value="'+res.Phone+'" class="contact_longinput" readonly="readonly" maxlength=11></span>\
+            <span><input type="text" name="" hideNo="'+res.Phone+'" value="'+profilePhone+'" class="contact_longinput" readonly="readonly" maxlength=11></span>\
             <span class="span_edit"><a href="javascript:void(0)" class="span_edit_a contact_phonesave">'+get_lan('profileRight').modify+'</a></span>\
             </li>\
             <div class="newContact"></div>\
             <li class="flexRow">\
             <div class="span_title" style="width:'+spanWidth+';">'+get_lan('profileRight').Mailbox+'</div>\
-            <span><input type="text" name="" value="'+res.Email+'" class="contact_email" readonly="readonly"></span>\
+            <span><input type="text" name="" hideNo="'+res.Email+'" value="'+profileEmail+'" class="contact_email" readonly="readonly"></span>\
             <span class="span_edit"><a href="javascript:void(0)" class="span_edit_a contact_emailsave">'+get_lan('profileRight').modify+'</a></span>\
             </li>\
             <li class="right_last_li">\
@@ -736,7 +805,8 @@ function showRightBox(res){
 			$(".BirthdayInput").css("border","1px solid #3763A0");
 			$(".BirthdayInput").css("padding-left","5px");
 			$(".updateBirthday").text(get_lan("profileRight").save);
-			$(this).attr('state','save')
+            $(this).attr('state','save');
+            $(".BirthdayInput").val($(".BirthdayInput").attr("hideNo"));
 			// Birthday
 			$("#Birthday").datepicker({
 			    dateFormat: 'yy-mm-dd',
@@ -773,7 +843,8 @@ function showRightBox(res){
 				        changeNewUid();
 				        var result=RealTimeProfilePost();
 						$(".BirthdayInput").css("border","0px");
-						$(".contact_longinput").attr("readonly","readonly");
+                        $(".BirthdayInput").attr("hideNo",$(".BirthdayInput").val());
+                        $(".BirthdayInput").val(hideDocDate(JSON.parse($.session.get('ProfileInfo')),$(".BirthdayInput").val()));
 						$(".BirthdayInput").css("padding-left","0px");
 						$(".updateBirthday").text(get_lan("profileRight").modify);
 						$("#Birthday").datepicker('destroy');
@@ -823,11 +894,12 @@ function showRightBox(res){
          $(".contact_longinput").removeAttr("readonly");
          $(".contact_phonesave").text(get_lan("profileRight").save);
          $(this).attr("update","save");
+         $(".contact_longinput").val($(".contact_longinput").attr("hideNo"));
      }
      else if($(this).attr("update")=="save"){
         var phoneNumber=$(".contact_longinput").val();
         var customerId=res.ID;
-        var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+        // var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
         if(!regPhone.test(phoneNumber)){
             alert(get_lan("profileRight").remind);
             return false;
@@ -847,6 +919,8 @@ function showRightBox(res){
                 console.info("result:"+result);
                 $(".contact_longinput").css("border","0px");
                 $(".contact_longinput").attr("readonly","readonly");
+                $(".contact_longinput").attr("hideNo",$(".contact_longinput").val());
+                $(".contact_longinput").val(hidePhones(JSON.parse($.session.get('ProfileInfo')),$(".contact_longinput").val()));
                 $(".contact_phonesave").text(get_lan("profileRight").modify);
                 $(".contact_phonesave").removeAttr("update");
             },
@@ -867,7 +941,7 @@ function showRightBox(res){
             $(".contact_email").removeAttr("readonly");
             $(".contact_emailsave").text(get_lan("profileRight").save);
             $(this).attr("update","save");
-
+            $(".contact_email").val($(".contact_email").attr("hideNo"));
         }else if($(this).attr("update")=="save"){
 
             var emailNumber=$(".contact_email").val();
@@ -887,6 +961,8 @@ function showRightBox(res){
                     RealTimeProfilePost();
                     $(".contact_email").css("border","0px");
                     $(".contact_email").attr("readonly","readonly");
+                    $(".contact_email").attr("hideNo",$(".contact_email").val());
+                    $(".contact_email").val(hideEmail(JSON.parse($.session.get('ProfileInfo')),$(".contact_email").val()));
                     $(".contact_emailsave").text(get_lan("profileRight").modify);
                     $(".contact_emailsave").removeAttr("update");
                 },
@@ -899,7 +975,34 @@ function showRightBox(res){
 	//隐藏修改邮箱
 	if(ProfileInfo.NoChangeEmail){
 		$('.contact_emailsave').remove()
-	}
+    }
+    /*隐藏证件信息*/
+    function hideDocument(profile,document,rid){
+        if(profile.HideMyPersonalInfo&&document!=""){
+            if(rid==1&&document.length>10){
+                var starLength = document.length-10;
+                var starString = "";
+                for(var i=0;i<starLength;i++){
+                    starString += "*";
+                }
+                var DocumentNumber = document.substring(0,6)+starString+document.substring(document.length-4,document.length);
+            }else if(document.length>3){
+                var starLength = document.length-3;
+                var starString = "";
+                for(var i=0;i<starLength;i++){
+                    starString += "*";
+                }
+                var DocumentNumber = document.substring(0,1)+starString+document.substring(document.length-2,document.length);
+            }else{
+                var DocumentNumber = document;
+            }
+        }else{
+            var DocumentNumber = document
+        }
+        
+        return DocumentNumber;
+    }
+    /*end*/
     //证件号码
     $.ajax({
         type:'post',
@@ -930,10 +1033,12 @@ function showRightBox(res){
 						// console.log(res.DocumentsDetail)
                         res.DocumentsDetail.map(function(items){
                             if(item.Rid==items.Rid && !hasRid[item.Rid]){
-								hasRid[item.Rid]=true
-                                $(".docNumInput").eq(index).val(items.DocumentNumber);
+                                hasRid[item.Rid]=true
+                                $(".docNumInput").eq(index).attr("hideNo",items.DocumentNumber);
+                                $(".docNumInput").eq(index).val(hideDocument(ProfileInfo,items.DocumentNumber,items.Rid));
                                 $(".docCountryInput").eq(index).val(items.IssueCountry);
-                                $(".docTimeInput").eq(index).val(items.docExpiryDate.substring(0,10).split('/').join('-'));
+                                $(".docTimeInput").eq(index).attr("hideNo",items.docExpiryDate.substring(0,10).split('/').join('-'))
+                                $(".docTimeInput").eq(index).val(hideDocDate(ProfileInfo,items.docExpiryDate));
 								$(".span_delete").eq(index).removeClass('hide')
 								$(".document_delete").eq(index).removeClass('hide')
 								$(".span_delete").eq(index).find('.document_delete').attr('delDocId',items.delDocId)
@@ -1010,11 +1115,13 @@ function showRightBox(res){
                         if(!$(this).attr("change")||$(this).attr("change")=="change"){
                             $(".docNumInput").eq(index).css("border","1px solid #979797");
                             $(".docNumInput").eq(index).removeAttr("readonly");
+                            $(".docNumInput").eq(index).val($(".docNumInput").eq(index).attr("hideNo"));
                             // $(".docCountryInput").eq(index).css("border","1px solid #979797");
                             // $(".docCountryInput").eq(index).removeAttr("readonly");
                             if($(that).attr("rid")!=1){
                                 $(".docTimeInput").eq(index).css("border","1px solid #979797");
                                 $(".docTimeInput").eq(index).removeAttr("readonly");
+                                $(".docTimeInput").eq(index).val($(".docTimeInput").eq(index).attr("hideNo"));
                                 $(".docTimeInput").eq(index).datepicker({
                                     dateFormat: 'yy-mm-dd',
                                     timeFormat: "HH:mm",
@@ -1029,9 +1136,6 @@ function showRightBox(res){
                             $(this).text(get_lan("profileRight").save);
                             $(this).attr("change","save")
                         }else if($(this).attr("change")=="save"){
-                            if($(that).attr("rid")!=1){
-                                $(".docTimeInput").eq(index).datepicker('destroy');
-                            }
                             var rid= $(this).attr("rid");
                             var documentNo= $(".docNumInput").eq(index).val();
                             // var docIssueCountry=$(".docCountryInput").eq(index).val();
@@ -1040,11 +1144,18 @@ function showRightBox(res){
                             // if (docIssueCountry=="null") {
                             //     docIssueCountry="";
                             // }
-
+							
                             if (rid!="1"&&docDatetime=="") {
                                 alert(get_lan("profileRight").remind);
                                 return;
                             }
+							if(documentNo == null || documentNo==undefined ){
+								documentNo=""
+							}
+							if(documentNo==""){
+								alert(get_lan("profileRight").remind);
+								return;
+							}
                             if (rid=="1"&&documentNo=="") {
                                 alert(get_lan("profileRight").remind);
                                 return;
@@ -1052,21 +1163,27 @@ function showRightBox(res){
                             else if (rid=="1") {
                                 docDatetime="";
                             }
-
                             var docInfo=rid+","+documentNo+",,,,"+docDatetime;
                             var customerId=res.ID;
                             console.info(docInfo);
 
-							var nationality = $(this).attr("nationality")!=""?$(this).attr("nationality"):"";
-							var issueCountry = $(this).attr("issuecountry")!=""?$(this).attr("issuecountry"):"";
-							var nameCn = $(this).attr("nameCn")!=""?$(this).attr("nameCn"):"";
-							var nameEn = $(this).attr("nameEn")!=""?$(this).attr("nameEn"):"";
+							var nationality = $(this).attr("nationality")!="" && $(this).attr("nationality")!=undefined ?$(this).attr("nationality"):"";
+							var issueCountry = $(this).attr("issuecountry")!="" && $(this).attr("issuecountry")!=undefined?$(this).attr("issuecountry"):"";
+							var nameCn = $(this).attr("nameCn")!="" && $(this).attr("nameCn")!=undefined?$(this).attr("nameCn"):"";
+							var nameEn = $(this).attr("nameEn")!="" && $(this).attr("nameEn")!=undefined?$(this).attr("nameEn"):"";
 							var delDocId = $(this).attr("delDocId")!=""&& $(this).attr("delDocId")!=undefined ?$(this).attr("delDocId"):"";
-							
-							
-							var docInfo = rid+','+documentNo+','+nationality+','+nameCn+','+nameEn+','+docDatetime+','+delDocId;
+							if(delDocId==""){
+								// var docInfo = rid+','+documentNo+','+nationality+','+nameCn+','+nameEn+','+docDatetime;//docDatetime和delDocId中间是签发国家
+							}else{
+								// var docInfo = rid+','+documentNo+','+nationality+','+nameCn+','+nameEn+','+docDatetime+',,'+delDocId;//docDatetime和delDocId中间是签发国家
+								var docInfo=rid+","+documentNo+",,,,"+docDatetime+',,'+delDocId;//2020-10-13 只传证件相关参数
+							}
 							console.log(docInfo)
 							$('body').mLoading("show");
+							//最后再移除日期选择
+							if($(that).attr("rid")!=1){
+							    $(".docTimeInput").eq(index).datepicker('destroy');
+							}
                             $.ajax({
                                 url:$.session.get('ajaxUrl'),
                                 type:"post",
@@ -1083,10 +1200,17 @@ function showRightBox(res){
                                        // var res = JSON.parse(data);
                                        RealTimeProfilePost();
                                        var index = parseInt($(that).attr("index"));
+                                       /*新增*/
+                                       $(".docNumInput").eq(index).attr("hideNo",$(".docNumInput").eq(index).val());
+                                       $(".docNumInput").eq(index).val(hideDocument(ProfileInfo,$(".docNumInput").eq(index).val(),$(that).attr("rid")));
+                                       $(".docTimeInput").eq(index).attr("hideNo",$(".docTimeInput").eq(index).val());
+                                       $(".docTimeInput").eq(index).val(hideDocDate(ProfileInfo,$(".docTimeInput").eq(index).val()));
+                                       
+                                       /*end*/
                                        $(".docNumInput").eq(index).css("border","0px");
-                                       $(".docNumInput").eq(index).attr("readonly");
+                                       $(".docNumInput").eq(index).attr("readonly","readonly");
                                        $(".docCountryInput").eq(index).css("border","0px");
-                                       $(".docCountryInput").eq(index).attr("readonly");
+                                       $(".docCountryInput").eq(index).attr("readonly","readonly");
                                        $(".docTimeInput").eq(index).css("border","0px");
                                        $(".docTimeInput").eq(index).attr("readonly");
                                        $(that).text(get_lan("profileRight").modifyNew);
@@ -1103,7 +1227,9 @@ function showRightBox(res){
 									    },
 									    success : function(data) {
 											var res = JSON.parse(data);
+											// console.log(res)
 											showRightBox(res)
+											tools.addProfileInfo(data)
 									        $('body').mLoading("hide");
 									    },
 									    error : function() {
@@ -1113,7 +1239,7 @@ function showRightBox(res){
 									   
                                     }else{
                                         alert(res.message);
-
+										$('body').mLoading("hide");//失败后隐藏loading
                                     }
                                    }
                                });
@@ -1749,6 +1875,7 @@ function showCreditCardBox(res){
 function showLikeBox(res){
     var CompanyName = obtLanguage=="CN"?res.CompanyNameCn:res.CompanyNameEn;
     var customerId = res.ID;
+	var remind=ProfileInfo.onlineStyle=="BCD"?get_lan("like_box").preferenceRemind:get_lan("like_box").preferenceRemindPublic
     $(".like_box").html('\
         <ul>\
         <li class="like_first_li">\
@@ -1767,7 +1894,7 @@ function showLikeBox(res){
         <th width="111px">'+get_lan('like_box').Edit+'</th>\
         </tr>\
         </table>\
-        <div class="preferenceRemind">'+get_lan("like_box").preferenceRemind+'</div>\
+        <div class="preferenceRemind">'+remind+'</div>\
         ');
     //<th width="174px">'+get_lan('like_box').Description+'</th>
     $.ajax({
@@ -2030,7 +2157,10 @@ function showoutOfOfficeBox(res){
           <div class="arrangerPopBtn" style="margin:16px 0 27px 190px;">'+get_lan('passengerPop').confirm+'</div>\
         <div>\
     ')
-    $(".addarrangerPop").css("height",$(".addarrangerPop").height()%2==1?$(".addarrangerPop").height()+1:$(".addarrangerPop").height()+'px');
+    setTimeout(function(){
+        $(".addarrangerPop").css("height",$(".addarrangerPop").height()%2==1?$(".addarrangerPop").height()+1:$(".addarrangerPop").height()+'px');
+    },300)
+    // $(".addarrangerPop").css("height",$(".addarrangerPop").height()%2==1?$(".addarrangerPop").height()+1:$(".addarrangerPop").height()+'px');
 
     $(".startSettingPopInput").val(GetDateStr(0));
     $(".endSettingPopInput").val(GetDateStr(1));
@@ -2236,7 +2366,7 @@ function showoutOfOfficeBox(res){
                                         if(res.code=="200"){
                                             res.customerList.map(function(item){
                                                 var name=obtLanguage=="CN"?item.NameCN:item.NameEN;
-                                                var email = item.Email == ""||item.Email == null?"":'('+item.Email+')';
+                                                var email = item.Email == ""||item.Email == null?"":'('+hideEmail(JSON.parse($.session.get('ProfileInfo')),item.Email)+')';
                                                 // if(name.indexOf($(".searchArrangerInput").val().toUpperCase()) != -1||email.toUpperCase().indexOf($(".searchArrangerInput").val().toUpperCase()) != -1){
                                                     $(".arrangerList").append('\
                                                         <div class="arrangerLi flexRow">\
@@ -2719,7 +2849,7 @@ function showModifyBox(res){
             $('body').mLoading("hide");
             if(res=="密码修改成功"||res=="Success"){
                 changeNewUid();
-                RealTimeProfilePost();
+                // RealTimeProfilePost();
                 if(ProfileInfo.NeedUpdatePassword){
                     $(".content_span").unbind("click").click(function(){
                         $(".content_span").removeClass("white");

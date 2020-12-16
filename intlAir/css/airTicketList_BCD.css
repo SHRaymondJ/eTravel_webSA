@@ -437,6 +437,33 @@ body{
     border-top: 7px solid #446a10;
     border-right: 60px solid transparent;
 }
+/*列表内积分*/
+.pointsHeader {
+    width: 100%;
+    height: 44px;
+    line-height: 44px;
+    background-color: #FEF7E9;
+    color: #FF7A00;
+    font-size: 14px;
+    box-sizing: border-box;
+    padding-left: 16px;
+    margin: 3px 0 3px 0;
+}
+.ticketLiPointsBody{
+	width: 79px;
+	height: 20px;
+	background: #FFF6DD;
+	border-radius: 4px;
+	border: 1px solid #FF7A00;
+	line-height: 20px;
+	font-size: 14px;
+	color: #FF7A00;
+	text-align: center;
+	position: absolute;
+	top: 80px;
+	right: 112px;
+}
+/*end*/
 /*列表样式*/
 .ticketAirLine{
 	width: 200px;
@@ -947,6 +974,20 @@ body{
 	right: 195px;
 	cursor: pointer;
 }
+/* 推荐航班 */
+.recommed{
+	width: 80px;
+    height: 24px;
+    position: absolute;
+    top: 14px;
+    right: 10px;
+    cursor: pointer;	
+	padding-left: 15px;
+}
+.recommed input{
+	position: absolute;
+	top: 5px;left: 0;
+}
 .stopOver{
 	width: 90px;
 	height: 18px;
@@ -977,19 +1018,4 @@ body{
 	    left: 0;
 	    top: 0;
 		cursor: pointer;
-}
-/* 邮件输出 */
-.emailPrint{
-	    width: 80px;
-	    height: 26px;
-	    position: absolute;
-	    top: 6px;
-	    right: 20px;
-	    color: #fff;
-	    text-align: center;
-	    border-radius: 4px;
-	    font-size: 15px;
-	    line-height: 26px;
-	    font-weight: bold;
-	    cursor: pointer;
 }

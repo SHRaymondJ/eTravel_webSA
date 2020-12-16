@@ -34,6 +34,8 @@
 	}
 	// 获取TA单限制的城市
 	function cityFilter(cityType,jsonList,cityDom,airType){
+		cityData(jsonList,cityDom,cityType)
+		return false;
 		var userid = netUserId.split("\"")[1]
 		$.ajax({
 			type: 'post',
@@ -118,9 +120,60 @@
 			})
 	}
 	
-	var data6;
+	var data1;
 	// if(TAnumber && TAnumberIndex==1){
-	if(TAnumber){
+    if(TAnumber&&$.session.get('TAOneCity')!=1){
+		// 第一次获取订单号TAnumber,如果存在订单号就用新接口，InitLimitCitys，否则InitCityPost
+		data1={
+			url: $.session.get('obtCompany')+"/SystemService.svc/InitHotelLimitCity",
+			jsonStr:'{"key":'+$.session.get('netLoginId')+',"travelRequestNo":"' + TAnumber + '"}'
+		}
+	}else{
+		data1={
+			url: $.session.get('obtCompany')+"/SystemService.svc/InitHotelCityPost",
+			jsonStr:'{"key":'+$.session.get('netLoginId')+'}'
+		}
+	}
+    $.ajax(
+      { 
+        type:'post', 
+        url : $.session.get('ajaxUrl'), 
+        dataType : 'json',
+        data:data1,
+        async:false,
+        success : function(data) {
+            // hotelCityString = data;
+			if(!isJsonString(data) && TAnumber && TAnumberIndex){
+				if(obtLanguage=='CN'){
+					alert("出差城市信息缺失！")
+				}else{
+					alert("City business information missing!")
+				}
+			}else{
+				// hotelCityString = data;
+				hotelCityJson = JSON.parse(data)
+				console.log(JSON.parse(data))
+				if(TAnumber&&$.session.get('TAOneCity')!=1){
+					cityFilter("2",hotelCityJson,hotelCity,"dom")
+				}else{
+					// cityData(JSON.parse(data),intlDomCity)
+					cityData(hotelCityJson,hotelCity);
+				}
+			}
+            // var res = JSON.parse(data);
+            // console.log(res);
+        },
+        error : function() {
+          // alert('fail');
+        }
+      }
+    );
+	
+    // var hotelCityJson = JSON.parse(hotelCityString).DomsticCitys;
+    // var hotelIntlCityJson = JSON.parse(hotelCityString).InterCitys;
+var data6;
+	// if(TAnumber && TAnumberIndex==1){
+    if(TAnumber&&$.session.get('TAOneCity')!=1){
 		// 第一次获取订单号TAnumber,如果存在订单号就用新接口，InitLimitCitys，否则InitCityPost
 		data6={
 			url: $.session.get('obtCompany')+"/SystemService.svc/InitAllHotelLimitCity",
@@ -149,14 +202,15 @@
 				}
 			}else{
 				// hotelCityString = data;
-				hotelCityJson = JSON.parse(data).DomsticCitys;
+				// hotelCityJson = JSON.parse(data).DomsticCitys;
 				hotelIntlCityJson = JSON.parse(data).InterCitys;
-				if(TAnumber){
-					cityFilter("2",hotelCityJson,hotelCity,"dom")
+				console.log(JSON.parse(data))
+				if(TAnumber&&$.session.get('TAOneCity')!=1){
+					// cityFilter("2",hotelCityJson,hotelCity,"dom")
 					cityFilter("2",hotelIntlCityJson,hotelIntlCity,"intel")
 				}else{
 					// cityData(JSON.parse(data),intlDomCity)
-					cityData(hotelCityJson,hotelCity);
+					// cityData(hotelCityJson,hotelCity);
 					cityData(hotelIntlCityJson,hotelIntlCity);
 				}
 			}
@@ -179,9 +233,10 @@
         // cityData(hotelIntlCityJson,hotelIntlCity);
     })();
     function cityData(cityJson,city){
-		if(TAnumber){
+		if(TAnumber&&$.session.get('TAOneCity')!=1){
 			//city=hotelCity
-			// city=hotelIntlCity
+			//city=hotelIntlCity
+			cityJson.shift()
 			cityJson.map(function(item){
 			        if(item.Value.length!=0){
 			            item.Value.map(function(sItem){
@@ -284,7 +339,7 @@
             // if(this.isContainerExit) return;
             $(".kucity").remove();
             var template = '<div class="kucity"><div class="citybox"><h3 class="kucity_header"></h3><ul class="kucity_nav flexRow"><li class="active">Key</li><li>ABCDEFGH</li><li>IJKLMNOP</li><li>QRSTUVWXYZ</li></ul><div class="kucity_body"></div></div><ul class="result"></ul></div>';
-            if(TAnumber){
+            if(TAnumber&&$.session.get('TAOneCity')!=1){
             	template = '<div class="kucity"><div class="citybox"><h3 class="kucity_header"></h3><ul class="kucity_nav flexRow"></ul><div class="kucity_body"></div></div><ul class="result"></ul></div>';
             }
             $(".kucity_body").html('');

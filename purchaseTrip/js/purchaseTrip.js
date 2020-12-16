@@ -6,6 +6,8 @@ var orderNo = finishedInfo.orderNo;
 var orderDetaile=''
 // var orderNo = JSON.parse($.session.get('searchOrderInfo')).orderNo;
 var ProfileInfo = JSON.parse($.session.get('ProfileInfo'));
+//火车id
+var midsArr=[]
 //中英文对象
 var cn = {
 	"tipsClass":"",
@@ -111,6 +113,7 @@ var cn = {
 		'SeatNo': '座位号:',
 		'CoachNo': '车厢:',
 		'trainTicketNo': '取票号:',
+		'TicketGate':"检票口:",
 	},
     "GKbookingPop":{
         "GKbookingBodyTittle":"提交你的酒店信息",
@@ -252,7 +255,8 @@ var en = {
         'AirlineReference':"Airline Reference:",
 		'SeatNo': 'Seat No:',
 		'CoachNo': ' Coach No:' ,
-		'TicketNo': 'E Ticket No:',
+		'trainTicketNo': 'E Ticket No:',
+		'TicketGate':"Check in:",
 	},
     "GKbookingPop":{
         "GKbookingBodyTittle":"Submit your hotel information",
@@ -317,7 +321,10 @@ function get_lan(m)
 }
 $(function(){
    showContent();//内容展示
-   orderDetails();//
+   $('body').mLoading("show");
+   setTimeout(function(){
+     orderDetails();//订单详细
+   },3000)
 });
 function showContent(){
 	$(".remarkPop").html('\
@@ -372,7 +379,7 @@ function showContent(){
 	    </div>\
 	')
 }
-function orderDetails(){
+function orderDetails(type,callback){
 		$('body').mLoading("show");
 		$.ajax( 
 		  {
@@ -387,6 +394,11 @@ function orderDetails(){
 		    	$('body').mLoading("hide");
 	            var res = JSON.parse(data)
 	            var detailInfo = res;
+				if(res.OrderNo==null || res.OrderNo==""){
+					alert("No Order");
+					window.location.href = '../../index/index.html';
+					return false;
+				}
 	            /*跳转链接*/
             	$(".homeTab").unbind("click").click(function(){
             		delectOrder(detailInfo,"home");
@@ -431,7 +443,9 @@ function orderDetails(){
 	            console.log(res);
 				orderDetaile=res;
 	            goOnBook(res);
-	            combineOrder(res);
+				if(type!="gkbooking"){
+					combineOrder(res);
+				}
 	            // CheckHotelTrip(res);
 	            $(".orderNoText").text(res.OrderNo);
 	            $(".OrderFareText").text(res.OrderFare);
@@ -536,15 +550,273 @@ function orderDetails(){
 	            	if(!$(".purchaseCheckbox").is(':checked')){
 	            		alert(get_lan("purchaseTripRemind"))
 	            	}else{
-	            		purchaseTrip(detailInfo);
+						// 1.先遍历看看火车有没有不是未完成状态的
+						// 2.如果有,把TrainItemId加入数组传给后台
+						if(ProfileInfo.TrainSeatBookLimit){
+							res.Train.map(function(item){
+								// if(item.State!="已完成" && item.State!="改签中" && item.State!="Completed" && item.State!="Changing"){
+								if(item.State=="未出票" || item.State=="Reserved"){
+									if(!item.IsStandBy){
+										midsArr.push(item.TrainItemId)
+									}
+								}
+							})
+						}
+						purchaseTrip(detailInfo);
 	            	}
 	            })
-		    },
+				clickPurchaseTrip(res)//验证是否已经占座
+				//最后执行callback，gkbooking后占座
+				if(callback){
+					callback()
+				}
+			},
 		    error : function() {
 		      // alert('fail');
 		    }
 		  }
 		);
+}
+function clickPurchaseTrip(orderRes){
+	//如果占座已完成，自动点击purchase按钮
+	if(orderRes.OrderNo == $.session.get('TrainSeatNum')){
+		$('.purchaseCheckbox').attr('checked',true)
+		$(".purchaseTripBtn").click()
+	}
+}
+//火车票占座
+function TrainSeat(midsArr,orderRes){
+	//缓存占座过的订单
+	$.session.set('TrainSeatNum',orderRes.OrderNo)
+	// var text=obtLanguage=="CN"?"火车票占座中，请耐心等待…":"Occupying seat, please be patient…"
+	// var text=obtLanguage=="CN"?"火车票占座中，大约20秒，请耐心等待...":"Occupying seat, about 20 seconds, please be patient…"
+	var textCN="火车票占座中，大约20秒，请耐心等待…<p style='height:12px'><p>注意:未出结果前请不要离开此页面. 否则你可能在30分钟内无法成功占座这班火车。"
+	var textEN="Confirming seat which takes about 20 seconds, please be patient…<p style='height:12px'><p>Please do not leave this page until get results. Otherwise, you maybe unable to get seat successfully for this train within 30 minutes."
+	
+	var text=obtLanguage=="CN"?textCN:textEN
+	$('body').mLoading({
+	 	 text:text,
+		 html:true,
+		});
+	$('.mloading-bar').css({"width":"425px","word-break":"normal","text-align":"left","margin-left":"-212px"})
+	$('.mloading-icon').css({"position":"absolute","top":"17px"})
+	$('.mloading-text').css({"display":"block","margin-left":"25px"})
+	var jsonStr={
+		mids:midsArr,
+		id:netUserId.split('"')[1],
+		Language:obtLanguage,
+	}
+	var option = {
+	    url:$.session.get('ajaxUrl'),
+	    data: {
+	        url: $.session.get('obtCompany') + "/OrderService.svc/BookTrainSeat",
+	        jsonStr: JSON.stringify(jsonStr)
+	    },
+	}
+	console.log(option)
+	tools.ajax(option,function(data){
+	    var res = JSON.parse(data);
+	    console.log(res);
+		if(res.length==0 || res==null){
+			//验证失败,刷新不再执行占座
+			$.session.set('TrainSeatNum',"")
+			var tipsText=obtLanguage=="CN"?"占座失败，请重新预订。":"Occupy seat unsuccessfully, please rebook."
+			alert(tipsText)
+			window.location.reload()//刷新当前页面.
+		}else{
+			//验证成功，弹窗继续支付
+			var seat=obtLanguage=="CN"?"占座成功":"Occupy Seat Successfully";
+			var tipsContent=obtLanguage=="CN"?'请在<span class="timeNum">25分钟</span>内完成支付':'Please pay in <span class="timeNum"> 25 minutes</span>';
+			var Information=obtLanguage=="CN"?"车票信息":"Train Information";
+			var standByInformation=obtLanguage=="CN"?"候补车票信息":"Train Waiting Information";
+			// var FinishBtn=obtLanguage=="CN"?"完成":"Finish";//客户暂时没要
+			var FinishBtn=obtLanguage=="CN"?"支付":"Pay Now";
+			var cancelbtn=obtLanguage=="CN"?"取消占座":"Cancel Occupy Seat";
+			
+			// <div class="closeTrainBtn">x</div>
+			$('body').append('<div id="coverTrain">\
+					<div class="trainFix">\
+						<div class="trainTitle">'+seat+'</div>\
+						<div class="trainTips">'+tipsContent+'</div>\
+						<div class="trainInfo">'+Information+'</div>\
+						<div class="infoGroupList clearfix">\
+						</div>\
+						<div class="trainInfo standByTrainInfo hide">'+standByInformation+'</div>\
+						<div class="infoGroupList clearfix hide">\
+						</div>\
+						<div class="payBtnGroup">\
+							<div class="cancelbtn">'+cancelbtn+'</div>\
+							<div class="paybtn">'+FinishBtn+'</div>\
+						</div>\
+					</div>\
+				</div>\
+			')
+			if(orderRes.Train.length==2){
+				if(orderRes.Train[0].IsStandBy||orderRes.Train[1].IsStandBy){
+					$(".standByTrainInfo").removeClass("hide");
+					$(".infoGroupList").removeClass("hide");
+					orderRes.Train.map(function(item){
+						if(item.IsStandBy){
+							$('.infoGroupList').eq(1).append('<div class="infoGroup clearfix">\
+								<div class="trainInfoLeft l">\
+										<div>\
+											<span class="pdr20">'+item.TrainType+'</span>\
+											<span class="pdr20">'+item.TrainCode+'</span>\
+											<span class="pdr20">'+item.TrainSeat+'</span>\
+											<span class="pdr20">'+item.TrainDate+'</span>\
+										</div>\
+										<div class="clearfix" style="padding-top: 16px;">\
+											<div class="l" style="width: 242px;padding-left: 108px;box-sizing: border-box;">\
+												<div style="font-size:20px;padding-bottom: 5px;font-weight: 600;">'+item.TrainDeparteTime+'</div>\
+												<div>'+item.TrainDeparte+'</div>\
+											</div>\
+											<div class="l" style="width: 76px;">\
+												<div class="rightArrow"></div>\
+											</div>\
+											<div class="l" style="padding-left: 80px;box-sizing: border-box;max-width: 306px;">\
+												<div style="font-size:20px;padding-bottom: 5px;font-weight: 600;">'+item.TrainArriveTime+'</div>\
+												<div>'+item.TrainArrive+'</div>\
+											</div>\
+										</div>\
+									</div>\
+									<div class="trainInfoRight l">\
+										<span>'+get_lan('otherExpensesList').amount+'：<span style="font-weight: 600;">'+item.TrainFareAmount+'</span></span>\
+									</div>\
+							</div>')
+						}
+					})
+				}
+			}
+			    
+				var hasMoneyPay=false
+				res.map(function(item){
+					if( parseFloat(item.TrainFareAmount) >0){hasMoneyPay=true}
+					$('.infoGroupList').eq(0).append('<div class="infoGroup clearfix">\
+					<div class="trainInfoLeft l">\
+									<div>\
+										<span class="pdr20">'+item.TrainType+'</span>\
+										<span class="pdr20">'+item.TrainCode+'</span>\
+										<span class="pdr20">'+item.TrainSeat+'</span>\
+										<span class="pdr20">'+item.TrainDate+'</span>\
+									</div>\
+									<div class="clearfix" style="padding-top: 16px;">\
+										<div class="l" style="width: 242px;padding-left: 108px;box-sizing: border-box;">\
+											<div style="font-size:20px;padding-bottom: 5px;font-weight: 600;">'+item.TrainDeparteTime+'</div>\
+											<div>'+item.TrainDeparte+'</div>\
+										</div>\
+										<div class="l" style="width: 76px;">\
+											<div class="rightArrow"></div>\
+										</div>\
+										<div class="l" style="padding-left: 80px;box-sizing: border-box;max-width: 306px;">\
+											<div style="font-size:20px;padding-bottom: 5px;font-weight: 600;">'+item.TrainArriveTime+'</div>\
+											<div>'+item.TrainArrive+'</div>\
+										</div>\
+									</div>\
+								</div>\
+								<div class="trainInfoRight l">\
+									<span>'+get_lan('otherExpensesList').amount+'：<span style="font-weight: 600;">'+item.TrainFareAmount+'</span></span>\
+								</div>\
+						</div>')
+				})
+				if(hasMoneyPay){
+					var payBtn=obtLanguage=="CN"?"支付":"Pay Now";
+					$('.payBtnGroup .paybtn').text(payBtn)
+				}
+			// $('.closeTrainBtn').click(function(){
+			// 	$('#coverTrain').remove()
+			// })
+			$(".paybtn").unbind("click").click(function(){
+				 checkPayment(orderRes)
+			})
+			$(".cancelbtn").unbind("click").click(function(){//取消占座弹窗
+				 //验证成功，弹窗继续支付
+				 var strCn="占座已成功，如取消订单，当日可能无法购买相同车次。请确认是否需要取消占座？"
+				 var strEn="Your seat has been occupied successfully, you may not be able to buy the same routine today if cancel the seat. Would you like to cancel the seat occupied?"
+				 var cancelTips=obtLanguage=="CN"?strCn:strEn;
+				 var cancelBack=obtLanguage=="CN"?"返回":"Back";
+				 var cancelConfirm=obtLanguage=="CN"?"确认":"Confirm";
+				 $('body').append('<div id="cancelTrain">\
+				 		<div class="trainFix cancelFix">\
+				 			<div class="infoGroupList clearfix">\
+							'+cancelTips+'\
+				 			</div>\
+				 			<div class="payBtnGroup">\
+				 				<div class="cancelBack">'+cancelBack+'</div>\
+				 				<div class="cancelConfirm">'+cancelConfirm+'</div>\
+				 			</div>\
+				 		</div>\
+				 	</div>\
+				 ')
+				 
+				//返回按钮
+				$(".cancelBack").unbind("click").click(function(){
+					 $('#cancelTrain').remove()
+				})
+				$(".cancelConfirm").unbind("click").click(function(){
+					//确定取消占座
+					var text=obtLanguage=="CN"?"正在取消火车占座，请稍等...":"Cancelling the occupy seat, please wait for a moment...";
+					var cancelConfirm=obtLanguage=="CN"?"确认":"Confirm";
+					$('body').mLoading({
+					 	 text:text,
+						});
+					if(obtLanguage=="EN"){
+						$('.mloading-bar').css({"display":"flex","word-break":"break-word"})
+						$('.mloading-text').css('text-align','left')
+					}else{
+						$('.mloading-bar').css('width',"270px")
+					}
+					var jsonStr={
+						mids:midsArr,
+						orderNo:orderRes.OrderNo,
+						id:netUserId.split('"')[1],
+						Language:obtLanguage,
+					}
+					var option = {
+					    url:$.session.get('ajaxUrl'),
+					    data: {
+					        url: $.session.get('obtCompany') + "/OrderService.svc/CancelTrainSeat",
+					        jsonStr: JSON.stringify(jsonStr)
+					    },
+					}
+					tools.ajax(option,function(data){
+						$('.mloading-bar').css('width',"250px")
+						$('body').mLoading("hide");
+						if(tools.isJSON(data)){//返回json字符串
+							var res = JSON.parse(data);
+							console.log(res);
+							$('#cancelTrain .infoGroupList').css('text-align','center')
+							if(res.code==200){
+								//取消占座成功
+								var cancelText=obtLanguage=="CN"?"取消占座成功。":"Cancel occupy seat successfully."
+								$('#cancelTrain .infoGroupList').text(cancelText)
+								//更换按钮
+								$('#cancelTrain .payBtnGroup').html('<div class="cancelSuccess">'+cancelConfirm+'</div>')
+							}else{
+								//取消占座失败
+								var cancelText=obtLanguage=="CN"?"取消占座失败，请查看取消占座失败订单。":"Cancel occupy seat unsuccessfully, please check the order."
+								$('#cancelTrain .infoGroupList').text(cancelText)
+								//更换按钮
+								$('#cancelTrain .payBtnGroup').html('<div class="cancelError">'+cancelConfirm+'</div>')
+							}
+							$('.cancelSuccess').unbind("click").click(function(){
+								$.session.set('TrainSeatNum',"")//取消占座成功，不再执行占座
+								window.location.reload()//刷新当前页面.
+							})
+							$('.cancelError').unbind("click").click(function(){
+								window.location.reload()//刷新当前页面.
+							})
+						}else{
+							// alert('error')
+						}
+					})
+				})
+				 
+			})
+			$('.mloading-bar').css({"display":"block","word-break":"break-all","width":"250px"})
+			$('.mloading-text').css('text-align','center')
+			$('body').mLoading("hide");
+		}
+	})
 }
 function purchaseTrip(orderRes){
 	HotelGKBooking(orderRes,'purchase');
@@ -662,6 +934,7 @@ function CheckHotelTrip(orderRes){
 	    },
 	    success : function(data) {
 	    	$('body').mLoading("hide");
+			if(data==""){return false};
             var res = JSON.parse(data)
             console.log(res);
             if(res.TripType=="HOTEL"){
@@ -959,10 +1232,11 @@ function HotelGKBooking(orderRes,clickType){
                               $('body').mLoading("hide");
                               closeGKbookingPop();
                               if(res.code==200){
-                              	orderDetails();
-                                if(clickType=="purchase"){
-                                    checkRemark(orderRes,'purchase');
-                                }
+                              	orderDetails('gkbooking',function(){
+									if(clickType=="purchase"){
+										checkRemark(orderRes,'purchase');
+									}
+								});
                               }else{
                                 alert(res.message);
                               }
@@ -1011,9 +1285,60 @@ function checkRemark(orderRes,operationType){
                     remarkInfoPop(customerId,employeeName,res.customerRemarkList[0].remarkList,'invoice',orderRes,operationType);
                 }else{
                     closeRemarkPop();
-                    if(operationType=="purchase"){
-                        checkPayment(orderRes);
-                    }
+					// 先提醒国际酒店，国际机票
+					var hasIntelSegment=false;
+					var hasIntelHotel=false;
+					orderRes.Segment.map(function(item){
+						item.map(function(Sitem){
+							if(!Sitem.IsDomestic){
+								hasIntelSegment=true;
+							}
+						})
+					})
+					orderRes.Hotel.map(function(Hitem){
+						if(!Hitem.IsDomestic){
+							hasIntelHotel=true;
+						}
+					})
+					if(hasIntelSegment || hasIntelHotel){
+						//弹窗提示，回调后执行下面的操作
+						var tips1='Your booking will not be confirmed until the appropriate approvals are received by Apple Travel.'
+						var tips2='We will review this reservation and contact you if further action is required.'
+						var btnText=obtLanguage=="CN"?"关闭":"Close";
+						$('body').append('<div id="coverInter">\
+											<div class="interFix">\
+												<div class="interTitle">Travel Approvals</div>\
+												<div class="interTips">\
+													<p >'+ tips1 +'</p>\
+													<p >'+ tips2 +'</p>\
+												</div>\
+												<div class="payBtnGroup clearfix" style="padding-top: 16px;">\
+													<div class="closeTips">'+btnText+'</div>\
+												</div>\
+											</div>\
+										</div>\
+									')
+						$(".closeTips").unbind("click").click(function(){
+							$('#coverInter').remove()
+							branchOperation()
+						})
+					}else{
+						branchOperation()
+					}
+					// 
+					
+					function branchOperation(){
+						//先占座，再跑选择支付方法
+						if(midsArr.length>0&&(!orderRes.Train[0].IsStandBy||!orderRes.Train[1].IsStandBy)){
+							//火车占座
+							TrainSeat(midsArr,orderRes)
+						}else{
+							if(operationType=="purchase"){
+								checkPayment(orderRes);
+							}
+						}
+					}
+                    
                 }
             }
         },
@@ -1025,268 +1350,275 @@ function checkRemark(orderRes,operationType){
 }
 //检查支付
 function checkPayment(orderRes){
-    if(orderRes.Train.length>0){
-        var purchaseBtnRemind = "You are about to purchase a train reservation. If you choose to proceed, your credit card will be charged. Please claim expense through eApproval under “Train China Mainland” expense type. The original train ticket is required when submitting eApproval."; 
-    }else{
-        var purchaseBtnRemind = get_lan("purchaseBtnRemind")
-    }
-	var r = confirm(purchaseBtnRemind);
-	if(r==false){
-		return false;
-	}
-	if(orderRes.ShowPayment){
-		openOnlinePayPop();
-		if(!ProfileInfo.AliPay&&!ProfileInfo.WechatPay){
-		    yeePay(orderRes);
+	originalProcess()//暂时先打包起来，以后可能流程有改动
+	function originalProcess(){
+		if(orderRes.Train.length>0){
+		    var purchaseBtnRemind = "You are about to purchase a train reservation. If you choose to proceed, your credit card will be charged. Please claim expense through eApproval under “Train China Mainland” expense type. The original train ticket is required when submitting eApproval."; 
 		}else{
-			// 0：不限制
-			// 1：支付宝
-			// 2：yeepay
-			var s=orderDetaile.PayChannel
-			if(s==2){
-				yeePay(orderDetaile);
-			}
-			if(s==1){
-				// 直接走支付宝
-				closeOnlinePayPop()
-				$('body').mLoading("show");
-				// 支付订单显示字段
-				var enStr = '',
-					cnStr = '';
-				var airCNStr = '',
-					HotelCNStr = '',
-					TrainCNStr = '',
-					carCNStr = '';
-				var airENStr = '',
-					HotelENStr = '',
-					TrainENStr = '',
-					carENStr = '';
-				console.log(orderRes.Segment)
-				console.log(orderRes.Segment[0])
-				orderRes.Segment.map(function(airList) {
-					// 飞机票是嵌套的数组
-					airList.map(function(airItem) {
-						if (airItem.ItemPayment == "Credit Card") {
-							airCNStr = '机票、'
-							airENStr = 'air,'
-						}
-					})
-				})
-				orderRes.Hotel.map(function(hotelItem) {
-					if (hotelItem.ItemPayment == "Credit Card") {
-						HotelCNStr = '酒店、'
-						HotelENStr = 'hotel,'
+		    var purchaseBtnRemind = get_lan("purchaseBtnRemind")
+		}
+		var r = confirm(purchaseBtnRemind);
+		if(r==true){
+			window.sessionStorage.setItem('TrainSeatNum','')
+			if(orderRes.ShowPayment){
+				openOnlinePayPop();
+				if(!ProfileInfo.AliPay&&!ProfileInfo.WechatPay){
+					yeePay(orderRes);
+				}else{
+					// 0：不限制
+					// 1：支付宝
+					// 2：yeepay
+					var s=orderDetaile.PayChannel
+					if(s==2){
+						yeePay(orderDetaile);
 					}
-				})
-				orderRes.Train.map(function(trainItem) {
-					if (trainItem.ItemPayment == "Credit Card") {
-						TrainCNStr = '火车、'
-						TrainENStr = 'train,'
-					}
-				})
-				orderRes.Car.map(function(carItem) {
-					if (carItem.ItemPayment == "Credit Card") {
-						carCNStr = '租车、'
-						carENStr = 'car rental,'
-					}
-				})
-				
-				enStr = airENStr + HotelENStr + carENStr + TrainENStr;
-				en.tipsClass = enStr.substring(0, enStr.length - 1)
-				// 将首字母大写
-				en.tipsClass = en.tipsClass.charAt(0).toUpperCase() + en.tipsClass.slice(1)
-				
-				en.tipsText = en.tipsClass + en.tipsText
-				
-				cnStr = airCNStr + HotelCNStr + carCNStr + TrainCNStr;
-				cn.tipsClass = cnStr.substring(0, cnStr.length - 1)
-				cn.tipsText = cn.tipsClass + cn.tipsText
-				var type = ProfileInfo.onlineStyle == "APPLE" ? 4 : 1;
-				$.ajax(
-				  {
-				    type:'post',
-				    url : $.session.get('ajaxUrl'),
-				    dataType : 'json',
-				    data:{
-				        url: $.session.get('obtCompany')+"/QueryService.svc/QueryOrderPayInfo",
-				        jsonStr:'{"request":{"id":'+netUserId+',"orderNo":"'+orderRes.OrderNo+'","language":"'+obtLanguage+'","payChannel":"1"}}'
-				    },
-				    success : function(data) {
-				        // $('body').mLoading("hide");
-				        var res = JSON.parse(data);
-				        console.log(res);
-						var subject = obtLanguage == "CN" ? cn.tipsClass : en.tipsClass;
-				        // return false;
-				        $.ajax(
-				          {
-				            type:'post',
-				            url : $.session.get('ajaxUrl'),
-				            dataType : 'json',
-				            data:{
-				                url: $.session.get('obtCompany')+"/SystemService.svc/GetAopBodyNew",
-				                jsonStr:'{"request":{"subject":"'+subject+'","totalAmount":"'+res.payAmount+'","exMechantNO":"'+res.exMechantNO+'","type":"' + type + '"}}'
-				            },
-				            success : function(data) {
-				                $('body').mLoading("hide");
-				                var res = JSON.parse(data);
-				                console.log(res);
-								ticket(orderRes,'alipayRes',res)
-				                $('body').append(res);
-				            },
-				            error : function() {
-				              // alert('fail');
-				            }
-				          }
-				        );
-				    },
-				    error : function() {
-				      // alert('fail');
-				    }
-				  }
-				);
-			}
-			
-			if(s==0){
-				{
-					// 支付订单显示字段
-					var enStr = '',
-						cnStr = '';
-					var airCNStr = '',
-						HotelCNStr = '',
-						TrainCNStr = '',
-						carCNStr = '';
-					var airENStr = '',
-						HotelENStr = '',
-						TrainENStr = '',
-						carENStr = '';
-					console.log(orderRes.Segment)
-					console.log(orderRes.Segment[0])
-					orderRes.Segment.map(function(airList) {
-						// 飞机票是嵌套的数组
-						airList.map(function(airItem) {
-							if (airItem.ItemPayment == "Credit Card") {
-								airCNStr = '机票、'
-								airENStr = 'air,'
+					if(s==1){
+						// 直接走支付宝
+						closeOnlinePayPop()
+						$('body').mLoading("show");
+						// 支付订单显示字段
+						var enStr = '',
+							cnStr = '';
+						var airCNStr = '',
+							HotelCNStr = '',
+							TrainCNStr = '',
+							carCNStr = '';
+						var airENStr = '',
+							HotelENStr = '',
+							TrainENStr = '',
+							carENStr = '';
+						console.log(orderRes.Segment)
+						console.log(orderRes.Segment[0])
+						orderRes.Segment.map(function(airList) {
+							// 飞机票是嵌套的数组
+							airList.map(function(airItem) {
+								if (airItem.ItemPayment == "Credit Card") {
+									airCNStr = '机票、'
+									airENStr = 'air,'
+								}
+							})
+						})
+						orderRes.Hotel.map(function(hotelItem) {
+							if (hotelItem.ItemPayment == "Credit Card") {
+								HotelCNStr = '酒店、'
+								HotelENStr = 'hotel,'
 							}
 						})
-					})
-					orderRes.Hotel.map(function(hotelItem) {
-						if (hotelItem.ItemPayment == "Credit Card") {
-							HotelCNStr = '酒店、'
-							HotelENStr = 'hotel,'
+						orderRes.Train.map(function(trainItem) {
+							if (trainItem.ItemPayment == "Credit Card") {
+								TrainCNStr = '火车、'
+								TrainENStr = 'train,'
+							}
+						})
+						orderRes.Car.map(function(carItem) {
+							if (carItem.ItemPayment == "Credit Card") {
+								carCNStr = '租车、'
+								carENStr = 'car rental,'
+							}
+						})
+						
+						enStr = airENStr + HotelENStr + carENStr + TrainENStr;
+						en.tipsClass = enStr.substring(0, enStr.length - 1)
+						// 将首字母大写
+						en.tipsClass = en.tipsClass.charAt(0).toUpperCase() + en.tipsClass.slice(1)
+						
+						en.tipsText = en.tipsClass + en.tipsText
+						
+						cnStr = airCNStr + HotelCNStr + carCNStr + TrainCNStr;
+						cn.tipsClass = cnStr.substring(0, cnStr.length - 1)
+						cn.tipsText = cn.tipsClass + cn.tipsText
+						// var type = ProfileInfo.onlineStyle == "APPLE" ? 4 : 1;//purchase页面传3
+						var type = ProfileInfo.onlineStyle == "APPLE" ? 3 : 1;
+						$.ajax(
+						{
+							type:'post',
+							url : $.session.get('ajaxUrl'),
+							dataType : 'json',
+							data:{
+								url: $.session.get('obtCompany')+"/QueryService.svc/QueryOrderPayInfo",
+								jsonStr:'{"request":{"id":'+netUserId+',"orderNo":"'+orderRes.OrderNo+'","language":"'+obtLanguage+'","payChannel":"1"}}'
+							},
+							success : function(data) {
+								// $('body').mLoading("hide");
+								// alert("支付宝1")
+								var res = JSON.parse(data);
+								console.log(res);
+								var subject = obtLanguage == "CN" ? cn.tipsClass : en.tipsClass;
+								// return false;
+								$.ajax(
+								{
+									type:'post',
+									url : $.session.get('ajaxUrl'),
+									dataType : 'json',
+									data:{
+										url: $.session.get('obtCompany')+"/SystemService.svc/GetAopBodyNew",
+										jsonStr:'{"request":{"subject":"'+subject+'","totalAmount":"'+res.payAmount+'","exMechantNO":"'+res.exMechantNO+'","type":"3"}}'
+									},
+									success : function(data) {
+										$('body').mLoading("hide");
+										var res = JSON.parse(data);
+										console.log(res);
+										ticket(orderRes,'alipayRes',res)
+										$('body').append(res);
+									},
+									error : function() {
+									// alert('fail');
+									}
+								}
+								);
+							},
+							error : function() {
+							// alert('fail');
+							}
 						}
-					})
-					orderRes.Train.map(function(trainItem) {
-						if (trainItem.ItemPayment == "Credit Card") {
-							TrainCNStr = '火车、'
-							TrainENStr = 'train,'
+						);
+					}
+					
+					if(s==0){
+						{
+							// 支付订单显示字段
+							var enStr = '',
+								cnStr = '';
+							var airCNStr = '',
+								HotelCNStr = '',
+								TrainCNStr = '',
+								carCNStr = '';
+							var airENStr = '',
+								HotelENStr = '',
+								TrainENStr = '',
+								carENStr = '';
+							console.log(orderRes.Segment)
+							console.log(orderRes.Segment[0])
+							orderRes.Segment.map(function(airList) {
+								// 飞机票是嵌套的数组
+								airList.map(function(airItem) {
+									if (airItem.ItemPayment == "Credit Card") {
+										airCNStr = '机票、'
+										airENStr = 'air,'
+									}
+								})
+							})
+							orderRes.Hotel.map(function(hotelItem) {
+								if (hotelItem.ItemPayment == "Credit Card") {
+									HotelCNStr = '酒店、'
+									HotelENStr = 'hotel,'
+								}
+							})
+							orderRes.Train.map(function(trainItem) {
+								if (trainItem.ItemPayment == "Credit Card") {
+									TrainCNStr = '火车、'
+									TrainENStr = 'train,'
+								}
+							})
+							orderRes.Car.map(function(carItem) {
+								if (carItem.ItemPayment == "Credit Card") {
+									carCNStr = '租车、'
+									carENStr = 'car rental,'
+								}
+							})
+							
+							enStr = airENStr + HotelENStr + carENStr + TrainENStr;
+							en.tipsClass = enStr.substring(0, enStr.length - 1)
+							// 将首字母大写
+							en.tipsClass = en.tipsClass.charAt(0).toUpperCase() + en.tipsClass.slice(1)
+							
+							en.tipsText = en.tipsClass + en.tipsText
+							
+							cnStr = airCNStr + HotelCNStr + carCNStr + TrainCNStr;
+							cn.tipsClass = cnStr.substring(0, cnStr.length - 1)
+							cn.tipsText = cn.tipsClass + cn.tipsText
+							
+							$(".onlinePayPop").html('\
+								<div class="onlinePayTittle tittleBackColor"><div class="closeOnlinePayIcon" style="color:#fff;">x</div></div>\
+								<div class="onlinePayRemind">'+get_lan('onlinePayRemind')+'▼</div>\
+								<div class="flexRow onlinePayUl">\
+									<div class="onlinePayLi yeePayLi">\
+									<div class="onlinePayImg yeePayImg" name="yeePay"></div>\
+									<div class="onlineLiText">'+get_lan('onlinePayPop').yeePay+'</div>\
+									</div>\
+									<div class="onlinePayLi">\
+									<div class="onlinePayImg alipayImg" name="alipay"></div>\
+									<div class="onlineLiText">'+get_lan('onlinePayPop').alipay+'</div>\
+									</div>\
+									<div class="onlinePayLi wechatLi">\
+									<div class="onlinePayImg wechatImg" name="wechat"></div>\
+									<div class="onlineLiText">'+get_lan('onlinePayPop').wechat+'</div>\
+									</div>\
+								</div>\
+								')
+							// $(".onlinePayPop").css("background-color","#ececec");
+							$(".closeOnlinePayIcon").unbind("click").click(function(){
+								closeOnlinePayPop('approval');
+							})
+							$(".wechatLi").remove();
+							// $(".onlinePayLi").eq(1).remove();
+							$(".onlinePayLi").css("width",(600/parseInt($(".onlinePayLi").length))+"px");
+							$(".onlineLiText").css("width",(600/parseInt($(".onlinePayLi").length)-100)+"px");
+							$(".onlinePayImg").css("margin","15px "+(300/parseInt($(".onlinePayLi").length)-85)+"px");
+						
+							$(".onlinePayImg").unbind("click").click(function(){
+								if($(this).attr("name")=="yeePay"){
+									yeePay(orderRes);
+								}else if($(this).attr("name")=="alipay"){
+									$('body').mLoading("show");
+									$.ajax(
+									{
+										type:'post',
+										url : $.session.get('ajaxUrl'),
+										dataType : 'json',
+										data:{
+											url: $.session.get('obtCompany')+"/QueryService.svc/QueryOrderPayInfo",
+											jsonStr:'{"request":{"id":'+netUserId+',"orderNo":"'+orderRes.OrderNo+'","language":"'+obtLanguage+'","payChannel":"1"}}'
+										},
+										success : function(data) {
+											// $('body').mLoading("hide");
+											// alert("支付宝2")
+											var res = JSON.parse(data);
+											console.log(res);
+											var subject = obtLanguage == "CN" ? cn.tipsClass : en.tipsClass;
+											// return false;
+											$.ajax(
+											{
+												type:'post',
+												url : $.session.get('ajaxUrl'),
+												dataType : 'json',
+												data:{
+													url: $.session.get('obtCompany')+"/SystemService.svc/GetAopBodyNew",
+													jsonStr:'{"request":{"subject":"'+subject+'","totalAmount":"'+res.payAmount+'","exMechantNO":"'+res.exMechantNO+'","type":"3"}}'
+												},
+												success : function(data) {
+													$('body').mLoading("hide");
+													closeOnlinePayPop()
+													var res = JSON.parse(data);
+													console.log(res);
+													// 12.27先出票 再跑支付宝方法
+														ticket(orderRes,'alipayRes',res)
+													$('body').append(res);
+												},
+												error : function() {
+												// alert('fail');
+												}
+											}
+											);
+										},
+										error : function() {
+										// alert('fail');
+										}
+									}
+									);
+								}else if($(this).attr("name")=="wechat"){
+						
+								}
+							})
 						}
-					})
-					orderRes.Car.map(function(carItem) {
-						if (carItem.ItemPayment == "Credit Card") {
-							carCNStr = '租车、'
-							carENStr = 'car rental,'
-						}
-					})
-					
-					enStr = airENStr + HotelENStr + carENStr + TrainENStr;
-					en.tipsClass = enStr.substring(0, enStr.length - 1)
-					// 将首字母大写
-					en.tipsClass = en.tipsClass.charAt(0).toUpperCase() + en.tipsClass.slice(1)
-					
-					en.tipsText = en.tipsClass + en.tipsText
-					
-					cnStr = airCNStr + HotelCNStr + carCNStr + TrainCNStr;
-					cn.tipsClass = cnStr.substring(0, cnStr.length - 1)
-					cn.tipsText = cn.tipsClass + cn.tipsText
-					
-					$(".onlinePayPop").html('\
-					    <div class="onlinePayTittle tittleBackColor"><div class="closeOnlinePayIcon" style="color:#fff;">x</div></div>\
-					    <div class="onlinePayRemind">'+get_lan('onlinePayRemind')+'▼</div>\
-					    <div class="flexRow onlinePayUl">\
-					        <div class="onlinePayLi yeePayLi">\
-					          <div class="onlinePayImg yeePayImg" name="yeePay"></div>\
-					          <div class="onlineLiText">'+get_lan('onlinePayPop').yeePay+'</div>\
-					        </div>\
-					        <div class="onlinePayLi">\
-					          <div class="onlinePayImg alipayImg" name="alipay"></div>\
-					          <div class="onlineLiText">'+get_lan('onlinePayPop').alipay+'</div>\
-					        </div>\
-					        <div class="onlinePayLi wechatLi">\
-					          <div class="onlinePayImg wechatImg" name="wechat"></div>\
-					          <div class="onlineLiText">'+get_lan('onlinePayPop').wechat+'</div>\
-					        </div>\
-					    </div>\
-					    ')
-					// $(".onlinePayPop").css("background-color","#ececec");
-					$(".closeOnlinePayIcon").unbind("click").click(function(){
-					    closeOnlinePayPop('approval');
-					})
-					$(".wechatLi").remove();
-					// $(".onlinePayLi").eq(1).remove();
-					$(".onlinePayLi").css("width",(600/parseInt($(".onlinePayLi").length))+"px");
-					$(".onlineLiText").css("width",(600/parseInt($(".onlinePayLi").length)-100)+"px");
-					$(".onlinePayImg").css("margin","15px "+(300/parseInt($(".onlinePayLi").length)-85)+"px");
-				
-					$(".onlinePayImg").unbind("click").click(function(){
-					    if($(this).attr("name")=="yeePay"){
-					        yeePay(orderRes);
-					    }else if($(this).attr("name")=="alipay"){
-					        $('body').mLoading("show");
-					        $.ajax(
-					          {
-					            type:'post',
-					            url : $.session.get('ajaxUrl'),
-					            dataType : 'json',
-					            data:{
-					                url: $.session.get('obtCompany')+"/QueryService.svc/QueryOrderPayInfo",
-					                jsonStr:'{"request":{"id":'+netUserId+',"orderNo":"'+orderRes.OrderNo+'","language":"'+obtLanguage+'","payChannel":"1"}}'
-					            },
-					            success : function(data) {
-					                // $('body').mLoading("hide");
-					                var res = JSON.parse(data);
-					                console.log(res);
-									var subject = obtLanguage == "CN" ? cn.tipsClass : en.tipsClass;
-					                // return false;
-					                $.ajax(
-					                  {
-					                    type:'post',
-					                    url : $.session.get('ajaxUrl'),
-					                    dataType : 'json',
-					                    data:{
-					                        url: $.session.get('obtCompany')+"/SystemService.svc/GetAopBodyNew",
-					                        jsonStr:'{"request":{"subject":"'+subject+'","totalAmount":"'+res.payAmount+'","exMechantNO":"'+res.exMechantNO+'","type":"3"}}'
-					                    },
-					                    success : function(data) {
-					                        $('body').mLoading("hide");
-											closeOnlinePayPop()
-					                        var res = JSON.parse(data);
-					                        console.log(res);
-											// 12.27先出票 再跑支付宝方法
-												ticket(orderRes,'alipayRes',res)
-					                        $('body').append(res);
-					                    },
-					                    error : function() {
-					                      // alert('fail');
-					                    }
-					                  }
-					                );
-					            },
-					            error : function() {
-					              // alert('fail');
-					            }
-					          }
-					        );
-					    }else if($(this).attr("name")=="wechat"){
-				
-					    }
-					})
+					}
 				}
+			}else{
+				ticket(orderRes);
 			}
 		}
-	}else{
-		ticket(orderRes);
 	}
+    
 }
 /*易pay支付*/
 function yeePay(orderRes){
@@ -1401,7 +1733,7 @@ function goOnBook(orderRes){
               <div class="continueLiText">'+get_lan('continueUl').air+'</div>\
             </div>\
             <div class="continueLi hotelIconLi">\
-              <div class="continueLiImg hotelImg" name="hotel"></div>\
+              <div class="continueLiImg hotelImg" id="indexHotelTab" name="hotel"></div>\
               <div class="continueLiText">'+get_lan('continueUl').hotel+'</div>\
             </div>\
             <div class="continueLi trainIconLi">\
@@ -1503,7 +1835,13 @@ function goOnBook(orderRes){
             }else if($(this).attr("name")=="train"){
                 window.location.href='../../search/queryTrain.html';
             }
-        })
+		})
+		// 2020.11.26 酒店跳转
+		if(ProfileInfo.HotelJumpHRSWeb){
+			$('#indexHotelTab').unbind("click").click(function(){
+				window.open(ProfileInfo.HRSWebsite);
+			})
+		}
     })
     function compareDate(date1){
         var oDate1 = new Date(date1);
@@ -1929,6 +2267,7 @@ function trainList(res){
 			<div class="trainLi">\
 			  <div class="trainLiTittle flexRow">\
                 <div style="margin-left:27px;">'+titem.nameP+'</div>\
+                <div style="margin-left:27px;">'+get_lan('orderCustomerInfo').popDocuments+titem.customerDocment+'</div>\
 			    <div style="margin-left:27px;">'+titem.TrainDate+'</div>\
 			    <div style="margin-left:50px;">'+titem.TrainDeparte+' - '+titem.TrainArrive+'</div>\
 			    <div style="margin-left:50px;">'+get_lan('orderDetails').orderState+'<span class="activeFontColor">'+titem.TrainState+'</span></div>\
@@ -1942,6 +2281,7 @@ function trainList(res){
 		var SeatNoStr=titem.SeatNo?'&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').SeatNo+titem.SeatNo:"";
 		var CoachNoStr=titem.CoachNo?'&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').CoachNo+titem.CoachNo:"";
 		var TicketNoStr=titem.TrainTicketNo?'&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').trainTicketNo+titem.TrainTicketNo:"";
+		var TicketGateStr = titem.TicketGate ? '&nbsp;&nbsp;&nbsp;' + get_lan('orderDetails').TicketGate + titem.TicketGate :"";
 	    $(".trainDetailsList").eq(index).append('\
 	    	<div class="trainDetailsLi">\
 	    	  <div class="trainType">'+titem.TrainType+'</div>\
@@ -1956,6 +2296,7 @@ function trainList(res){
 			  TicketNoStr+
 			  CoachNoStr+
 			  SeatNoStr+
+			  TicketGateStr+
 			  '</div>\
 	    	</div>\
 	    ')
@@ -2260,7 +2601,7 @@ function onlyOnePayment(){
 		onlinePay(orderDetaile);
 	}
 	if(s==1){
-		var type = ProfileInfo.onlineStyle == "APPLE" ? 4 : 1;
+		var type = ProfileInfo.onlineStyle == "APPLE" ? 3 : 1;
 		$.ajax({
 			type: 'post',
 			url: $.session.get('ajaxUrl'),
@@ -2272,6 +2613,7 @@ function onlyOnePayment(){
 			},
 			success: function(data) {
 				// $('body').mLoading("hide");
+				// alert("支付宝3")
 				var res = JSON.parse(data);
 				console.log(res);
 				var subject = obtLanguage == "CN" ? cn.tipsClass : en.tipsClass;
@@ -2283,7 +2625,7 @@ function onlyOnePayment(){
 					data: {
 						url: $.session.get('obtCompany') + "/SystemService.svc/GetAopBodyNew",
 						jsonStr: '{"request":{"subject":"' + subject + '","totalAmount":"' + res.payAmount + '","exMechantNO":"' +
-							res.exMechantNO + '","type":"' + type + '"}}'
+							res.exMechantNO + '","type":"3"}}'
 					},
 					success: function(data) {
 						// $('body').mLoading("hide");

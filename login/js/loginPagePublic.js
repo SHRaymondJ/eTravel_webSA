@@ -22,7 +22,7 @@ function get_lan(m)
 //中英文对象
 var cn = {
     "customer":'企业客户',
-    'login':'登陆',
+    'login':'登录',
     'company':'公司名',
     'userName':'用户名',
     'password':'密码',
@@ -30,7 +30,7 @@ var cn = {
     'language':'English',
     'forgetPassword':'忘记密码',
     "passwordRemind":"账号或密码错误",
-    "updateRemind":"欢迎使用在线预定系统，首次登陆请修改密码。",
+    "updateRemind":"欢迎使用在线预定系统，首次登录请修改密码。",
     "newPassword":"新密码:",
     "confirmPassword":"确认密码:",
     "Confirm":"确定",
@@ -68,6 +68,7 @@ var en = {
     "name":"Name",
 	"remainUsername":"Remember user name",
 }
+
 var SelectUrl="http://appservice.etravel.net.cn/SystemService.svc/SelectUrlPost"
 $(function(){
   // $.session.set('ajaxUrl', 'https://online.bcdtravel.cn/SystemAPI_PostSend/api/SystemAPI/PostSend');
@@ -80,7 +81,7 @@ $(function(){
   		$.session.set('ajaxUrl', 'https://online.bcdtravel.cn/SystemAPI_PostSend/api/SystemAPI/PostSend');
   	}
   	if(data.SelectUrl!=undefined){
-  		SelectUrl=data.SelectUrl
+  		// SelectUrl=data.SelectUrl
   	}
   })
   
@@ -98,7 +99,7 @@ $(function(){
   }
   
   showContent();//内容展示
-  login();//登陆
+  login();//登录
   document.onkeydown = function (event) {
      var e = event || window.event || arguments.callee.caller.arguments[0];
      if (e && e.keyCode == 13) {
@@ -205,13 +206,13 @@ function rememberUser(){
 		window.localStorage.removeItem('historyUserName')
 	}
 }
-//登陆事件
+//登录事件
 function login(){
 	$.session.set('TAnumber','')
 	$.session.set('trainTicketChanges','');
 	$.session.set('TAorderNo','');
 	$.session.set('noChangePasserword','');
-    //点击登陆
+    //点击登录
     $(".btnLogin").unbind('click').click(function(){
         var companyName = $('#txtCompanyName').val();
         var userName = $('#txtLoginName').val();
@@ -237,8 +238,7 @@ function login(){
                     var res = JSON.parse(data);
                     console.log(res);
                     if(res.Company_Url){
-                        // $.session.set('obtCompany', res.Company_Url)
-                        $.session.set('obtCompany', "https://mobileservicetest.bcdtravel.cn:8089/AndroidService.testForIT")  //测试
+                        $.session.set('obtCompany', res.Company_Url)
                         $.ajax(
                           {
                               type: 'post',

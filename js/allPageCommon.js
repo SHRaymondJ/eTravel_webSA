@@ -17,6 +17,7 @@ $(function(){
 		    'search':'查询',
 		    'order':'订单查询',
 		    'approval':'在线审核',
+			'news':'新闻发布',
 		    'profiles':'个人信息',
 		    'report':'报表',
 		    'setting':'设置',
@@ -26,6 +27,7 @@ $(function(){
 		    'hotel':'酒店查询',
 		    'train':'火车查询',
 		    'myTrip':"我的行程",
+			'management':'用户管理',
 		},
 	    'language':'English',
 	    'logOut':'登出',
@@ -48,6 +50,7 @@ $(function(){
 		    'hotel':'Hotel',
 		    'train':'Train',
 		    'myTrip':"My Trips",
+			'management':'User Management',
 		},
 	    'language':'中文',
 	    'logOut':'Log out',
@@ -111,6 +114,7 @@ $(function(){
 		                  <li class="menusLi approvalTab hide"><span class="tabText approvalTabText">'+get_lan('header').approval+'</span></li>\
 		                  <li class="menusLi profilesTab"><span class="tabText profilesTabText">'+get_lan('header').profiles+'</span></li>\
 		                  <li class="menusLi reportTab hide"><span class="tabText reportTabText">'+get_lan('header').report+'</span></li>\
+		                  <li class="menusLi managementTab hide"><span class="tabText managementTabText">'+get_lan('header').management+'</span></li>\
 		              </ul>\
 		              <div class="autoCenter">\
 		              \
@@ -120,9 +124,6 @@ $(function(){
 		  </div>\
 		</div>\
 		')
-		//webSA，不要头部
-		$('header .menu').html('')//删除上方导航条
-		$('header .menu').css('height','40px')
 	// <ul class="searchUl">\
 	//   <li class="airDomLi">'+get_lan('header').airDom+'</li>\
 	//   <li class="airIntlLi">'+get_lan('header').airIntl+'</li>\
@@ -168,9 +169,12 @@ $(function(){
 	}else if(hrefText.indexOf("report") != -1){
 		$(".menusLi").removeClass("active");
 		$(".reportTab").addClass("active");
+	}else if(hrefText.indexOf("userManagement") != -1){
+		$(".menusLi").removeClass("active");
+		$(".managementTab").addClass("active");
 	}
-	
 	var noChangePasserword=$.session.get("noChangePasserword")
+	
 	if(ProfileInfo && noChangePasserword!=1){
 		// if(ProfileInfo.NeedUpdatePassword==true &&!ProfileInfo.HideChangePassword){
 			//无论 HideChangePassword  =true还是=false，都跳到个人信息页
@@ -199,9 +203,13 @@ $(function(){
 		if(!ProfileInfo.NoQueryOrder){
 			$(".orderTab").removeClass("hide");
 		}
+		//用户管理
+		if(ProfileInfo.ShowCustomerEdit){
+			$(".managementTab").removeClass("hide");
+		}
 		if(ProfileInfo.ChainCode!=""&&ProfileInfo.ChainCode!=null){
 			$(".logoImg").css("background-image","url('../companyLogoImg//"+ProfileInfo.ChainCode+".png')");
-			$('body').append('<img id="logoTest" style="position: absolute;opacity: 0;height:0;width:0" src="../companyLogoImg//'+ProfileInfo.ChainCode+'.png">')
+			$('body').append('<img id="logoTest" style="position: absolute;opacity: 0;height:0;width:0" src="../companyLogoImg//'+ProfileInfo.ChainCode+'.png">');
 			let ImgObj=new Image();
 			let pathImg="../companyLogoImg//"+ProfileInfo.ChainCode+".png"; 
 			ImgObj.src= pathImg
@@ -325,6 +333,12 @@ function menuList(){
 			$.session.remove('goOnBookHotelInfo');
 		}
 		//appleFirstRemind("home");
+		var TAindex=$.session.get('TAnumberIndex')//是否是单点登录
+		if(!ProfileInfo.IndexTravelRequest && TAindex!=1){//没有首页审批单权限的时候，回到首页时，删除审批单
+			if($.session.get('TAnumber')){
+				$.session.remove('TAnumber');
+			}
+		}
 		window.location.href = '../../index/index.html';
 	})
 	// $(".airDomLi").unbind("click").click(function(){
@@ -346,6 +360,9 @@ function menuList(){
     $(".reportTab").unbind("click").click(function(){
     	window.location.href = '../../report/reportPage.html';
     })
+	$(".managementTab").unbind("click").click(function(){
+		window.location.href = '../../userManagement/management.html';
+	})
     $(".profilesTab").unbind("click").click(function(){
 		if(ProfileInfo){
 			switch(ProfileInfo.onlineStyle){

@@ -2,12 +2,17 @@ var netUserId = $.session.get('netLoginId');
 var obtLanguage = $.session.get('obtLanguage');
 var isReturn = tools.queryString().isReturn;
 var searchDomInfo = JSON.parse($.session.get('searchDomInfo'));
-var codeShare=searchDomInfo.codeShare
 var ProfileInfo = JSON.parse($.session.get('ProfileInfo'));
 // console.log(ProfileInfo)
-console.log(searchDomInfo);
+// console.log(searchDomInfo);
 var TAnumber=$.session.get("TAnumber")
 var domAirSession=$.session.get("domAirSession")
+
+if(ProfileInfo.ChangeSameAirline && searchDomInfo.alterTicketInfo && ProfileInfo.onlineStyle!="APPLE"){
+	var ticketNo = searchDomInfo.alterTicketInfo.split(',')[0].split('_')[1];
+}else{
+	var ticketNo = "";
+}
 
 var TAminDate=0,TAmaxDate=365
 if(TAnumber){
@@ -30,7 +35,6 @@ if(TAnumber){
 			TAminDate=minTime<minTime2?TAminDate:new Date()
 		}
 }
- 
 // 时间选择
 var day=$.session.get('searchDomesticDay');
 var returnday=$.session.get('searchDomesticReturnDay');
@@ -67,7 +71,7 @@ var departureCity = searchDomInfo.departureCity;
 var TAorderNo = $.session.get('TAorderNo');
 
 	
-if (orgCabinCode == "" && !searchDomInfo.packagePrice) {
+if (orgCabinCode == "") {
 	arrivalCity = ""
 	departureCity = ""
 }
@@ -99,6 +103,8 @@ var cn = {
 		"all": "全部出发机场",
 		"all2": "全部到达机场",
 		"price": "价格",
+		"recommend1": "全部",
+		"recommend2": "推荐航班",
 	},
 	'airportName': {
 		'all': '全部航班',
@@ -150,6 +156,7 @@ var cn = {
 		"seatsNum": "座位数",
 		"cabinType": "舱位类型",
 		"NominalPrice": "票面价",
+		"Baggage": "行李",
 		"DiscountRate": "折扣率",
 		"AirportTax": "机场税",
 		"FuelTax": "燃油税",
@@ -165,17 +172,27 @@ var cn = {
 		"lowestTittle": "根据贵公司差旅政策规定， 全天最低价航班为：",
 		"lowestTittle1": "根据贵公司差旅政策规定， 前后",
 		"lowestTittle2": "小时最低价航班为：",
-		"lowestTittleSW":"最低票价：",
 		"chooseLowest": "预订最低票价",
+		"chooseLowest2": "预订此航班",
 		"rasonRemind": "请选择理由",
 		"ticketPrice": "票价(不含税):",
 		"save": "可节省:",
 		"true": "实际承运:",
-		"book":"预订",
 	},
 	"stopNoMsg": "该航班有经停，是否确认继续预定？",
 	"rulePopHeader": "退改签规则",
-	'alternateTips':"您选择的是候补舱位，请确认",
+	"pointBody":{
+		"lowest":"最低票价",
+		"recommend":"协议航空公司",
+		"or":"或",
+		"points":" 分",
+	},
+	"approachingTakeoff":{
+		"title":"临近起飞",
+		"para1":"1. 本航班已临近起飞时间，购票前请先到值机柜台确认出票后仍有时间值机 (支付成功后至少需 5-10 分钟完成出票) 。",
+		"para2":"2. 若出票失败，订单自动取消并全额退款，若已出票，退改损失需自行承担",
+		"btn":"确认预订"
+	}
 }
 var en = {
 	"progressBar": {
@@ -203,6 +220,8 @@ var en = {
 		"all": "All Departure Airport",
 		"all2": "All Arrival Airports",
 		"price": "Price",
+		"recommend1": "All",
+		"recommend2": "Scheduled Flight",
 	},
 	'airportName': {
 		'all': 'All Airlines',
@@ -253,6 +272,7 @@ var en = {
 		"seatsNum": "Seats Num",
 		"cabinType": "Cabin Type",
 		"NominalPrice": "Nominal Price",
+		"Baggage": "Baggage",
 		"DiscountRate": "Discount Rate",
 		"AirportTax": "Airport Tax",
 		"FuelTax": "Fuel Tax(CNY)",
@@ -268,18 +288,28 @@ var en = {
 		"lowestTittle": "Lowest logical fare option according to your company's travel policy.",
 		"lowestTittle1": "Lowest logical fare option within  ±",
 		"lowestTittle2": " hours according to your company's travel policy.",
-		"lowestTittleSW":"Lowest Fare：",
 		"chooseLowest": "Book the lowest fare",
+		"chooseLowest2": "Choose this fare",
 		"rasonRemind": "Please choose reasons.",
 		"ticketPrice": "Ticket Price(Tax exclusive):",
 		// "save": "Miss Saving:",
 		'save':'Lost Saving:',
 		"true": "True:",
-		"book":"Book",
 	},
 	"stopNoMsg": "This flight has a stopover, do you want to continue booking?",
 	"rulePopHeader": "Restriction",
-	'alternateTips':"You have chosen alternate class, please confirm",
+	"pointBody":{
+		"lowest":"lowest price ticket",
+		"recommend":"recommended airline's",
+		"or":"/",
+		"points":" Points",
+	},
+	"approachingTakeoff":{
+		"title":"Approaching Takeoff",
+		"para1":"1. The flight is approaching the departure time. Please confirm at the airlines counter if you have enough time to complete the check in process. (it will take at least 5-10 minutes to complete the ticket issuance after successful payment).",
+		"para2":"2. If travelers are refused to check in at airline counter once ticket issued, they need to pay the change fee and refund penalty at their own account.",
+		"btn":"Confirm Booking"
+	}
 }
 
 function get_lan(m) {
@@ -301,6 +331,16 @@ function get_lan(m) {
 
 	return t;
 }
+//弹窗
+var textObj = {
+	title:get_lan('approachingTakeoff').title,
+	body:"<p>" + get_lan('approachingTakeoff').para1 + "</p>\
+			<br>\
+			<p>" + get_lan('approachingTakeoff').para2 + "</p>",
+	btnText:get_lan('approachingTakeoff').btn
+}
+var start = new PopUpWindow(textObj);
+
 $(function() {
 	showContent(); //内容展示
 	ticketList(); //机票列表
@@ -375,11 +415,11 @@ function showContent() {
                    <div style="width:100%;color:#222;font-weight:bold;padding-left:40px" class="roundTittle">' +
 		get_lan('searchBody').oneWay +
 		'</div>\
-			<div class="emailPrint btnBackColor">Email输出</div>\
                 </div>\
                 <div class="siftBody"></div>\
             </div>\
-            <div class="recommendTrain hide flexRow"></div>\
+			<div class="recommendTrain hide flexRow"></div>\
+			<div class="pointsHeader hide"></div>\
             <div class="ticketList"></div>\
         </div>\
         '
@@ -549,7 +589,23 @@ function showContent() {
 		$("#domReturnSelect").unbind("change").change(function() {
 			showPlusMinus()
 		})
-		
+	//隐藏 来回程和单程的选择
+	if(searchDomInfo.type=='multiple'){
+		$('.searchState').hide()
+		$('.searchBody').hide()//隐藏搜索框
+			//往返城市
+			if (isReturn == 1) {
+				$('#domDepartureCity').val(searchDomInfo.arrivalCityText)
+				$('#domDepartureCity').attr('code',searchDomInfo.arrivalCity)
+				$('#domArrivalCity').val(searchDomInfo.lastCityText)
+				$('#domArrivalCity').attr('code',searchDomInfo.lastCity)
+			}
+	}
+	// 方糖，隐藏舱位类型选择，国内国际
+		if(ProfileInfo.NeedSpecialPolicy){
+			$("#domCabin  option:first").prop("selected", 'selected');
+			$("#domCabin").attr('disabled','disabled')
+		}
 	//时间限制
 	$.ajax({
 		type: 'post',
@@ -585,7 +641,7 @@ function showContent() {
 		$("#domDepartureSelect").remove();
 		$("#domReturnSelect").remove();
 		// 检查是否有±几小时的权限
-		if(!ProfileInfo.ShowDomesticTimeSlt){
+		if(!ProfileInfo.ShowDomesticTimeSlt  || searchDomInfo.type=='multiple'){
 		    $(".domDepartureWeek").remove();
 			$('.domReturnDateWeek').remove()
 		}
@@ -603,7 +659,7 @@ function showContent() {
 			$("#domReturnSelect").val('all');
 		}
 		// 检查是否有±几小时的权限
-		if(!ProfileInfo.ShowDomesticTimeSlt){
+		if(!ProfileInfo.ShowDomesticTimeSlt || searchDomInfo.type=='multiple'){
 		    $(".domDepartureWeek").remove();
 			$('.domReturnDateWeek').remove()
 		}
@@ -612,12 +668,12 @@ function showContent() {
 		if(day>0){
 			$('#DepartPlusMinus').val(day)
 		}else{
-			$('#DepartPlusMinus').val(3)
+			$('#DepartPlusMinus').val(12)
 		}
 		if(returnday>0){
 			$('#returnPlusMinus').val(returnday)
 		}else{
-			$('#returnPlusMinus').val(3)
+			$('#returnPlusMinus').val(12)
 		}
 		// 默认值设置后
 		showPlusMinus()
@@ -663,19 +719,7 @@ function showContent() {
 		}
 	})
 	$(".searchAirBtn").unbind("click").click(function() {
-		if ($(this).attr("startlimit") && parseInt($(this).attr("startlimit")) > 0) {
-			if (datedifference(getNowFormatDate(), $('#domDepartureDate').val()) < parseInt($(this).attr("startlimit"))) {
-				var mymessage = confirm($(this).attr("Message"));
-				if (mymessage == true) {
-					if ($(this).attr("CanSearch") != "true") {
-						return false;
-					}
-				} else {
-					return false;
-				}
-			}
-		}
-
+		var that = this;
 		function getNowFormatDate() {
 			var date = new Date();
 			var seperator1 = "-";
@@ -705,13 +749,32 @@ function showContent() {
 		};
 		if (ProfileInfo.onlineStyle == "APPLE") {
 			var berthtype = 1;
-			var cityList = '"'+$('#domDepartureCity').attr("code")+'","'+$('#domArrivalCity').attr("code")+'"';
-			tools.appleRemindPop(cityList,1,netUserId,function(){searchDom(berthtype)});
 		} else {
 			var berthtype = $("#domCabin  option:selected").attr("berthtype");
-			searchDom(berthtype);
 		}
-		function searchDom(){
+		var cityList = '"'+$('#domDepartureCity').attr("code")+'","'+$('#domArrivalCity').attr("code")+'"';
+		tools.appleRemindPop(cityList,1,netUserId,function(){
+			if ($(that).attr("startlimit") && parseInt($(that).attr("startlimit")) > 0) {
+				if (datedifference(getNowFormatDate(), $('#domDepartureDate').val()) < parseInt($(that).attr("startlimit"))) {
+					var mymessage = confirm($(that).attr("Message"));
+					if (mymessage == true) {
+						if ($(that).attr("CanSearch") != "true") {
+							return false;
+						}else{
+							searchDom(berthtype)
+						}
+					} else {
+						return false;
+					}
+				}else{
+					searchDom(berthtype)
+				}
+			}else{
+				searchDom(berthtype)
+			}
+		});
+		function searchDom(berthtype){
+		var oldSearchDomInfo = JSON.parse($.session.get('searchDomInfo'));
 		if ($('.searchState option:selected').attr("state") == '1') {
 			var searchDomInfo = {
 				'type': 'oneWay',
@@ -723,10 +786,9 @@ function showContent() {
 				'queryKey': $('#domDepartureCity').attr("code") + ',' + $('#domArrivalCity').attr("code") + ',' + $(
 					'#domDepartureDate').val() + ',' + 'ALL',
 				'showCabins': berthtype,
-				'codeShare': codeShare,
+				// 'codeShare': false,
+				'codeShare': oldSearchDomInfo.codeShare,
 				'isDirect': JSON.parse($.session.get('searchDomInfo')).isDirect,
-				'isNotOpenedClassNeeded': JSON.parse($.session.get('searchDomInfo')).isNotOpenedClassNeeded,//候补
-				'packagePrice': JSON.parse($.session.get('searchDomInfo')).packagePrice,//打包价
 			}
 			if (ProfileInfo.QueryDomesticTicketsWithTime) {
 				if ($("#domDepartureSelect  option:selected").val() == "all" ) {
@@ -756,10 +818,9 @@ function showContent() {
 				'queryKeyReturn': $('#domArrivalCity').attr("code") + ',' + $('#domDepartureCity').attr("code") + ',' + $(
 					'#domDepartureDate').val() + ',' + $('#domReturnDate').val() + ',',
 				'showCabins': berthtype,
-				'codeShare': codeShare,
+				// 'codeShare': false,
+				'codeShare': oldSearchDomInfo.codeShare,
 				'isDirect': JSON.parse($.session.get('searchDomInfo')).isDirect,
-				'isNotOpenedClassNeeded': JSON.parse($.session.get('searchDomInfo')).isNotOpenedClassNeeded,//候补
-				'packagePrice': JSON.parse($.session.get('searchDomInfo')).packagePrice,//打包价
 			}
 			if (ProfileInfo.QueryDomesticTicketsWithTime) {
 				if ($("#domDepartureSelect  option:selected").val() == "all") {
@@ -785,6 +846,9 @@ function showContent() {
 			$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
 			location.replace('../../domesticAir/airTicketList.html');
 		}
+		
+		
+		
 	}
 	})
 	$("#domDepartureCity").kuCity();
@@ -838,6 +902,9 @@ function showContent() {
 	} else if (searchDomInfo.type == "roundTrip" && !isReturn) {
 		$(".recommendTrain").removeClass("hide");
 		recommendTrain();
+	}else if (searchDomInfo.type == "multiple" && !isReturn) {
+		$(".recommendTrain").removeClass("hide");
+		recommendTrain();
 	}
 	//筛选排序模块
 	$(".siftBody").html('\
@@ -858,6 +925,15 @@ function showContent() {
 		get_lan('siftBody').all2 +
 		'</option>\
         </select>\
+		<div class="siftLine" style="left:750px;"></div>\
+		<select class="recommend">\
+		  <option value="0" >' +
+		get_lan('siftBody').recommend1 +
+		'</option>\
+		<option value="1" >' +
+		get_lan('siftBody').recommend2 +
+		'</option>\
+		</select>\
         <div class="siftLine" style="left:600px;"></div>\
         <div class="departureTimeSort flexRow">' +
 		get_lan('siftBody').departureTime +
@@ -870,7 +946,45 @@ function showContent() {
 		$(".airLineChoose").remove();
 		$(".siftLine").remove();
 	}
-	//<div class="arrivalTimeSort flexRow">'+get_lan('siftBody').arrivalTime+'<div class="arrivalTimeSortIcon"></div></div>\
+	// 是否显示推荐航班选项
+	if(!ProfileInfo.ShowDAgreementOrLevel3){
+		$('.recommend').hide()
+		$('.recommend').val(0)
+		$('.arrivalAirPortChoose+.siftLine').hide()
+	}else{
+		$('.recommend').val(1)
+	}
+
+	/*2020-10-9 积分*/
+	var PointTypeId2;
+	var PointTypeId3;
+	var pointsType = '';
+	if(ProfileInfo.PointInfo&&ProfileInfo.PointInfo.PointRuleList){
+	ProfileInfo.PointInfo.PointRuleList.map(function(item){
+		if(item.PointTypeId==2&&(item.RegionType=="ALL"||item.RegionType=="D")&&(item.PointServiceType==0||item.PointServiceType==1)){
+			pointsType += get_lan("pointBody").lowest+' ';
+			PointTypeId2 = '2';
+		}
+		if(item.PointTypeId==3&&(item.RegionType=="ALL"||item.RegionType=="D")&&(item.PointServiceType==0||item.PointServiceType==1)){
+			if(PointTypeId2=='2'){
+				pointsType += get_lan("pointBody").or+' '+get_lan("pointBody").recommend+' ';
+			}else{
+				pointsType += get_lan("pointBody").recommend+' ';
+			}
+			PointTypeId3 = '3';
+		}
+	})
+	}
+	if(PointTypeId2=='2'||PointTypeId3=='3'){
+		$(".pointsHeader").removeClass("hide");
+	}
+	if(obtLanguage=="CN"){
+		$(".pointsHeader").text("ⓘ 预订 "+pointsType+"的机票即可获得积分奖励");
+	}else if(obtLanguage=="EN"){
+		$(".pointsHeader").text("ⓘ Book the "+pointsType+"ticket  to get bonus points");
+	}
+	/*end*/
+	//<div class="arrivalTimeSort flexRow">'+get_lan('siftBody').arrivalTime+'<div class="arrivalTimeSortIcon"></div></div>
 }
 
 function getWeek(dateStr) {
@@ -924,9 +1038,9 @@ function recommendTrain() {
                     <div style="line-height:60px;width:160px;text-align: center;">' + res.UseTime +
 					'</div>\
                     <div class="trainFare" queryKey="' + res.RID + ',' + res.FareList[0].SeatID +
-					'"><span style="font-size:14px;color:#4d4d4d;">￥</span><span style="text-decoration:underline;">' + res.FareList[
+					'"><span style="text-decoration:underline;">' + res.FareList[
 						0].Price +
-					'</span></div>\
+					'</span><span style="font-size:14px;color:#4d4d4d;">'+ProfileInfo.OfficeCurrency+'</span></div>\
                     <div style="font-size:14px;color:#4d4d4d;line-height:60px;margin-left:35px;">' +
 					get_lan('lowest') + '</div>\
                     \
@@ -934,6 +1048,12 @@ function recommendTrain() {
 				//<div class="trainSearch">'+get_lan('trainSearch')+'</div>\
 				$(".trainFare").unbind("click").click(function() {
 					var trainRemind = confirm(get_lan("trainRemind"));
+					if ($("#domDepartureSelect  option:selected").val() == "all" || $("#domDepartureSelect  option:selected").val() == "all") {
+						var DepartureSelectValue = ''
+					} else {
+						var DepartureSelectValue = ' ' + $("#domDepartureSelect  option:selected").val() + ':00:00';
+					}
+					
 					if (trainRemind == true) {
 						var searchTrainInfo = {
 							'type': 'oneWay',
@@ -942,8 +1062,9 @@ function recommendTrain() {
 							'departureCity': searchDomInfo.departureCity,
 							'arrivalCity': searchDomInfo.arrivalCity,
 							'date': searchDomInfo.date,
-							'queryKey': searchDomInfo.departureCityText + ',' + searchDomInfo.arrivalCityText + ',' + searchDomInfo.date +
+							'queryKey': searchDomInfo.departureCityText + ',' + searchDomInfo.arrivalCityText + ',' + searchDomInfo.date +DepartureSelectValue+
 								',',
+							'domqueryKey':searchDomInfo.departureCity + ',' + searchDomInfo.arrivalCity + ',' + searchDomInfo.date + DepartureSelectValue+',ALL',
 						}
 						$.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
 						window.location.href = '../../train/trainTicketList.html';
@@ -1109,17 +1230,34 @@ function ticketList() {
 		// roundTittle 原get_lan('searchBody').oneWay修改为
 		if($('.searchState').val()==1){
 			var sobj=searchDomInfo
-			if(obtLanguage=="CN"){
-				var roundStr=get_lan('searchBody').oneWay+"&nbsp;&nbsp;&nbsp;"+sobj.departureCityText+"-"+sobj.arrivalCityText+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+			if(searchDomInfo.type=="multiple"){
+				if(obtLanguage=="CN"){
+					var roundStr=sobj.departureCityText+"-"+sobj.arrivalCityText+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}else{
+					var roundStr=sobj.departureCity+"-"+sobj.arrivalCity+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}
+				if(ProfileInfo.onlineStyle=="APPLE"){
+					var roundStr=get_lan('searchBody').oneWay
+				}
 			}else{
-				var roundStr=get_lan('searchBody').oneWay+"&nbsp;&nbsp;&nbsp;"+sobj.departureCity+"-"+sobj.arrivalCity+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
-			}
-			if(ProfileInfo.onlineStyle=="APPLE"){
-				var roundStr=get_lan('searchBody').oneWay
+				if(obtLanguage=="CN"){
+					var roundStr=get_lan('searchBody').oneWay+"&nbsp;&nbsp;&nbsp;"+sobj.departureCityText+"-"+sobj.arrivalCityText+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}else{
+					var roundStr=get_lan('searchBody').oneWay+"&nbsp;&nbsp;&nbsp;"+sobj.departureCity+"-"+sobj.arrivalCity+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}
+				if(ProfileInfo.onlineStyle=="APPLE"){
+					var roundStr=get_lan('searchBody').oneWay
+				}
 			}
 			$(".roundTittle").html(roundStr);
 		}
-		
+		//新增参数IsDirect   是否直飞，isNotOpenedClassNeeded是否候补，默认空
+		// 新增参数 searchType  2表示改签
+		var searchType=""
+		if(searchDomInfo.alterTicketInfo){
+			searchType=2
+		}
+
 		$.ajax({
 			type: 'post',
 			url: $.session.get('ajaxUrl'),
@@ -1129,7 +1267,7 @@ function ticketList() {
 				jsonStr: '{"request":{"queryKey":"' + NewQuery + '","orgAirport":"' + departureCity + '","dstAirport":"' +
 					 arrivalCity+ '","id":' + netUserId + ',"Language":"' + obtLanguage + '","showCabins":"' + searchDomInfo.showCabins +
 					'","isCodeShare":"' + searchDomInfo.codeShare + '","minFare":"' + alterPrice + '","maxFare":"","orgCabinCode":"' +
-					orgCabinCode + '","IsDirect":"'+JSON.parse($.session.get('searchDomInfo')).isDirect+'","isNotOpenedClassNeeded":"'+JSON.parse($.session.get('searchDomInfo')).isNotOpenedClassNeeded+'"}}'
+					orgCabinCode + '","IsDirect":"'+JSON.parse($.session.get('searchDomInfo')).isDirect+'","isNotOpenedClassNeeded":"","searchType":"'+searchType+'","ticketNo":"'+ticketNo+'"}}'
 			},
 			success: function(data) {
 				// $('body').mLoading("hide");
@@ -1148,31 +1286,10 @@ function ticketList() {
 				
 				
 				
-					
-				// if(res.length == 0){
-				//     alert(get_lan("ticketList").listRemind);
-				// }
-				// if(searchDomInfo.isDirect){
-				//     var isDirectRes = []
-				//     res.map(function(item){
-				//         if(item.StopNo=="直飞"||item.StopNo=="Direct"){
-				//             isDirectRes.push(item);
-				//         }
-				//     })
-				//     ticketListInfo(isDirectRes);
-				//     chooseAirLine(isDirectRes);//选择航空公司
-				//     sortTicketInfo(isDirectRes);//排序
-				// }else{
-				//     ticketListInfo(res);
-				//     chooseAirLine(res);//选择航空公司
-				//     sortTicketInfo(res);//排序
-				// }
-				if (res.segmentList.length == 0) {
-					// alert(get_lan("ticketList").listRemind);
-					if(res.code=="200"){
-						alert(res.errMsg);
-					}
+				if(res.code!='200'){
+					alert(res.errMsg);
 				}
+
 				if (searchDomInfo.isDirect) {
 					var isDirectRes = []
 					res.segmentList.map(function(item) {
@@ -1193,7 +1310,8 @@ function ticketList() {
 				// alert('fail');
 			}
 		});
-	} else if (searchDomInfo.type == "roundTrip") {
+	// } else if (searchDomInfo.type == "roundTrip") {
+	} else if (searchDomInfo.type == "roundTrip" || searchDomInfo.type == "multiple") {
 		if (!isReturn) {
 			var preDayDate = GetDateStr(-1, searchDomInfo.date);
 			var nextDayDate = GetDateStr(1, searchDomInfo.date);
@@ -1343,10 +1461,18 @@ function ticketList() {
 		
 		if (!isReturn) {
 			// $(".roundTittle").text(get_lan('ticketList').roundTittleGo);
-			if(obtLanguage=="CN"){
-				var roundStr=get_lan('ticketList').roundTittleGo+"&nbsp;&nbsp;&nbsp;"+sobj.departureCityText+"-"+sobj.arrivalCityText+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+			if(searchDomInfo.type=="multiple"){
+				if(obtLanguage=="CN"){
+					var roundStr=sobj.departureCityText+"-"+sobj.arrivalCityText+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}else{
+					var roundStr=sobj.departureCity+"-"+sobj.arrivalCity+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}
 			}else{
-				var roundStr=get_lan('ticketList').roundTittleGo+"&nbsp;&nbsp;&nbsp;"+sobj.departureCity+"-"+sobj.arrivalCity+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				if(obtLanguage=="CN"){
+					var roundStr=get_lan('ticketList').roundTittleGo+"&nbsp;&nbsp;&nbsp;"+sobj.departureCityText+"-"+sobj.arrivalCityText+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}else{
+					var roundStr=get_lan('ticketList').roundTittleGo+"&nbsp;&nbsp;&nbsp;"+sobj.departureCity+"-"+sobj.arrivalCity+"&nbsp;&nbsp;&nbsp;"+sobj.date+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.date)
+				}
 			}
 			if(ProfileInfo.onlineStyle=="APPLE"){
 				var roundStr=get_lan('ticketList').roundTittleGo
@@ -1354,11 +1480,20 @@ function ticketList() {
 			$(".roundTittle").html(roundStr);
 		} else if (isReturn == 1) {
 			// $(".roundTittle").text(get_lan('ticketList').roundTittleReturn);
-			if(obtLanguage=="CN"){
-				var roundStr=get_lan('ticketList').roundTittleReturn+"&nbsp;&nbsp;&nbsp;"+sobj.arrivalCityText+"-"+sobj.departureCityText+"&nbsp;&nbsp;&nbsp;"+sobj.returndate+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.returndate)
+			if(searchDomInfo.type=='multiple'){
+				if(obtLanguage=="CN"){
+					var roundStr=sobj.lastDepartureCityText+"-"+$('#domArrivalCity').val()+"&nbsp;&nbsp;&nbsp;"+sobj.returndate+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.returndate)
+				}else{
+					var roundStr=sobj.lastDepartureCity+"-"+$('#domArrivalCity').attr('code')+"&nbsp;&nbsp;&nbsp;"+sobj.returndate+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.returndate)
+				}
 			}else{
-				var roundStr=get_lan('ticketList').roundTittleReturn+"&nbsp;&nbsp;&nbsp;"+sobj.arrivalCity+"-"+sobj.departureCity+"&nbsp;&nbsp;&nbsp;"+sobj.returndate+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.returndate)
+				if(obtLanguage=="CN"){
+					var roundStr=get_lan('ticketList').roundTittleReturn+"&nbsp;&nbsp;&nbsp;"+sobj.arrivalCityText+"-"+sobj.departureCityText+"&nbsp;&nbsp;&nbsp;"+sobj.returndate+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.returndate)
+				}else{
+					var roundStr=get_lan('ticketList').roundTittleReturn+"&nbsp;&nbsp;&nbsp;"+sobj.arrivalCity+"-"+sobj.departureCity+"&nbsp;&nbsp;&nbsp;"+sobj.returndate+"&nbsp;&nbsp;&nbsp;"+getWeek(sobj.returndate)
+				}
 			}
+			
 			if(ProfileInfo.onlineStyle=="APPLE"){
 				var roundStr=get_lan('ticketList').roundTittleReturn
 			}
@@ -1377,7 +1512,6 @@ function ticketList() {
 		}
 		// 12.09修改 去除时间筛选
 		var NewQuery=queryKey
-		console.log(NewQuery)
 		if(ProfileInfo.ShowDomesticTimeSlt){
 			var newList= queryKey.split(',')
 			var time =new Date(newList[2].replace(/-/g, "/"))
@@ -1390,127 +1524,84 @@ function ticketList() {
 				NewQuery=newList.join(',')
 			}
 		}
-		if(searchDomInfo.packagePrice && isReturn != 1){
-			var newList= queryKey.split(',')
-			var str=newList[0]+','+newList[1]+','+newList[2]+','+$('#domReturnDate').val()+',,'
-			NewQuery=str
+		// 新增参数 searchType  2表示改签
+		var searchType=""
+		if(searchDomInfo.alterTicketInfo){
+			searchType=2
 		}
-		console.log(NewQuery)
-		// 去程接口
-		if(isReturn!=1){
-			$.ajax({
-				type: 'post',
-				url: $.session.get('ajaxUrl'),
-				dataType: 'json',
-				data: {
-					url: $.session.get('obtCompany') + "/QueryService.svc/GetDomesticSegmentsNew",
-					jsonStr: '{"request":{"queryKey":"' + NewQuery + '","orgAirport":"' + departureCity + '","dstAirport":"' +
-						arrivalCity + '","id":' + netUserId + ',"Language":"' + obtLanguage + '","showCabins":"' + searchDomInfo.showCabins +
-						'","isCodeShare":"' + searchDomInfo.codeShare + '","minFare":"' + alterPrice + '","maxFare":"","orgCabinCode":"' +
-						orgCabinCode + '","IsDirect":"'+JSON.parse($.session.get('searchDomInfo')).isDirect+'","isNotOpenedClassNeeded":"'+JSON.parse($.session.get('searchDomInfo')).isNotOpenedClassNeeded+'"}}'
-				},
-				success: function(data) {
-					// 1012-1014新增，1026-1028res改为res.segmentList
-					$('body').mLoading("hide");
-					var res = JSON.parse(data);
-					console.log(res);
-					setTime=$('#domDepartureSelect').val()
-					day=$.session.get('searchDomesticDay');
-					setReturnTime=$('#domReturnSelect').val()
-					returnday=$.session.get('searchDomesticReturnDay');
-					// if(setReturnTime=='all'){
-					// 	returnday=''
-					// }
-					console.log(setReturnTime)
-					console.log(returnday)
-					if (res.segmentList.length == 0) {
-						alert(res.errMsg);
-					}
-					if (searchDomInfo.isDirect) {
-						var isDirectRes = []
-						res.segmentList.map(function(item) {
-							if (item.StopNo == "直飞" || item.StopNo == "Direct") {
-								isDirectRes.push(item);
-							}
-						})
-						ticketListInfo(isDirectRes);
-						chooseAirLine(isDirectRes); //选择航空公司
-						sortTicketInfo(isDirectRes); //排序
-					} else {
-						ticketListInfo(res.segmentList);
-						chooseAirLine(res.segmentList); //选择航空公司
-						sortTicketInfo(res.segmentList); //排序
-					}
-				},
-				error: function() {
-					// alert('fail');
+
+		$.ajax({
+			type: 'post',
+			url: $.session.get('ajaxUrl'),
+			dataType: 'json',
+			data: {
+				url: $.session.get('obtCompany') + "/QueryService.svc/GetDomesticSegmentsNew",
+				jsonStr: '{"request":{"queryKey":"' + NewQuery + '","orgAirport":"' + departureCity + '","dstAirport":"' +
+					arrivalCity + '","id":' + netUserId + ',"Language":"' + obtLanguage + '","showCabins":"' + searchDomInfo.showCabins +
+					'","isCodeShare":"' + searchDomInfo.codeShare + '","minFare":"' + alterPrice + '","maxFare":"","orgCabinCode":"' +
+					orgCabinCode + '","IsDirect":"'+JSON.parse($.session.get('searchDomInfo')).isDirect+'","isNotOpenedClassNeeded":"","searchType":"'+searchType+'","ticketNo":"'+ticketNo+'"}}'
+			},
+			success: function(data) {
+				// 1012-1014新增，1026-1028res改为res.segmentList
+				// $('body').mLoading("hide");
+				tools.searchLoadingHide()
+				var res = JSON.parse(data);
+				console.log(res);
+				
+				
+				setTime=$('#domDepartureSelect').val()
+				day=$.session.get('searchDomesticDay');
+				setReturnTime=$('#domReturnSelect').val()
+				returnday=$.session.get('searchDomesticReturnDay');
+				
+				// if(setReturnTime=='all'){
+				// 	returnday=''
+				// }
+				
+				console.log(setReturnTime)
+				console.log(returnday)
+				
+				if (res.segmentList.length == 0) {
+					alert(res.errMsg);
 				}
-			});
-		}else{
-			//返程接口 GetNextDomesticSegments   旧接口GetDomesticSegmentsNew
-			var segmentid=$.session.get('segmentid')
-			// item.Cabins[0].Key
-			if(searchDomInfo.packagePrice){
-				var url="/QueryService.svc/GetNextDomesticSegments";
-				var jsonStr='{"id":'+netUserId+',"cabinCode":"'+searchDomInfo.queryKeyReturn.split(',')[5]+'","segmentId":"'+segmentid+'","Language":"'+obtLanguage+'"}'
-			}else{
-				var url="/QueryService.svc/GetDomesticSegmentsNew";
-				var jsonStr='{"request":{"queryKey":"' + NewQuery + '","orgAirport":"' + departureCity + '","dstAirport":"' +
-						arrivalCity + '","id":' + netUserId + ',"Language":"' + obtLanguage + '","showCabins":"' + searchDomInfo.showCabins +
-						'","isCodeShare":"' + searchDomInfo.codeShare + '","minFare":"' + alterPrice + '","maxFare":"","orgCabinCode":"' +
-						orgCabinCode + '","IsDirect":"'+JSON.parse($.session.get('searchDomInfo')).isDirect+'","isNotOpenedClassNeeded":"'+JSON.parse($.session.get('searchDomInfo')).isNotOpenedClassNeeded+'"}}'
+				if (searchDomInfo.isDirect) {
+					var isDirectRes = []
+					res.segmentList.map(function(item) {
+						if (item.StopNo == "直飞" || item.StopNo == "Direct") {
+							isDirectRes.push(item);
+						}
+					})
+					ticketListInfo(isDirectRes);
+					chooseAirLine(isDirectRes); //选择航空公司
+					sortTicketInfo(isDirectRes); //排序
+				} else {
+					ticketListInfo(res.segmentList);
+					chooseAirLine(res.segmentList); //选择航空公司
+					sortTicketInfo(res.segmentList); //排序
+				}
+			},
+			error: function() {
+				// alert('fail');
 			}
-			
-			$.ajax({
-				type: 'post',
-				url: $.session.get('ajaxUrl'),
-				dataType: 'json',
-				data: {
-					url: $.session.get('obtCompany') + url,
-					jsonStr:jsonStr
-				},
-				success: function(data) {
-					// 1012-1014新增，1026-1028res改为res.segmentList
-					$('body').mLoading("hide");
-					var res = JSON.parse(data);
-					console.log(res);
-					setTime=$('#domDepartureSelect').val()
-					day=$.session.get('searchDomesticDay');
-					setReturnTime=$('#domReturnSelect').val()
-					returnday=$.session.get('searchDomesticReturnDay');
-					// if(setReturnTime=='all'){
-					// 	returnday=''
-					// }
-					console.log(setReturnTime)
-					console.log(returnday)
-					if (res.segmentList.length == 0) {
-						alert(res.errMsg);
-					}
-					if (searchDomInfo.isDirect) {
-						var isDirectRes = []
-						res.segmentList.map(function(item) {
-							if (item.StopNo == "直飞" || item.StopNo == "Direct") {
-								isDirectRes.push(item);
-							}
-						})
-						ticketListInfo(isDirectRes);
-						chooseAirLine(isDirectRes); //选择航空公司
-						sortTicketInfo(isDirectRes); //排序
-					} else {
-						ticketListInfo(res.segmentList);
-						chooseAirLine(res.segmentList); //选择航空公司
-						sortTicketInfo(res.segmentList); //排序
-					}
-				},
-				error: function() {
-					// alert('fail');
-				}
-			});
-		}
-		
+		});
 	}
 }
 
+//过滤推荐航班
+function fillterLevel3(list){
+	var l=[]
+	if(ProfileInfo.ShowDAgreementOrLevel3 && $('.recommend').val()==1){
+		list.map(function(item){
+			if(item.isAgreementOrLevel3){
+				l.push(item)
+			}
+		})
+		return l;
+	}else{
+		return list
+	}
+	
+}
 function chooseAirLine(res) {
 	// 飞机列表过滤
 	var res=fillterTimeList(res)
@@ -1589,6 +1680,8 @@ function chooseAirLine(res) {
 
 	$(".airLineChoose").change(function() {
 		airlineAirList = [];
+		//推荐航班过滤
+		res=fillterLevel3(res)
 		if ($('.airLineChoose option:selected').attr("airCode") == 'All') {
 			res.map(function(item) {
 				airlineAirList.push(item);
@@ -1608,6 +1701,8 @@ function chooseAirLine(res) {
 	})
 	$(".departAirPortChoose").change(function() {
 		departAirPortList = [];
+		//推荐航班过滤
+		res=fillterLevel3(res)
 		if ($('.departAirPortChoose option:selected').attr("airport") == 'all') {
 			res.map(function(item) {
 				departAirPortList.push(item);
@@ -1627,6 +1722,8 @@ function chooseAirLine(res) {
 	})
 	$(".arrivalAirPortChoose").change(function() {
 		arrivalAirPortList = [];
+		//推荐航班过滤
+		res=fillterLevel3(res)
 		if ($('.arrivalAirPortChoose option:selected').attr("airport") == 'all') {
 			res.map(function(item) {
 				arrivalAirPortList.push(item);
@@ -1643,6 +1740,13 @@ function chooseAirLine(res) {
 		$(".priceSortIcon").css("background-position", "0px 0px");
 		$(".departureTimeSort ").css("color", '#000');
 		$(".departureTimeSortIcon").css("background-position", "0px 0px");
+	})
+	
+	
+	//推荐航班，绑定事件
+	$('.recommend').change(function(){
+		res=fillterLevel3(res)
+		siftAirList(airlineAirList, departAirPortList, arrivalAirPortList);
 	})
 }
 
@@ -1760,7 +1864,9 @@ function sortTicketInfo(res) {
 }
 
 function ticketListInfo(res) {
+	console.log(res)
 	var res=fillterTimeList(res)
+	res=fillterLevel3(res)
 	console.log(res)
 	$(".ticketList").html('');
 	var priceList = [];
@@ -1771,15 +1877,25 @@ function ticketListInfo(res) {
 	// 12.09最低价标红
 	console.log(minPrice)
 	// 12.09最低价标红end
-	
-	
-	//打包价格为true时，来回程的 去程不显示更多价格
-	var showMorePrice=(searchDomInfo.type == "roundTrip" && isReturn != "1")&&searchDomInfo.packagePrice?"hide":""
-//Email输出，缓存
-	$('.emailPrint').unbind().click(function(){
-		$.session.set('EmailPrint',JSON.stringify(res))
-		window.open("./emailPrint.html");  
-	})
+
+	/*2020-10-9积分*/
+	var PointTypeId2;
+	var PointTypeId3;
+	var PointValue2;
+	var PointValue3;
+	if(ProfileInfo.PointInfo&&ProfileInfo.PointInfo.PointRuleList){
+		ProfileInfo.PointInfo.PointRuleList.map(function(item){
+			if(item.PointTypeId==2&&(item.RegionType=="ALL"||item.RegionType=="D")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				PointTypeId2 = '2';
+				PointValue2 = item.PointValue;
+			}
+			if(item.PointTypeId==3&&(item.RegionType=="ALL"||item.RegionType=="D")&&(item.PointServiceType==0||item.PointServiceType==1)){
+				PointTypeId3 = '3';
+				PointValue3 = item.PointValue;
+			}
+		})
+	}
+	/*end*/
 	res.map(function(item, index) {
 		var showHandImg = item.Cabins[0].CabinFareType == "2" ? "show" : "hide";
 		
@@ -1805,10 +1921,10 @@ function ticketListInfo(res) {
 		}
 		var share = item.IsCodeShare == true ? get_lan('ticketList').Code_share : "";
 		var shareColor = item.IsCodeShare == true ? "shareColor" : "";
-		if (searchDomInfo.type == "oneWay" || (searchDomInfo.type == "roundTrip" && isReturn != "1")) {
+		if (searchDomInfo.type == "oneWay" || (searchDomInfo.type == "roundTrip" && isReturn != "1") || (searchDomInfo.type == "multiple" && isReturn != "1") ) {
 			var paramKey = item.DateStart.split("-")[0] + item.DateStart.split("-")[1] + item.DateStart.split("-")[2] + item.TimeStart
 				.split(":")[0] + item.TimeStart.split(":")[1] + ',' + item.Cabins[0].CabinFareType + ',' + item.Cabins[0].CabinType;
-		} else if (searchDomInfo.type == "roundTrip" && isReturn == "1") {
+		} else if ((searchDomInfo.type == "roundTrip" && isReturn == "1") || (searchDomInfo.type == "multiple" && isReturn == "1")) {
 			var domTicketInfo = JSON.parse($.session.get('domTicketInfo'));
 			var paramKey = domTicketInfo.paramKey + ',' + item.DateStart.split("-")[0] + item.DateStart.split("-")[1] + item.DateStart
 				.split("-")[2] + item.TimeStart.split(":")[0] + item.TimeStart.split(":")[1] + ',' + item.Cabins[0].CabinFareType +
@@ -1829,10 +1945,11 @@ function ticketListInfo(res) {
 		}
 		// console.log(airlineIcon)
 		var showTicketMeal = item.Meal == "" ? "hide" : "";
+		var showBaggage=item.Baggage?"":"hide"
+		
 		var showViolation = item.Cabins[0].CabinShowType == 3 || item.Cabins[0].CabinShowType == 4 ? "" : "hide";
-		// var showMore = ProfileInfo.DomesticHideMore ? "hide" : "";//WebSA,更多价格不根据这个参数来判断
-		
-		
+
+		var showMore = (ProfileInfo.DomesticHideMore||(ProfileInfo.ChangeSameAirline&&searchDomInfo.alterTicketInfo)) ? "hide" : "";
 		
 		$(".ticketList").append('\
             <div class="ticketLi">\
@@ -1855,78 +1972,108 @@ function ticketListInfo(res) {
 			'</div>\
                 <div class="ticketOntime">' + get_lan('ticketList').Punctuality + '<br/>' + '61%' +
 			'</div>\
-                <div class="ticketMeal ' + showTicketMeal + '">' + get_lan('ticketList').Meal + ' ' +
-			item.Meal + '</div>\
-                <div class="ticketDuration">' + get_lan('ticketList').Duration + ' ' + item.Duration +
+                <div class="ticketMeal">\
+				 <div class="meal '+showTicketMeal+'">'+item.Meal+'</div>\
+				 <div class="luggage '+showBaggage+'">'+item.Baggage+'</div>\
+			</div>\
+                <div class="ticketDuration">'+ item.Duration +
 			'</div>\
                 <div class="ticketFareAmount ' + ticketPriceColor + '" index="' + index + '" StopNo="' +
-			item.StopNo + '" FlightNumber="' + item.FlightNo.substring(2, 6) + '" segmentKey="' + item.SegmentId + '-' + item
+			item.StopNo + '" swFlightNumber="' + item.FlightNo + '" FlightNumber="' + item.FlightNo.substring(2, 6) + '" segmentKey="' + item.SegmentId + '-' + item
 			.Cabins[0].Key + '" price="' + item.Cabins[0].FareAmount + '" paramKey="' + paramKey + '" CabinCode="' + item.Cabins[
 				0].CabinCode + '" airLineCode="' + item.AirLineCode + '" orgCity="' +item.AirportDeparteCode+'" dstCity="' + item.AirportArriveCode+
-			'" LimitFare="'+item.LimitFare+'" segmentid="'+item.SegmentId+'"><span style="font-size:14px;color:#4d4d4d;">￥</span><span style="text-decoration: underline;">' + item.Cabins[
-				0].FareAmount + '</span></div>\
-                <div class="ticketCabin">' + item.Cabins[0].Cabin + ' ' +
+			'" LimitFare="'+item.LimitFare+'"><span style="text-decoration: underline;">' + item.Cabins[
+				0].FareAmount + '</span><span style="font-size:14px;color:#4d4d4d;">'+ProfileInfo.OfficeCurrency+'</span></div>\
+                <div class="ticketCabin" style=""><img src="../images/honeyIcon.png" class="honeyIcon hide" style="width:14px;height:14px;margin: 1px 5px 0 auto;"><span>' + item.Cabins[0].Cabin + ' ' +
 			get_lan('ticketList').Tax + ' ' + item.Cabins[0].TotalTax +
-			'</div>\
+			'</span></div>\
                 <div class="ticketRestriction" SegmentId="' + item.Cabins[0].SegmengID2 +
 			'" CabinCode="' + item.Cabins[0].CabinCode + '">' + get_lan('ticketSpread').restriction +
 			'</div>\
                 <div class="ticketViolation ' + showViolation + '">' + get_lan('ticketSpread').violation +
 			'</div>\
                 <div class="ticketStopNo ' + showStopovers + '" StopNo="' + item.StopNo +
-			'" FlightNumber="' + item.FlightNo.substring(2, 6) + '" segmentKey="' + item.SegmentId + '-' + item.Cabins[0].Key +
+			'" swFlightNumber="' + item.FlightNo + '" FlightNumber="' + item.FlightNo.substring(2, 6) + '" segmentKey="' + item.SegmentId + '-' + item.Cabins[0].Key +
 			'" price="' + item.Cabins[0].FareAmount + '" paramKey="' + paramKey + '" CabinCode="' + item.Cabins[0].CabinCode +
 			'" airLineCode="' + item.AirLineCode + '">' + remark +
 			'</div>\
-                <div class="ticketMorePrice mainFontColor ' + showMorePrice + '" spread="off" StopNo="' +
-			item.StopNo + '" FlightNumber="' + item.FlightNo.substring(2, 6) + '" orgCity="' + item.AirportDeparteCode +
+                <div class="ticketMorePrice mainFontColor ' + showMore + '" spread="off" StopNo="' +
+			item.StopNo + '" swFlightNumber="' + item.FlightNo + '" FlightNumber="' + item.FlightNo.substring(2, 6) + '" orgCity="' + item.AirportDeparteCode +
 			'" dstCity="' + item.AirportArriveCode + '" Flight="' + item.FlightNo + '" departureTime="' + item.DateStart +
 			'" CabinCode="' + item.Cabins[0].CabinCode + '" AirLineCode="' + item.AirLineCode + '" paramKey="' + paramKey +
 			'" LimitFare="'+item.LimitFare+'">' + get_lan('ticketList').morePrice +
 			'</div>\
+				<div class="ticketLiPointsBody hide"></div>\
                 <div class="protocolBody hide">\
-                  <div class="protocolText">' + get_lan(
-				'ticketList').protocol +
-			'</div>\
+                  <div class="protocolText">' + get_lan('ticketList').protocol +'</div>\
                   <div class="triangleTopRight"></div>\
                 </div>\
             </div>\
             <div class="ticketLiSpread"></div>\
             '
 		)
+		if(minPrice==item.Cabins[0].FareAmount){
+			if(PointTypeId2 == "2"){
+				if(!ProfileInfo.PointHoney){
+					$(".ticketLiPointsBody").eq(index).text('+'+PointValue2+get_lan("pointBody").points);
+					$(".ticketLiPointsBody").eq(index).removeClass("hide");
+				}else{
+					$(".ticketCabin").eq(index).addClass("flexRow");
+					$(".honeyIcon").eq(index).removeClass("hide");
+				}
+			}
+		}
 		item.Cabins.map(function(cItem) {
 			if (cItem.CabinFareType == 2) {
 				// console.log(index);
 				$(".protocolBody").eq(index).removeClass("hide");
+				if(PointTypeId3 == "3"){
+					if(!ProfileInfo.PointHoney){
+						$(".ticketLiPointsBody").eq(index).text('+'+PointValue3+get_lan("pointBody").points);
+						$(".ticketLiPointsBody").eq(index).removeClass("hide");
+					}else{
+						$(".honeyIcon").eq(index).removeClass("hide");
+					}
+				}
+				if(minPrice==item.Cabins[0].FareAmount){
+					if(PointTypeId2 == "2"&&PointTypeId3 == "3"){
+						if(!ProfileInfo.PointHoney){
+							$(".ticketLiPointsBody").eq(index).text('+'+(parseInt(PointValue2)+parseInt(PointValue3))+get_lan("pointBody").points);
+						}else{
+							$(".honeyIcon").eq(index).removeClass("hide");
+						}
+					}
+				}
 			}
 			// if(index == 0){
 			//     console.log(cItem.CabinFareType)
 			// }
 		})
+		
 		if (ProfileInfo.onlineStyle == "APPLE") {
 			$(".protocolBody").remove();
 		}
 		$(".ticketFareAmount").unbind("click").click(function() {
-			if(searchDomInfo.type=="roundTrip" && isReturn!=1){
-				$.session.set('segmentid',$(this).attr('segmentid'))
-			}
-			if (searchDomInfo.alterTicketInfo && searchDomInfo.alterTicketInfo != "" && searchDomInfo.queryKey.split(',')[3] !=
-				"ALL" && !ProfileInfo.DomesticHideMore) {
-				// if(searchDomInfo.type=="oneWay"){
-				//     var alterPrice = searchDomInfo.alterTicketInfo.split(",")[5];
-				// }else if(searchDomInfo.type=="roundTrip"){
-				//     var alterPrice = parseFloat(searchDomInfo.alterTicketInfo.split(",")[5])/2;
-				// }
-				var index = parseInt($(this).attr("index"));
-				// $(".ticketMorePrice").eq(index).attr("alterPrice",alterPrice);
-				$(".ticketMorePrice").eq(index).click();
-			} else {
-				lowestAirlineRemind(this);
+			//2020.12.11改签不显示更多价格，直接跳转
+			// if (searchDomInfo.alterTicketInfo && searchDomInfo.alterTicketInfo != "" && searchDomInfo.queryKey.split(',')[3] !=
+			// 	"ALL" && !ProfileInfo.DomesticHideMore) {
+			// 	// if(searchDomInfo.type=="oneWay"){
+			// 	//     var alterPrice = searchDomInfo.alterTicketInfo.split(",")[5];
+			// 	// }else if(searchDomInfo.type=="roundTrip"){
+			// 	//     var alterPrice = parseFloat(searchDomInfo.alterTicketInfo.split(",")[5])/2;
+			// 	// }
+			// 	var index = parseInt($(this).attr("index"));
+			// 	// $(".ticketMorePrice").eq(index).attr("alterPrice",alterPrice);
+			// 	$(".ticketMorePrice").eq(index).click();
+			// } else {
+				// lowestAirlineRemind(this);
+				approachingRemind(this,lowestAirlineRemind);
 				// lowestAir(this);
-			}
+			// }
 		})
 		$(".ticketStopNo").unbind("click").click(function() {
-			lowestAirlineRemind(this);
+			// lowestAirlineRemind(this);
+			approachingRemind(this,lowestAirlineRemind);
 		})
 		$(".ticketRestriction").unbind("click").click(function() {
 			restriction(this);
@@ -1955,6 +2102,8 @@ function ticketListInfo(res) {
 				var paramKey = $(this).attr("paramKey");
 				// console.log(paramKey)
 				var FlightNumber = $(this).attr("FlightNumber");
+				var swFlightNumber = $(this).attr("swFlightNumber");
+				// var FlightNumber = $(this).attr("swFlightNumber");
 				var StopNo = $(this).attr("StopNo");
 				if (isReturn != 1) {
 					var roundType = 1;
@@ -1976,29 +2125,6 @@ function ticketListInfo(res) {
 					LimitFare=""
 				}
 				// maxFare 由空 改为LimitFare
-				var jsonStr={
-					"request":{
-						"orgCity": orgCity ,
-						"id": netUserId.split('"')[0],
-						"dstCity":dstCity ,
-						"Flight": Flight ,
-						"departureTime": departureTime ,
-						"roundType": roundType ,
-						"isLanguage": obtLanguage ,
-						"minFare": alterPrice ,
-						"maxFare":LimitFare,
-						"orgCabinCode":orgCabinCode,
-					},
-				}
-				if(searchDomInfo.type=="roundTrip" && isReturn!=1){
-					if(searchDomInfo.packagePrice){
-						jsonStr.request.needSearch=false;
-					}else{
-						jsonStr.request.needSearch=true;
-					}
-				}else{
-					
-				}
 				$.ajax({
 					type: 'post',
 					url: $.session.get('ajaxUrl'),
@@ -2015,7 +2141,6 @@ function ticketListInfo(res) {
 						// $('body').mLoading("hide");
 						tools.searchLoadingHide()
 						var res = JSON.parse(data);
-						// res[0].SeatCount=0//测试数据
 						console.log(res);
 						if (res.length != 0) {
 							$(that).parent().next().html(
@@ -2036,29 +2161,33 @@ function ticketListInfo(res) {
                                 <th style="width:120px;">' +
 								get_lan('ticketSpread').NominalPrice +
 								'</th>\
+                                <th style="width:80px;" class="Baggage">'+get_lan('ticketSpread').Baggage+'</th>\
                                 <th style="width:260px;"></th>\
                                 <th style="width:160px;"></th>\
                                 </tr>\
                                 </table>\
                                 '
 							);
+							var showBaggageList=false
 							res.map(function(item) {
 								var showHandImg = item.CabinFareType == 2 ? "show" : "hide";
 								var showViolation = item.CabinShowType == 3 || item.CabinShowType == 4 ? "" : "hide";
-								if (searchDomInfo.type == "oneWay" || (searchDomInfo.type == "roundTrip" && isReturn != "1")) {
+							
+								if (searchDomInfo.type == "oneWay" || ((searchDomInfo.type == "roundTrip" || searchDomInfo.type == "multiple") && isReturn != "1")) {
 									var returnParamKey = paramKey.split(',')[0] + ',' + paramKey.split(',')[1] + ',' + item.CabinType;
-								} else if (searchDomInfo.type == "roundTrip" && isReturn == "1") {
+								} else if ((searchDomInfo.type == "roundTrip" || searchDomInfo.type == "multiple") && isReturn == "1") {
 									var returnParamKey = paramKey.split(',')[0] + ',' + paramKey.split(',')[1] + ',' + item.CabinType +
 										',' + paramKey.split(',')[3] + ',' + paramKey.split(',')[4] + ',' + item.CabinType;
 								}
-								var redText=item.SeatCount==0?'color:red':""
-								var priceColor=item.SeatCount==0?'red':"#1e66ae"
-								
 								//  item.Discount
+								if(item.Baggage){
+									showBaggageList=true;
+								}
+								var Baggage=item.Baggage?item.Baggage:""
 								if (alterPrice != "" && parseFloat(item.FareAmount) >= parseFloat(alterPrice)) {
 									$(that).parent().next().children(".spreadTable").append(
 										'\
-                                        <tr style="'+redText+'">\
+                                        <tr>\
                                         <td></td>\
                                         <td>' +
 										item.Cabin +
@@ -2072,14 +2201,15 @@ function ticketListInfo(res) {
 										'</td>\
                                         <td><img class="' + showHandImg +
 										'" src="../../css/images/handImg.png" style="margin: 5px 0 0 27px;"></td>\
-                                        <td style="font-size:14px;color:'+priceColor+';">￥' +
-										item.FareAmount + '</td>\
+                                        <td style="font-size:14px;color:#1e66ae;">' +
+										item.FareAmount + ProfileInfo.OfficeCurrency +'</td>\
+										<td>'+Baggage+'</td>\
                                         <td><div class="violationIcon ' +
 										showViolation + '">' + get_lan('ticketSpread').violation +
 										'</div></td>\
                                         <td><div class="chooseTicket" StopNo="' +
-										StopNo + '" FlightNumber="' + FlightNumber + '" segmentKey="' + item.SegmengID2 + '-' + item.Key +
-										'" price="' + item.FareAmount + '" CabinCode="' + CabinCode + '" AirLineCode="' + AirLineCode +
+										StopNo + '" FlightNumber="' + FlightNumber + '" swFlightNumber="'+swFlightNumber+'" segmentKey="' + item.SegmengID2 + '-' + item.Key +
+										'" price="' + item.FareAmount + '" CabinCode="' + item.CabinCode + '" AirLineCode="' + AirLineCode +
 										'" paramKey="' + returnParamKey + '" orgCity="' +orgCity+'" dstCity="' + dstCity+'">' + get_lan('ticketSpread').choose +
 										'</div></td>\
                                         </tr>\
@@ -2088,7 +2218,7 @@ function ticketListInfo(res) {
 								} else if (alterPrice == "") {
 									$(that).parent().next().children(".spreadTable").append(
 										'\
-                                        <tr style="'+redText+'">\
+                                        <tr>\
                                         <td></td>\
                                         <td>' +
 										item.Cabin +
@@ -2102,14 +2232,15 @@ function ticketListInfo(res) {
 										'</td>\
                                         <td><img class="' + showHandImg +
 										'" src="../../css/images/handImg.png" style="margin: 5px 0 0 27px;"></td>\
-                                        <td style="font-size:14px;color:'+priceColor+';">￥' +
-										item.FareAmount + '</td>\
+                                        <td style="font-size:14px;color:#1e66ae;">' +
+										item.FareAmount + ProfileInfo.OfficeCurrency +'</td>\
+										<td>'+Baggage+'</td>\
                                         <td><div class="violationIcon ' +
 										showViolation + '">' + get_lan('ticketSpread').violation +
 										'</div></td>\
                                         <td><div class="chooseTicket" StopNo="' +
-										StopNo + '" FlightNumber="' + FlightNumber + '" segmentKey="' + item.SegmengID2 + '-' + item.Key +
-										'" seatcount="'+item.SeatCount+'" price="' + item.FareAmount + '" CabinCode="' + CabinCode + '" AirLineCode="' + AirLineCode +
+										StopNo + '" FlightNumber="' + FlightNumber + '" swFlightNumber="'+swFlightNumber+'" segmentKey="' + item.SegmengID2 + '-' + item.Key +
+										'" price="' + item.FareAmount + '" CabinCode="' + item.CabinCode + '" AirLineCode="' + AirLineCode +
 										'" paramKey="' + returnParamKey + '" orgCity="' +orgCity+'" dstCity="' + dstCity+'">' + get_lan('ticketSpread').choose +
 										'</div></td>\
                                         </tr>\
@@ -2117,20 +2248,16 @@ function ticketListInfo(res) {
 									);
 								}
 							})
+							//是否隐藏行李列
+							if(!showBaggageList){
+								$('.Baggage').text('')
+							}
 							$(".restrictionBtn").unbind("click").click(function() {
 								restriction(this);
 							})
 							$(".chooseTicket").unbind("click").click(function() {
-								if(searchDomInfo.isNotOpenedClassNeeded=="Y" && $(this).attr('seatcount')==0){
-									var f=confirm(get_lan('alternateTips'))
-									if(f){
-										lowestAirlineRemind(this);
-									}
-								}else{
-									lowestAirlineRemind(this);
-								}
-								
-								
+								// lowestAirlineRemind(this);
+								approachingRemind(this,lowestAirlineRemind);
 							})
 						} else {
 							$(that).parent().next().html(
@@ -2264,15 +2391,27 @@ function restriction(that) {
 		}
 	});
 }
-
+function approachingRemind(that,success){
+	var flightTimeStr = $(that).attr('paramkey').split(',')[0];
+	if(flightTimeStr.length<12){
+		console.log('时间格式不对，请检查');
+	}else{
+		var REMINDTIME = 60*60*1000;
+		if(flightTime(flightTimeStr)-currentTime()<REMINDTIME){
+			start.popUp('body',function(){
+				success(that);
+			});
+		}else{
+			success(that);
+		}
+	}
+}
 function lowestAirlineRemind(that) {
 	if ($(that).attr("StopNo") == "直飞" || $(that).attr("StopNo") == "Direct") {
 		lowestAir(that);
 	} else {
 		var departureDate = searchDomInfo.type == "oneWay" ? searchDomInfo.date : searchDomInfo.returndate;
-		$('body').mLoading({
-			 icon:"../images/loading.gif"
-		});
+		$('body').mLoading("show");
 		$.ajax({
 			type: 'post',
 			url: $.session.get('ajaxUrl'),
@@ -2330,6 +2469,14 @@ function orderTicket(that) {
 	var price = $(that).attr("price");
 	var airLineCode = $(that).attr("airLineCode");
 	var CabinCode = $(that).attr("CabinCode");
+	var flightnumber = $(that).attr("swflightnumber");//此参数只有方糖在用
+		
+	var swCabinCode="",swflightnumber=""
+	if(ProfileInfo.NeedSpecialPolicy){
+		swCabinCode=CabinCode;
+		swflightnumber=flightnumber;
+		
+	}
 	
 	console.log(paramKey);
 	// 缓存起落机场
@@ -2341,9 +2488,9 @@ function orderTicket(that) {
 	
 	if (searchDomInfo.type == "oneWay") {
 		var newPrice = price;
-	} else if (searchDomInfo.type == "roundTrip" && !isReturn) {
+	} else if ((searchDomInfo.type == "roundTrip" || searchDomInfo.type == "multiple") && !isReturn) {
 		var newPrice = price;
-	} else if (searchDomInfo.type == "roundTrip" && isReturn == 1) {
+	} else if ((searchDomInfo.type == "roundTrip" || searchDomInfo.type == "multiple") && isReturn == 1) {
 		var domTicketInfo = JSON.parse($.session.get('domTicketInfo'));
 		console.log(domTicketInfo);
 		var newPrice = domTicketInfo.price + ',' + price;
@@ -2353,328 +2500,337 @@ function orderTicket(that) {
 	} else {
 		var BCN = "";
 	}
-	if(searchDomInfo.packagePrice){
-		var jsonStr={
-			"request":{
-				"paramKey":paramKey,
-				"id":netUserId.split('"')[1],
-				"Language":obtLanguage,
-				"BCN":BCN,
-				"selectAmout": newPrice ,
-				"segmentSearchType":1,
-			}}
-	}else{
-		var jsonStr={
-			"request":{
-				"paramKey":paramKey,
-				"id":netUserId.split('"')[1],
-				"Language":obtLanguage,
-				"BCN":BCN,
-				"selectAmout": newPrice ,
-				"segmentSearchType":0,
-			}}
+	
+	var sType=0
+	if(searchDomInfo.packprice){
+		sType=1
 	}
-	
-	
-	if(searchDomInfo.packagePrice && searchDomInfo.type=="roundTrip" && isReturn!=1){
-		//查询打包价时，选了去程时不需要跑CheapestSegmentNew的方法
-			var queryKeyReturnList = searchDomInfo.queryKeyReturn.split(',');
-			queryKeyReturnList[4] = airLineCode;
-			queryKeyReturnList[5] = CabinCode;
-			searchDomInfo.queryKeyReturn = queryKeyReturnList.join(',');
-			$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
-			
-				// "lowestPrice": lowestPrice,
-			var domTicketInfo = {
-				'type': 'roundTrip',
-				'segmentKey': $(that).attr("segmentKey"),
-				"isBottom": "1",
-				"lowestPrice": $(that).attr('price'),
-				"paramKey": paramKey,
-				"price": price,
+	if(searchDomInfo.type=="multiple"){
+		sType=2
+	}
+	$('body').mLoading("show");
+	$.ajax({
+		type: 'post',
+		url: $.session.get('ajaxUrl'),
+		dataType: 'json',
+		data: {
+			url: $.session.get('obtCompany') + "/QueryService.svc/CheapestSegmentNew",
+			jsonStr: '{"request":{"paramKey":"' + paramKey + '","isReIssue":"","id":' + netUserId + ',"Language":"' + obtLanguage +
+				'","BCN":"' + BCN + '","selectAmout":"' + newPrice + '","segmentSearchType":"'+sType+'","selectCabinCode":"'+swCabinCode+'","selectFlightNO":"'+swflightnumber+'"}}'
+		},
+		success: function(data) {
+			var res = JSON.parse(data);
+			console.log(res);
+			var j = res.length - 1;
+			console.log(j);
+			$('body').mLoading("hide");
+			var lowestPrice = res[j].Cabins[0].FareAmount;
+			var lowestPolicyFareAmount = res[j].Cabins[0].PolicyFareAmount
+			var SWPolicy=false
+			if(ProfileInfo.NeedSpecialPolicy && res[j].SwFavorableReasons.length>0){
+				//如果有这个权限，且res[j].SwFavorableReasons 数组有数据
+				SWPolicy=true
 			}
-			$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
-			window.location.href = '../../domesticAir/airTicketList.html?isReturn=1';
-	}else{
-		$.ajax({
-			type: 'post',
-			url: $.session.get('ajaxUrl'),
-			dataType: 'json',
-			data: {
-				url: $.session.get('obtCompany') + "/QueryService.svc/CheapestSegmentNew",
-				jsonStr: JSON.stringify(jsonStr)
-			},
-			success: function(data) {
-				var res = JSON.parse(data);
-				console.log(res);
-				var j = res.length - 1;
-				console.log(j);
-				var lowestPrice = res[j].Cabins[0].FareAmount;
-				var lowestPriceOne=res[0].Cabins[0].FareAmount
-				var lowestPolicyFareAmount = res[j].Cabins[0].PolicyFareAmount
-				if (parseInt(lowestPolicyFareAmount) < parseInt(price)) {
-					openPop();
-					var saveFare = parseInt(price) - parseInt(res[j].Cabins[0].FareAmount);
-					$("#cover,.closeBottom").unbind("click").click(function() {
-						closePop();
-					})
-					/*当前航班信息*/
-					if (isReturn == 1) {
-						var chooseSegmentKey = JSON.parse($.session.get('domTicketInfo')).segmentKey + ',' + $(that).attr("segmentkey");
-					} else {
-						var chooseSegmentKey = $(that).attr("segmentkey");
-					}
-					$.ajax({
-						type: 'post',
-						url: $.session.get('ajaxUrl'),
-						dataType: 'json',
-						data: {
-							url: $.session.get('obtCompany') + "/QueryService.svc/QuerySelectedSegmentInfo",
-							jsonStr: '{"segmentKey":"' + chooseSegmentKey + '","id":' + netUserId + '}'
-						},
-						success: function(data) {
-							var res = JSON.parse(data);
-							console.log(res);
-							if (isReturn == 1) {
-								$(".popChooseAirline").html('\
-		                            <div class="popAirLine">' + res[1].AirLine +
-									'</div>\
-		                            <div class="popFlightNo">' + res[1].FlightNo +
-									'</div>\
-		                            <div class="popTimeStart">' + res[1].TimeStart +
-									'</div>\
-		                            <div class="popArrow"></div>\
-		                            <div class="popTimeArrive">' +
-									res[1].TimeArrive + '</div>\
-		                            <div class="popAirportDeparte">' + res[1].AirportDeparte +
-									'</div>\
-		                            <div class="popAirportArrive">' + res[1].AirportArrive +
-									'</div>\
-		                            <div class="popFareAmount" style="right:20px;top:6px;">' +
-									get_lan('popBody').ticketPrice + ' ￥<span class="ticketPriceColor"> ' + res[1].Cabins[0].FareAmount +
-									'</span></div>\
-		                            ')
-							} else {
-								$(".popChooseAirline").html('\
-		                            <div class="popAirLine">' + res[0].AirLine +
-									'</div>\
-		                            <div class="popFlightNo">' + res[0].FlightNo +
-									'</div>\
-		                            <div class="popTimeStart">' + res[0].TimeStart +
-									'</div>\
-		                            <div class="popArrow"></div>\
-		                            <div class="popTimeArrive">' +
-									res[0].TimeArrive + '</div>\
-		                            <div class="popAirportDeparte">' + res[0].AirportDeparte +
-									'</div>\
-		                            <div class="popAirportArrive">' + res[0].AirportArrive +
-									'</div>\
-		                            <div class="popFareAmount" style="right:20px;top:6px;">' +
-									get_lan('popBody').ticketPrice + ' ￥<span class="ticketPriceColor"> ' + res[0].Cabins[0].FareAmount +
-									'</span></div>\
-		                            ')
-							}
-							var popHeight = $(".bottomPricePop").height() % 2 == 1 ? $(".bottomPricePop").height() + 1 : $(
-								".bottomPricePop").height();
-							$(".bottomPricePop").css("height", popHeight + 'px');
-						},
-						error: function() {
-							// alert('fail');
-						}
-					});
-					/*选择理由*/
-					$(".reasonConfirm").unbind("click").click(function() {
-						if (!$('.reasonRadio:checked').val() && $('.reasonRadio:checked').attr("code") != "OT") {
-							alert(get_lan('popBody').rasonRemind);
-						} else if ($('.reasonRadio:checked').attr("code") == "OT" && $(".reasonTextarea").val() == "") {
-							alert(get_lan('popBody').rasonRemind);
+			if (parseInt(lowestPolicyFareAmount) < parseInt(price) || SWPolicy) {
+				openPop();
+				var saveFare = parseInt(price) - parseInt(res[j].Cabins[0].FareAmount);
+				$("#cover,.closeBottom").unbind("click").click(function() {
+					closePop();
+				})
+				/*当前航班信息*/
+				if (isReturn == 1) {
+					var chooseSegmentKey = JSON.parse($.session.get('domTicketInfo')).segmentKey + ',' + $(that).attr("segmentkey");
+				} else {
+					var chooseSegmentKey = $(that).attr("segmentkey");
+				}
+				$.ajax({
+					type: 'post',
+					url: $.session.get('ajaxUrl'),
+					dataType: 'json',
+					data: {
+						url: $.session.get('obtCompany') + "/QueryService.svc/QuerySelectedSegmentInfo",
+						jsonStr: '{"segmentKey":"' + chooseSegmentKey + '","id":' + netUserId + '}'
+					},
+					success: function(data) {
+						var res = JSON.parse(data);
+						console.log(res);
+						if (isReturn == 1) {
+							$(".popChooseAirline").html('\
+                                <div class="popAirLine">' + res[1].AirLine +
+								'</div>\
+                                <div class="popFlightNo">' + res[1].FlightNo +
+								'</div>\
+                                <div class="popTimeStart">' + res[1].TimeStart +
+								'</div>\
+                                <div class="popArrow"></div>\
+                                <div class="popTimeArrive">' +
+								res[1].TimeArrive + '</div>\
+                                <div class="popAirportDeparte">' + res[1].AirportDeparte +
+								'</div>\
+                                <div class="popAirportArrive">' + res[1].AirportArrive +
+								'</div>\
+                                <div class="popFareAmount" style="left:440px;top:6px;">' +
+								get_lan('popBody').ticketPrice + ' <span class="ticketPriceColor"> ' + res[1].Cabins[0].FareAmount +ProfileInfo.OfficeCurrency+
+								'</span></div>\
+                                ')
 						} else {
-							var reasonCode = $('.reasonRadio:checked').attr("code") == "OT" ? $('.reasonRadio:checked').attr("code") + $(
-								".reasonTextarea").val() : $('.reasonRadio:checked').attr("code");
-							var reasonText = $('.reasonRadio:checked').attr("code") == "OT" ? $(".reasonTextarea").val() : $(
-								'.reasonRadio:checked').val();
-							if (searchDomInfo.type == "oneWay") {
-								var domTicketInfo = {
-									'type': 'oneWay',
-									'segmentKey': $(that).attr("segmentKey"),
-									"isBottom": "0",
-									"lowestPrice": lowestPrice,
-									"reasonCode": reasonCode,
-									"reasonText": reasonText,
-									"saveFare": saveFare,
-								}
-								$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
-								window.location.href = '../../domesticAir/bookDomAirTicket.html';
-							} else if (searchDomInfo.type == "roundTrip" && !isReturn) {
-								var queryKeyReturnList = searchDomInfo.queryKeyReturn.split(',');
-								queryKeyReturnList[4] = airLineCode;
-								queryKeyReturnList[5] = CabinCode;
-								searchDomInfo.queryKeyReturn = queryKeyReturnList.join(',');
-								$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
-								var domTicketInfo = {
-									'type': 'roundTrip',
-									'segmentKey': $(that).attr("segmentKey"),
-									"isBottom": "0",
-									"lowestPrice": lowestPrice,
-									"reasonCode": reasonCode,
-									"reasonText": reasonText,
-									"saveFare": saveFare,
-									"paramKey": paramKey,
-									"price": price,
-								}
-								$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
-								window.location.href = '../../domesticAir/airTicketList.html?isReturn=1';
-							} else if (searchDomInfo.type == "roundTrip" && isReturn == 1) {
-								var domTicketInfo = JSON.parse($.session.get('domTicketInfo'))
-								domTicketInfo.segmentKeyReturn = $(that).attr("segmentKey");
-								domTicketInfo.isBottomReturn = '0';
-								domTicketInfo.lowestPriceReturn = lowestPrice;
-								domTicketInfo.reasonCodeReturn = reasonCode;
-								domTicketInfo.reasonTextReturn = reasonText;
-								domTicketInfo.saveFareReturn = saveFare;
-								console.log(domTicketInfo);
-								$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
-								window.location.href = '../../domesticAir/bookDomAirTicket.html';
+							$(".popChooseAirline").html('\
+                                <div class="popAirLine">' + res[0].AirLine +
+								'</div>\
+                                <div class="popFlightNo">' + res[0].FlightNo +
+								'</div>\
+                                <div class="popTimeStart">' + res[0].TimeStart +
+								'</div>\
+                                <div class="popArrow"></div>\
+                                <div class="popTimeArrive">' +
+								res[0].TimeArrive + '</div>\
+                                <div class="popAirportDeparte">' + res[0].AirportDeparte +
+								'</div>\
+                                <div class="popAirportArrive">' + res[0].AirportArrive +
+								'</div>\
+                                <div class="popFareAmount" style="left:440px;top:6px;">' +
+								get_lan('popBody').ticketPrice + ' <span class="ticketPriceColor"> ' + res[0].Cabins[0].FareAmount +ProfileInfo.OfficeCurrency+
+								'</span></div>\
+                                ')
+						}
+						var popHeight = $(".bottomPricePop").height() % 2 == 1 ? $(".bottomPricePop").height() + 1 : $(
+							".bottomPricePop").height();
+						$(".bottomPricePop").css("height", popHeight + 'px');
+					},
+					error: function() {
+						// alert('fail');
+					}
+				});
+				/*选择理由*/
+				$(".reasonConfirm").unbind("click").click(function() {
+					if (!$('.reasonRadio:checked').val() && $('.reasonRadio:checked').attr("code") != "OT") {
+						alert(get_lan('popBody').rasonRemind);
+					} else if ($('.reasonRadio:checked').attr("code") == "OT" && $(".reasonTextarea").val() == "") {
+						alert(get_lan('popBody').rasonRemind);
+					} else {
+						var reasonCode = $('.reasonRadio:checked').attr("code") == "OT" ? $('.reasonRadio:checked').attr("code") + $(
+							".reasonTextarea").val() : $('.reasonRadio:checked').attr("code");
+						var reasonText = $('.reasonRadio:checked').attr("code") == "OT" ? $(".reasonTextarea").val() : $(
+							'.reasonRadio:checked').val();
+						if (searchDomInfo.type == "oneWay") {
+							var domTicketInfo = {
+								'type': 'oneWay',
+								'segmentKey': $(that).attr("segmentKey"),
+								"isBottom": "0",
+								"lowestPrice": lowestPrice,
+								"reasonCode": reasonCode,
+								"reasonText": reasonText,
+								"saveFare": saveFare,
 							}
+							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+							window.location.href = '../../domesticAir/bookDomAirTicket.html';
+						} else if (searchDomInfo.type == "roundTrip" && !isReturn) {
+							var queryKeyReturnList = searchDomInfo.queryKeyReturn.split(',');
+							queryKeyReturnList[4] = airLineCode;
+							queryKeyReturnList[5] = CabinCode;
+							searchDomInfo.queryKeyReturn = queryKeyReturnList.join(',');
+							$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
+							var domTicketInfo = {
+								'type': 'roundTrip',
+								'segmentKey': $(that).attr("segmentKey"),
+								"isBottom": "0",
+								"lowestPrice": lowestPrice,
+								"reasonCode": reasonCode,
+								"reasonText": reasonText,
+								"saveFare": saveFare,
+								"paramKey": paramKey,
+								"price": price,
+							}
+							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+							window.location.href = '../../domesticAir/airTicketList.html?isReturn=1';
+						} else if (searchDomInfo.type == "roundTrip" && isReturn == 1) {
+							var domTicketInfo = JSON.parse($.session.get('domTicketInfo'))
+							domTicketInfo.segmentKeyReturn = $(that).attr("segmentKey");
+							domTicketInfo.isBottomReturn = '0';
+							domTicketInfo.lowestPriceReturn = lowestPrice;
+							domTicketInfo.reasonCodeReturn = reasonCode;
+							domTicketInfo.reasonTextReturn = reasonText;
+							domTicketInfo.saveFareReturn = saveFare;
+							console.log(domTicketInfo);
+							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+							window.location.href = '../../domesticAir/bookDomAirTicket.html';
+						}else if (searchDomInfo.type == "multiple" && !isReturn) {
+							var queryKeyReturnList = searchDomInfo.queryKeyReturn.split(',');
+							queryKeyReturnList[4] = airLineCode;
+							queryKeyReturnList[5] = CabinCode;
+							searchDomInfo.queryKeyReturn = queryKeyReturnList.join(',');
+							$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
+							var domTicketInfo = {
+								'type': 'multiple',
+								'segmentKey': $(that).attr("segmentKey"),
+								"isBottom": "0",
+								"lowestPrice": lowestPrice,
+								"reasonCode": reasonCode,
+								"reasonText": reasonText,
+								"saveFare": saveFare,
+								"paramKey": paramKey,
+								"price": price,
+							}
+							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+							window.location.href = '../../domesticAir/airTicketList.html?isReturn=1';
+						} else if (searchDomInfo.type == "multiple" && isReturn == 1) {
+							var domTicketInfo = JSON.parse($.session.get('domTicketInfo'))
+							domTicketInfo.segmentKeyReturn = $(that).attr("segmentKey");
+							domTicketInfo.isBottomReturn = '0';
+							domTicketInfo.lowestPriceReturn = lowestPrice;
+							domTicketInfo.reasonCodeReturn = reasonCode;
+							domTicketInfo.reasonTextReturn = reasonText;
+							domTicketInfo.saveFareReturn = saveFare;
+							console.log(domTicketInfo);
+							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+							window.location.href = '../../domesticAir/bookDomAirTicket.html';
 						}
-					})
-					
+					}
+				})
+				if (obtLanguage == "EN") {
+					$(".popTittleText").css("line-height", "28px");
+					$(".popTittleText").css("font-size", "14px");
+					$(".popChooseLowest").css("font-size", "12px");
+					$(".popChooseLowest").css("width", "125px");
+				}
+				if(!ProfileInfo.NeedSpecialPolicy){
 					$(".popTittleText").text(get_lan('popBody').popTittle);
-					$(".popReasonTittle").text(get_lan('popBody').reasonTittle);
-					// if (res[0].TimeSpans >= 1) {
-					// 	$(".popPriceTittle").text(get_lan('popBody').lowestTittle1 + res[0].TimeSpans + get_lan('popBody').lowestTittle2);
-					// } else {
-					// 	$(".popPriceTittle").text(get_lan('popBody').lowestTittle);
-					// }
-					// 5.25 最低票价样式 
-					$(".popPriceTittle").html(get_lan('popBody').lowestTittleSW+'￥<span style="color: #000000;font-weight: 800;">'+res[j].Cabins[0].FareAmount+'</span>');
-					
-					
-					
-					
-					$(".reasonConfirm").text(get_lan('popBody').confirm);
-					var showOperationAirline = res[j].OperationAirline == null ? "hide" : "";
-					$(".priceInfoTable").html('')
-					res.map(function(item,index){
-						//是否跨天？
-						if(item.DateStart!=item.DateArrive){
-							//跨天
-							var time=item.DateStart+' '+item.TimeStart+'-'+item.DateArrive+' '+item.TimeArrive
-						}else{
-							//同一天
-							var time=item.DateStart+' '+item.TimeStart+'-'+item.TimeArrive
-						}
-						if(isReturn == 1 && searchDomInfo.packagePrice){
-								if(index % 2 ==0){
-									if(res[index+1].DateStart!=res[index+1].DateArrive){
-										//跨天
-										var timeBack=res[index+1].DateStart+' '+res[index+1].TimeStart+'-'+res[index+1].DateArrive+' '+res[index+1].TimeArrive
-									}else{
-										//同一天
-										var timeBack=res[index+1].DateStart+' '+res[index+1].TimeStart+'-'+res[index+1].TimeArrive
-									}
-									var minMoney= parseFloat(res[index+1].Cabins[0].NetFare) 
-									$(".popPriceTittle").html(get_lan('popBody').lowestTittleSW+'￥<span style="color:#000000;font-weight:800">'+minMoney+'</span>');
-									$(".priceInfoTable").append('\
-										<tr class="borderBottom borderBottomNone">\
-											<td></td>\
-											<td>'+time+'</td>\
-											<td>'+item.FlightNo+'</td>\
-											<td>'+item.AirLine+'</td>\
-											<td>'+item.AirportDeparte+'('+item.AirportDeparteCode+')-'+item.AirportArrive+'('+item.AirportArriveCode+')</td>\
-											<td style="color:#000000;font-weight:800" rowspan="2" class="borderBottom ">￥'+minMoney+'</td>\
-											<td rowspan="2" class="borderBottom">\
-												<div class="popChooseLowest mainBackColor" segmentKeyReturn="'+res[index+1].SegmentId + '-' + res[index+1].Cabins[0].Key+'" segmentKey="'+item.SegmentId + '-' + item.Cabins[0].Key+'"></div>\
-											</td>\
-										</tr>\
-									')
-									$(".priceInfoTable").append('\
-										<tr class="borderBottom">\
-											<td></td>\
-											<td>'+timeBack+'</td>\
-											<td>'+res[index+1].FlightNo+'</td>\
-											<td>'+res[index+1].AirLine+'</td>\
-											<td>'+res[index+1].AirportDeparte+'('+res[index+1].AirportDeparteCode+')-'+res[index+1].AirportArrive+'('+res[index+1].AirportArriveCode+')</td>\
-											<td class="hide"></td>\
-											<td class="hide"></td>\
-										</tr>\
-									')
-									
-									
-								}
-						}else{
-							
-							if(isReturn == 1){
-								if(index % 2 ==1){
-									$(".priceInfoTable").append('\
-										<tr class="borderBottom">\
-											<td></td>\
-											<td>'+time+'</td>\
-											<td>'+item.FlightNo+'</td>\
-											<td>'+item.AirLine+'</td>\
-											<td>'+item.AirportDeparte+'('+item.AirportDeparteCode+')-'+item.AirportArrive+'('+item.AirportArriveCode+')</td>\
-											<td>￥'+item.Cabins[0].NetFare+'</td>\
-											<td>\
-												<div class="popChooseLowest mainBackColor" segmentKey="'+item.SegmentId + '-' + item.Cabins[0].Key+'"></div>\
-											</td>\
-										</tr>\
-									')
+				}
+				$(".popReasonTittle").text(get_lan('popBody').reasonTittle);
+				if (res[0].TimeSpans >= 1) {
+					$(".popPriceTittle").text(get_lan('popBody').lowestTittle1 + res[0].TimeSpans + get_lan('popBody').lowestTittle2);
+				} else {
+					$(".popPriceTittle").text(get_lan('popBody').lowestTittle);
+				}
+				
+				var CodeType=res[0].ReasonCodeType
+				var dipirce=""
+				// if(obtLanguage=="CN"){
+				// 	if(CodeType==2){
+				// 		dipirce = '符合政策原因';
+				// 	}
+				// 	if(CodeType==3){
+				// 		dipirce = '违反政策原因';
+				// 	}
+				// }else{
+				// 	if(CodeType==2){
+				// 		dipirce = 'In Policy Reason';
+				// 	}
+				// 	if(CodeType==3){
+				// 		dipirce = 'Out of Policy Reason';
+				// 	}
+				// }
+				if(CodeType==2|| CodeType==3){
+					// $('.popReasonTittle').text(dipirce)
+					$('.popReasonTittle').text(res[0].DisplayMessage)
+				}
+				//理由
+				var resonlist=[]
+				// if(CodeType==2){
+				// 	resonlist= ProfileInfo.SWInpolicyReasons
+				// }else if(CodeType==3){
+				// 	resonlist= ProfileInfo.SWOutpolicyReasons
+				// }
+				if(CodeType==2|| CodeType==3){
+					// resonlist= res[0].SwFavorableReasons
+					res[0].SwFavorableReasons.map(function(item){
+							var newReson={
+								Code:"",
+								Name:"",
+							}
+						for(key in item){
+							if(key.indexOf("Code")>-1){
+								newReson.Code=item[key]
+							}
+							if(obtLanguage=="CN"){
+								if(key.indexOf("DescriptionCn")>-1){
+									newReson.Name=item[key]
 								}
 							}else{
-								$(".priceInfoTable").append('\
-									<tr class="borderBottom">\
-										<td></td>\
-										<td>'+time+'</td>\
-										<td>'+item.FlightNo+'</td>\
-										<td>'+item.AirLine+'</td>\
-										<td>'+item.AirportDeparte+'('+item.AirportDeparteCode+')-'+item.AirportArrive+'('+item.AirportArriveCode+')</td>\
-										<td>￥'+item.Cabins[0].NetFare+'</td>\
-										<td>\
-											<div class="popChooseLowest mainBackColor" segmentKey="'+item.SegmentId + '-' + item.Cabins[0].Key+'"></div>\
-										</td>\
-									</tr>\
-								')
+								if(key.indexOf("DescriptionEn")>-1){
+									newReson.Name=item[key]
+								}
 							}
-							
 						}
-						
+						resonlist.push(newReson)
 					})
-					if (obtLanguage == "EN") {
-						$(".popTittleText").css("line-height", "28px");
-						$(".popTittleText").css("font-size", "14px");
-						$(".popChooseLowest").css("font-size", "12px");
-						$(".popChooseLowest").css("width", "125px");
-					}
-					$(".popChooseLowest").text(get_lan('popBody').book);
-					// $(".popChooseLowest").text(get_lan('popBody').chooseLowest);
 					
-					// $(".popChooseLowest").attr("segmentKey", res[j].SegmentId + '-' + res[j].Cabins[0].Key);
-					// $(".popPriceInfo").html('\
-		   //              <div class="popAirLine">' + res[j].AirLine +
-					// 	'</div>\
-		   //              <div class="popFlightNo">' + res[j].FlightNo +
-					// 	'</div>\
-		   //              <div class="popTimeStart">' + res[j].TimeStart +
-					// 	'</div>\
-		   //              <div class="popArrow"></div>\
-		   //              <div class="popTimeArrive">' +
-					// 	res[j].TimeArrive + '</div>\
-		   //              <div class="popAirportDeparte">' + res[j].AirportDeparte +
-					// 	'</div>\
-		   //              <div class="popAirportArrive">' + res[j].AirportArrive +
-					// 	'</div>\
-		   //              <div class="popFareAmount">' + get_lan('popBody').ticketPrice +
-					// 	' ￥<span class="ticketPriceColor"> ' + res[j].Cabins[0].FareAmount +
-					// 	'</span></div>\
-		   //              <div class="popSaveFare">' + get_lan('popBody').save +
-					// 	' ￥<span class="ticketPriceColor"> ' + saveFare +
-					// 	'</span></div>\
-		   //              <div class="popOperationAirline ' + showOperationAirline + '">' + get_lan(
-					// 		'popBody').true + ' ' + res[j].OperationAirline + '</div>\
-		   //              ')
-						
-						
-					$(".popChooseLowest").unbind("click").click(function() {
+				}
+				if(CodeType==2 || CodeType==3){
+					$(".popReasonList").html('');
+					resonlist.map(function(item){
+						$(".popReasonList").append(
+									'\
+						            <div class="popReasonLi flexRow">\
+						            <input type="radio" name="radio" class="reasonRadio" code="' +
+									item.Code + '" value="' + item.Name + '">\
+						            <div class="reasonText">' + item.Name +
+									'</div>\
+						            </div>\
+						        ')
+					})
+				}
+				//推荐航班是否显示,in policy时不显示推荐航班，其他正常显示
+				if(CodeType==2){
+					// $('.popPriceBody').remove()
+					$('.popPriceBody').hide()
+				}else{
+					$('.popPriceBody').show()
+				}
+				
+				$(".reasonConfirm").text(get_lan('popBody').confirm);
+			
+				if(ProfileInfo.NeedSpecialPolicy){
+					$(".popChooseLowest").text(get_lan('popBody').chooseLowest2);
+					var hideSaveFare="hide"
+				}else{
+					$(".popChooseLowest").text(get_lan('popBody').chooseLowest);
+					var hideSaveFare=""
+				}
+				$(".popChooseLowest").attr("segmentKey", res[j].SegmentId + '-' + res[j].Cabins[0].Key);
+				
+				//方糖
+				if(ProfileInfo.NeedSpecialPolicy){
+					$(".popChooseLowest").attr("paramKey", paramKey);
+					$(".popChooseLowest").attr("FlightNumber", res[j].FlightNo.substring(2, 6));
+					$(".popChooseLowest").attr("swFlightNumber", res[j].FlightNo);
+					$(".popChooseLowest").attr("airLineCode", res[j].AirLineCode);
+					$(".popChooseLowest").attr("CabinCode", res[j].Cabins[0].CabinCode);
+					$(".popChooseLowest").attr("price", res[j].Cabins[0].FareAmount);
+					$(".popChooseLowest").attr("StopNo", res[j].StopNo);
+					
+				}
+				console.log(res)
+				console.log(j)
+				var showOperationAirline = res[j].OperationAirline == null ? "hide" : "";
+				$(".popPriceInfo").html('\
+                    <div class="popAirLine">' + res[j].AirLine +
+					'</div>\
+                    <div class="popFlightNo">' + res[j].FlightNo +
+					'</div>\
+                    <div class="popTimeStart">' + res[j].TimeStart +
+					'</div>\
+                    <div class="popArrow"></div>\
+                    <div class="popTimeArrive">' +
+					res[j].TimeArrive + '</div>\
+                    <div class="popAirportDeparte">' + res[j].AirportDeparte +
+					'</div>\
+                    <div class="popAirportArrive">' + res[j].AirportArrive +
+					'</div>\
+                    <div class="popFareAmount">' + get_lan('popBody').ticketPrice +' <span class="ticketPriceColor"> ' + res[j].Cabins[0].FareAmount +
+					ProfileInfo.OfficeCurrency +
+					'</span></div>\
+                    <div class="popSaveFare '+ hideSaveFare +'">' + get_lan('popBody').save +
+					'<span class="ticketPriceColor"> ' + saveFare +ProfileInfo.OfficeCurrency+
+					'</span></div>\
+                    <div class="popOperationAirline ' + showOperationAirline + '">' + get_lan(
+						'popBody').true + ' ' + res[j].OperationAirline + '</div>\
+                    ')
+				$(".popChooseLowest").unbind("click").click(function() {
+					if(ProfileInfo.NeedSpecialPolicy){
+						// lowestAirlineRemind(this);
+						approachingRemind(this,lowestAirlineRemind);
+					}else{
 						if (searchDomInfo.type == "oneWay") {
 							var domTicketInfo = {
 								'type': 'oneWay',
@@ -2684,7 +2840,7 @@ function orderTicket(that) {
 							}
 							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
 							window.location.href = '../../domesticAir/bookDomAirTicket.html';
-						} else if (searchDomInfo.type == "roundTrip" && !isReturn) {
+						} else if ((searchDomInfo.type == "roundTrip" || searchDomInfo.type == "multiple") && !isReturn) {
 							var queryKeyReturnList = searchDomInfo.queryKeyReturn.split(',');
 							queryKeyReturnList[4] = res[j].AirLineCode;
 							queryKeyReturnList[5] = res[j].Cabins[0].CabinCode;
@@ -2700,71 +2856,60 @@ function orderTicket(that) {
 							}
 							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
 							window.location.href = '../../domesticAir/airTicketList.html?isReturn=1';
-						} else if (searchDomInfo.type == "roundTrip" && isReturn == 1) {
+						} else if ((searchDomInfo.type == "roundTrip" || searchDomInfo.type == "multiple") && isReturn == 1) {
 							var domTicketInfo = JSON.parse($.session.get('domTicketInfo'))
-							
-							if(searchDomInfo.packagePrice){
-								domTicketInfo.segmentKey = $(this).attr("segmentKey");
-								domTicketInfo.segmentKeyReturn = $(this).attr("segmentKeyReturn");
-								domTicketInfo.isBottomReturn = '1';
-								domTicketInfo.lowestPriceOne = lowestPriceOne;
-							}else{
-								domTicketInfo.segmentKeyReturn = $(this).attr("segmentKey");
-								domTicketInfo.isBottomReturn = '1';
-							}
-								domTicketInfo.lowestPriceReturn = lowestPrice;
+							domTicketInfo.segmentKeyReturn = $(this).attr("segmentKey");
+							domTicketInfo.isBottomReturn = '1';
+							domTicketInfo.lowestPriceReturn = lowestPrice;
 							console.log(domTicketInfo);
 							$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
 							window.location.href = '../../domesticAir/bookDomAirTicket.html';
 						}
-					})
-				} else {
-					if (searchDomInfo.type == "oneWay") {
-						var domTicketInfo = {
-							'type': 'oneWay',
-							'segmentKey': $(that).attr("segmentKey"),
-							"isBottom": "1",
-							"lowestPrice": lowestPrice,
-						}
-						$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
-						window.location.href = '../../domesticAir/bookDomAirTicket.html';
-					} else if (searchDomInfo.type == "roundTrip" && !isReturn) {
-						var queryKeyReturnList = searchDomInfo.queryKeyReturn.split(',');
-						queryKeyReturnList[4] = airLineCode;
-						queryKeyReturnList[5] = CabinCode;
-						searchDomInfo.queryKeyReturn = queryKeyReturnList.join(',');
-						$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
-						var domTicketInfo = {
-							'type': 'roundTrip',
-							'segmentKey': $(that).attr("segmentKey"),
-							"isBottom": "1",
-							"lowestPrice": lowestPrice,
-							"paramKey": paramKey,
-							"price": price,
-						}
-						$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
-						window.location.href = '../../domesticAir/airTicketList.html?isReturn=1';
-					} else if (searchDomInfo.type == "roundTrip" && isReturn == 1) {
-						var domTicketInfo = JSON.parse($.session.get('domTicketInfo'))
-						domTicketInfo.segmentKeyReturn = $(that).attr("segmentKey");
-						domTicketInfo.isBottomReturn = '1';
-						domTicketInfo.lowestPriceReturn = lowestPrice;
-						console.log(domTicketInfo);
-						$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
-						console.log(JSON.parse($.session.get('domTicketInfo')))
-						window.location.href = '../../domesticAir/bookDomAirTicket.html';
 					}
+					
+				})
+			} else {
+				if (searchDomInfo.type == "oneWay") {
+					var domTicketInfo = {
+						'type': 'oneWay',
+						'segmentKey': $(that).attr("segmentKey"),
+						"isBottom": "1",
+						"lowestPrice": lowestPrice,
+					}
+					$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+					window.location.href = '../../domesticAir/bookDomAirTicket.html';
+				} else if ((searchDomInfo.type == "roundTrip" && !isReturn) || (searchDomInfo.type == "multiple" && !isReturn)) {
+					var queryKeyReturnList = searchDomInfo.queryKeyReturn.split(',');
+					queryKeyReturnList[4] = airLineCode;
+					queryKeyReturnList[5] = CabinCode;
+					searchDomInfo.queryKeyReturn = queryKeyReturnList.join(',');
+					$.session.set('searchDomInfo', JSON.stringify(searchDomInfo));
+					var domTicketInfo = {
+						'type': searchDomInfo.type,
+						'segmentKey': $(that).attr("segmentKey"),
+						"isBottom": "1",
+						"lowestPrice": lowestPrice,
+						"paramKey": paramKey,
+						"price": price,
+					}
+					$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+					window.location.href = '../../domesticAir/airTicketList.html?isReturn=1';
+				} else if ((searchDomInfo.type == "roundTrip" && isReturn == 1)|| (searchDomInfo.type == "multiple" && isReturn == 1)) {
+					var domTicketInfo = JSON.parse($.session.get('domTicketInfo'))
+					domTicketInfo.segmentKeyReturn = $(that).attr("segmentKey");
+					domTicketInfo.isBottomReturn = '1';
+					domTicketInfo.lowestPriceReturn = lowestPrice;
+					console.log(domTicketInfo);
+					$.session.set('domTicketInfo', JSON.stringify(domTicketInfo));
+					console.log(JSON.parse($.session.get('domTicketInfo')))
+					window.location.href = '../../domesticAir/bookDomAirTicket.html';
 				}
-			},
-			error: function() {
-				// alert('fail');
 			}
-		});
-	}
-	
-	
-	
-	
+		},
+		error: function() {
+			// alert('fail');
+		}
+	});
 }
 
 function openPop() {
@@ -2775,6 +2920,7 @@ function openPop() {
 function closePop() {
 	$("#cover").hide();
 	$(".bottomPricePop").hide();
+	$(".bottomPricePop").css("height", '');
 }
 
 function openRulePop() {
@@ -2794,6 +2940,10 @@ function fillterTimeList(res){
 	var flag=''
 	var dayTime=''
 	var fillterArr=[];
+	if(searchDomInfo.type=="multiple"){
+		//国内票多段，不进行过滤
+		return res
+	}
 	if(searchDomInfo.type == "oneWay" || (searchDomInfo.type == "roundTrip" && isReturn!=1)){
 		flag=setTime
 		if(typeof day=="undefined"){

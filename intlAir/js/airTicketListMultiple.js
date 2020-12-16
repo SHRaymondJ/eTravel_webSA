@@ -413,7 +413,7 @@ function ticketListInfo(res,index){
                 <div class="ticketDuration">'+item.Duration+'</div>\
                 <div class="ticketBaggageInfo '+showBaggageInfo+'">'+get_lan('ticketList').BaggageInfo+BaggageInfo+'</div>\
                 <div class="ticketViolationIcon '+showTicketViolation+'">'+get_lan('ticketSpread').violation+'</div>\
-                <div class="ticketFareAmount '+ticketPriceColor+'" LimitFare="'+item.LimitFare+'" CabinID="'+item.InterCabins[0].CabinID+'" spread="off" AirLineCode="'+item.AirLineCode+'" SegID="'+item.SegID+'"><span style="font-size:14px;color:#4d4d4d;">￥</span><span class="ticketPriceText" style="text-decoration: underline;">'+(parseInt(item.Fare)+parseInt(item.TotalTax))+'</span><span style="font-size:14px;color:#4d4d4d">('+get_lan('ticketList').includeTax+')</span></div>\
+                <div class="ticketFareAmount '+ticketPriceColor+'" LimitFare="'+item.LimitFare+'" CabinID="'+item.InterCabins[0].CabinID+'" spread="off" AirLineCode="'+item.AirLineCode+'" SegID="'+item.SegID+'"><span class="ticketPriceText" style="text-decoration: underline;">'+(parseInt(item.Fare)+parseInt(item.TotalTax))+'</span><span style="font-size:14px;color:#4d4d4d;">'+ProfileInfo.OfficeCurrency+'</span><span style="font-size:14px;color:#4d4d4d">('+get_lan('ticketList').includeTax+')</span></div>\
                 <div class="ticketCabin">'+item.CabinName+' '+get_lan('ticketList').Tax+' '+item.TotalTax+'</div>\
                 <div class="protocolBody '+protocolShow+'">\
                   <div class="protocolText">'+get_lan('ticketList').protocol+'</div>\

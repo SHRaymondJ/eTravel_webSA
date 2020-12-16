@@ -953,3 +953,17 @@ body{
 	    top: 65px;
 	    color: #999;
 }
+/* 推荐航班 */
+.recommed{
+	width: 80px;
+    height: 24px;
+    position: absolute;
+    top: 14px;
+    right: 10px;
+    cursor: pointer;	
+	padding-left: 15px;
+}
+.recommed input{
+	position: absolute;
+	top: 5px;left: 0;
+}

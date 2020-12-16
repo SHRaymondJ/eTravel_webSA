@@ -209,8 +209,21 @@
 	height: 18px;
 	list-style-type: none;
 	margin: 18px 10px 5px 44px;
+	position: relative;
 }
-
+.right_first_li .rightPoints,.right_first_li .rightRanking{
+	width: 160px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	right: 180px;
+	color: #FF7A00;
+	font-size: 14px;
+	line-height: 18px;
+}
+.right_first_li .rightRanking{
+	right: 0;
+}
 .info_box ul .right_second_li {
 	border-bottom: 1px dashed #979797;
 	margin: 0px 10px 5px 44px;

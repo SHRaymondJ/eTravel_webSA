@@ -27,6 +27,9 @@
 		}
 		// 获取TA单限制的城市
 		function cityFilter(cityType,jsonList,cityDom,airType){
+			cityList(jsonList,cityDom,cityType)
+			return false;
+			
 			var userid = netUserId.split("\"")[1]
 			$.ajax({
 				type: 'post',
@@ -111,7 +114,7 @@
 		
 	var data4;
 	// if(TAnumber && TAnumberIndex==1){
-	if(TAnumber){
+    if(TAnumber&&$.session.get('TAOneCity')!=1){
 		// 第一次获取订单号TAnumber,如果存在订单号就用新接口，InitLimitCitys，否则InitCityPost
 		data4={
 			url: $.session.get('obtCompany')+"/SystemService.svc/InitLimitTrainCity",
@@ -139,7 +142,7 @@
 				}
 			}else{
 				// trainCityString = data;
-				if(TAnumber){
+				if(TAnumber&&$.session.get('TAOneCity')!=1){
 					// domCityString=data
 					cityFilter("4",JSON.parse(data),trainCity)
 				}else{
@@ -170,7 +173,8 @@
     //     cityData(trainCityJson,trainCity);
     // })();
     function cityData(cityJson,city){
-		if(TAnumber){
+		if(TAnumber&&$.session.get('TAOneCity')!=1){
+			cityJson.shift();
 			cityJson.map(function(item){
 			        if(item.Value.length!=0){
 			            item.Value.map(function(sItem){
@@ -271,7 +275,7 @@
             // if(this.isContainerExit) return;
             $(".kucity").remove();
             var template = '<div class="kucity"><div class="citybox"><h3 class="kucity_header"></h3><ul class="kucity_nav flexRow"><li class="active">Key</li><li>ABCDEFGH</li><li>IJKLMNOP</li><li>QRSTUVWXYZ</li></ul><div class="kucity_body"></div></div><ul class="result"></ul></div>';
-			if(TAnumber){
+			if(TAnumber&&$.session.get('TAOneCity')!=1){
 				template = '<div class="kucity"><div class="citybox"><h3 class="kucity_header"></h3><ul class="kucity_nav flexRow"></ul><div class="kucity_body"></div></div><ul class="result"></ul></div>';
 			}
             $(".kucity_body").html('');
@@ -300,13 +304,14 @@
 
                     for (var j = 0, jLen = city[group][itemKey[i]].length; j < jLen; j++) {
                         var code = city[group][itemKey[i]][j].Code == null?city[group][itemKey[i]][j].ThreeCode:city[group][itemKey[i]][j].Code;
+                        var citycode = city[group][itemKey[i]][j].CityCode == null?city[group][itemKey[i]][j].ThreeCode:city[group][itemKey[i]][j].CityCode;
                         switch($.session.get('obtLanguage'))
                         {
                         case 'CN':
-                          str += '<span code='+code+'>' + city[group][itemKey[i]][j].NameCN + '</span>'
+                          str += '<span code="'+code+'" citycode="'+citycode+'">' + city[group][itemKey[i]][j].NameCN + '</span>'
                           break;
                         case 'EN':
-                          str += '<span code='+code+'>' + city[group][itemKey[i]][j].NameEN + '</span>'
+                          str += '<span code="'+code+'" citycode="'+citycode+'">' + city[group][itemKey[i]][j].NameEN + '</span>'
                           break;
                         }
                         // str += '<span>' + city[group][itemKey[i]][j].NameCN + '</span>'
@@ -341,7 +346,8 @@
                 str = '';
             if (!!len) {
                 for (var i = 0; i < len; i++) {
-                    str += '<li><span class="name" code="'+allCity[i].Code+'">' + allCity[i].NameCN + '</span><span class="letter">' + allCity[i].NameEN + '</span></li>'
+                    var CityCode = allCity[i].Code==null?allCity[i].ThreeCode:allCity[i].CityCode;
+                    str += '<li><span class="name" code="'+allCity[i].Code+'" citycode="'+CityCode+'">' + allCity[i].NameCN + '</span><span class="letter">' + allCity[i].NameEN + '</span></li>'
                 }
                 this.container.find('.result').html('').html(str).find('li').eq(0).addClass('active');
             } else {
@@ -370,6 +376,7 @@
             $('.kucity_item dd').on('click', 'span', function(e) {
                 self.target.val(($(e.target).text()));
                 self.target.attr("code",($(e.target).attr('code')));
+				self.target.attr("citycode",($(e.target).attr('citycode')));
                 self.container.hide();
             })
         },
@@ -397,6 +404,7 @@
                                 self.target.val(self.resultct.find('.active .name').text());
                             }
                             self.target.attr("code",self.resultct.find('.active .name').attr("code"));
+                            self.target.attr("citycode",self.resultct.find('.active .name').attr("citycode"));
                             self.triggleShow('all');
                             self.target.blur();
                             break;
@@ -518,6 +526,7 @@
                     kucity.target.val($(this).find('.name').text());
                 }
                 kucity.target.attr("code",$(this).find('.name').attr('code'));
+                kucity.target.attr("citycode",$(this).find('.name').attr('citycode'));
                 kucity.triggleShow('all');
             })
         })

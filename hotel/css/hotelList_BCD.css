@@ -236,7 +236,7 @@
 	background-image: url('../../css/images/sortIcon.png');
 	background-position:0px 0px;
 }
-.breakfastBtn,.freeCancelBtn,.noGuaranteeBtn,.protocolBtn{
+.breakfastBtn,.freeCancelBtn,.noGuaranteeBtn,.protocolBtn,.companyBillBtn{
 	width: 115px;
 	height: 25px;
 	line-height: 25px;
@@ -268,7 +268,8 @@
 }
 .hotelLiName{
 	/* min-width: 200px; */
-	min-width: 100px;
+	/* min-width: 100px; */
+	width: 920px;
 	height: 20px;
 	line-height: 20px;
 	font-size: 16px;
@@ -374,6 +375,19 @@
 	line-height: 40px;
 	font-size: 12px;
 }
+/*积分*/
+.hotelPoints{
+	width: 79px;
+	height: 26px;
+	background: #FFF6DD;
+	border-radius: 4px;
+	border: 1px solid #FF7A00;
+	line-height: 26px;
+	text-align: center;
+	font-size: 14px;
+	color: #FF7A00;
+}
+/*end*/
 .hotelLiPrice{
 	/* 2020-01-02 修改*/
 	/* width: 200px; */
@@ -450,15 +464,29 @@
 
 /* 公司支付 */
   .companyPay{
-	position: absolute;
+	/* position: absolute;
 	top: 0;
-	right: -90px;
+	right: -90px; */
+	display: inline-block;
 	width: 79px;
 	height: 18px;
+	margin-left: 12px;
 	border-radius: 2px;
 	border: 1px solid rgba(30,102,174,1);
 	color: rgba(30,102,174,1);
 	font-size: 12px;
 	text-align: center;
 	font-weight: 400;  
-  }  
+	margin-left: 12px;
+  }
+  .companyPay.hide{
+	  display: none;
+  }
+  .HandimgOrange{
+	  color: #5ABA2C;
+	  border-color: #5ABA2C;
+  }
+  .Handimg{
+	 color: #8dc73f;
+	 border-color: #8dc73f; 
+  }

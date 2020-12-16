@@ -21,6 +21,8 @@ console.log(searchTrainInfo);
 		}
 		TAminDate=minTime<minTime2?TAminDate:new Date()
 	}
+	//是否是改签
+	var searchType=""
 //中英文对象
 var cn = {
     "progressBar":{
@@ -33,6 +35,7 @@ var cn = {
         "roundTrip":"来回程",
         "search":"查询",
         "weekDay":'星期天, 星期一, 星期二, 星期三, 星期四, 星期五, 星期六',
+		"allDay":"全天",
     },
     "ticketList":{
         "listRemind":'没有相关的车票信息',
@@ -41,8 +44,10 @@ var cn = {
         "roundTittleGo":"去程票",
         "roundTittleReturn":"回程票",
         "reserve":"预订",
+        "soldOut":"反馈无票信息",
         "left":"",
-        "violation":"违反政策",
+		"violation":"违反政策",
+		"standBy":"候补",
     },
     "trainChooseBody":{
     	"model":"车型",
@@ -73,6 +78,7 @@ var en = {
         "roundTrip":"Round-Trip",
         "search":"Search",
         "weekDay":'Sun,Mon,Tue,Wed,Thu,Fri,Sat',
+		"allDay":"All Day",
     },
     "ticketList":{
         "listRemind":'No relevant ticket information',
@@ -81,8 +87,10 @@ var en = {
         "roundTittleGo":"Deaprture",
         "roundTittleReturn":"Return",
         "reserve":"Reserve",
+		"soldOut":"Sold Out Feedback",
         "left":"",
-        "violation":"Out of policy",
+		"violation":"Out of policy",
+		"standBy":"Waiting",
     },
     "trainChooseBody":{
     	"model":"Train Model",
@@ -162,10 +170,70 @@ function showContent(){
 	    <option state="1" value="1">'+get_lan('searchBody').oneWay+'</option>\
 	    <option state="2" value="2">'+get_lan('searchBody').roundTrip+'</option>\
 	    </select>\
-	    <div class="trainDepartureCitySearch"><div class="departureAirIcon"></div><input type="text" id="trainDepartureCity" value="'+searchTrainInfo.departureCityText+'" code="'+searchTrainInfo.departureCity+'"></div>\
-	    <div class="trainArrivalCitySearch"><div class="arrivalAirIcon"></div><input type="text" id="trainArrivalCity" value="'+searchTrainInfo.arrivalCityText+'" code="'+searchTrainInfo.arrivalCity+'"></div>\
-	    <div class="trainDepartureDateSearch"><div class="departureDateIcon"></div><input type="text" id="trainDepartureDate" readonly value="'+searchTrainInfo.date+'"><div class="trainDepartureWeek">'+getWeek(searchTrainInfo.date)+'</div></div>\
-	    <div class="trainReturnDateSearch"><div class="returnDateIcon"></div><input type="text" id="trainReturnDate" readonly value="'+GetDateStr(1,searchTrainInfo.date)+'"><div class="trainReturnDateWeek">'+getWeek(GetDateStr(1,searchTrainInfo.date))+'</div></div>\
+	    <div class="trainDepartureCitySearch"><div class="departureAirIcon"></div><input type="text" id="trainDepartureCity" value="'+searchTrainInfo.departureCityText+'" code="'+searchTrainInfo.departureCity+'" citycode="'+searchTrainInfo.domqueryKey.split(",")[0]+'"></div>\
+	    <div class="trainArrivalCitySearch"><div class="arrivalAirIcon"></div><input type="text" id="trainArrivalCity" value="'+searchTrainInfo.arrivalCityText+'" code="'+searchTrainInfo.arrivalCity+'" citycode="'+searchTrainInfo.domqueryKey.split(",")[1]+'"></div>\
+	    <div class="trainDepartureDateSearch"><div class="departureDateIcon"></div><input type="text" id="trainDepartureDate" readonly value="'+searchTrainInfo.date+'">\
+		<select type="text" class="trainDepartureSelect">\
+		            <option value="all" class="trainAllDay">' +
+		get_lan("searchBody").allDay +
+		'</option>\
+		            <option value="0">0:00</option>\
+		            <option value="1">1:00</option>\
+		            <option value="2">2:00</option>\
+		            <option value="3">3:00</option>\
+		            <option value="4">4:00</option>\
+		            <option value="5">5:00</option>\
+		            <option value="6">6:00</option>\
+		            <option value="7">7:00</option>\
+		            <option value="8">8:00</option>\
+		            <option value="9">9:00</option>\
+		            <option value="10">10:00</option>\
+		            <option value="11">11:00</option>\
+		            <option value="12">12:00</option>\
+		            <option value="13">13:00</option>\
+		            <option value="14">14:00</option>\
+		            <option value="15">15:00</option>\
+		            <option value="16">16:00</option>\
+		            <option value="17">17:00</option>\
+		            <option value="18">18:00</option>\
+		            <option value="19">19:00</option>\
+		            <option value="20">20:00</option>\
+		            <option value="21">21:00</option>\
+		            <option value="22">22:00</option>\
+		            <option value="23">23:00</option>\
+		          </select>\
+		<div class="trainDepartureWeek">'+getWeek(searchTrainInfo.date)+'</div></div>\
+	    <div class="trainReturnDateSearch"><div class="returnDateIcon"></div><input type="text" id="trainReturnDate" readonly value="'+GetDateStr(1,searchTrainInfo.date)+'">\
+		<select type="text" class="trainReturnSelect">\
+		            <option value="all" class="trainAllDay">' +
+		get_lan("searchBody").allDay +
+		'</option>\
+		            <option value="0">0:00</option>\
+		            <option value="1">1:00</option>\
+		            <option value="2">2:00</option>\
+		            <option value="3">3:00</option>\
+		            <option value="4">4:00</option>\
+		            <option value="5">5:00</option>\
+		            <option value="6">6:00</option>\
+		            <option value="7">7:00</option>\
+		            <option value="8">8:00</option>\
+		            <option value="9">9:00</option>\
+		            <option value="10">10:00</option>\
+		            <option value="11">11:00</option>\
+		            <option value="12">12:00</option>\
+		            <option value="13">13:00</option>\
+		            <option value="14">14:00</option>\
+		            <option value="15">15:00</option>\
+		            <option value="16">16:00</option>\
+		            <option value="17">17:00</option>\
+		            <option value="18">18:00</option>\
+		            <option value="19">19:00</option>\
+		            <option value="20">20:00</option>\
+		            <option value="21">21:00</option>\
+		            <option value="22">22:00</option>\
+		            <option value="23">23:00</option>\
+		          </select>\
+		<div class="trainReturnDateWeek">'+getWeek(GetDateStr(1,searchTrainInfo.date))+'</div></div>\
 	    <div class="searchTrainBtn btnBackColor">'+get_lan('searchBody').search+'</div></div>\
 	    ')
 	$(".trainChooseBody").html('\
@@ -189,7 +257,7 @@ function showContent(){
         </div>\
 		<div class="trainUseTimeSort flexRow" style="width:100px;line-height:52px;margin-left:60px;cursor:pointer;">'+get_lan('siftBody').trainUseTime+'<div class="trainUseTimeSortIcon"></div></div>\
 		<div style="width:100px;line-height:52px;margin-left:107px;">'+get_lan('siftBody').trainPrice+'</div>\
-        <div style="width:100px;line-height:52px;margin-left:107px;">'+get_lan('siftBody').seats+'</div>\
+        <div style="width:100px;line-height:52px;margin-left:11px;">'+get_lan('siftBody').seats+'</div>\
 		')
 	$(".searchState").change(function(){
 	    if($('.searchState option:selected').attr("state")=='1'){
@@ -207,17 +275,31 @@ function showContent(){
 	            showOtherMonths: true,
 	            selectOtherMonths: true,
 	        });
+			$('.trainReturnSelect').val(17)
 	    }
 	})
+	
+	if(ProfileInfo.SearchTrainWithTimeDetail){
+		$('.trainDepartureSelect').val(searchTrainInfo.domqueryKey.split(",")[2].split(' ')[1].split(":")[0])
+		if(searchTrainInfo.type!="oneWay"){
+			$('.trainReturnSelect').val(searchTrainInfo.domqueryKeyReturn.split(",")[2].split(' ')[1].split(":")[0])
+		}
+		$('.trainAllDay').remove()
+	}
 	$(".searchTrainBtn").unbind("click").click(function(){
-        if(ProfileInfo.onlineStyle=="APPLE"){
+        // if(ProfileInfo.onlineStyle=="APPLE"){
             var cityList = '"'+$('#trainDepartureCity').val()+'","'+$('#trainArrivalCity').val()+'"';
             tools.appleRemindPop(cityList,4,netUserId,function(){searchTrain()});
-        }else{
-            searchTrain();
-        }
+        // }else{
+        //     searchTrain();
+        // }
         function searchTrain(){
             if($('.searchState option:selected').attr("state")=='1'){
+				if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect  option:selected").val() == undefined) {
+					var DepartureSelectValue = ''
+				} else {
+					var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+				}
                 var searchTrainInfo = {
                     'type':'oneWay',
                     'departureCityText':$('#trainDepartureCity').val(),
@@ -225,11 +307,23 @@ function showContent(){
                     'departureCity':$('#trainDepartureCity').attr("code"),
                     'arrivalCity':$('#trainArrivalCity').attr("code"),
                     'date':$('#trainDepartureDate').val(),
-                    'queryKey':$('#trainDepartureCity').val()+','+$('#trainArrivalCity').val()+','+$('#trainDepartureDate').val()+',',
+                    'queryKey':$('#trainDepartureCity').val()+','+$('#trainArrivalCity').val()+','+$('#trainDepartureDate').val()+DepartureSelectValue+',',
+                    'domqueryKey':$('#trainDepartureCity').attr('citycode') + ',' + $('#trainArrivalCity').attr('citycode') + ',' + $('#trainDepartureDate').val() + DepartureSelectValue+',ALL',
                 }
                 $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
                 location.replace('../../train/trainTicketList.html');
             }else if($('.searchState option:selected').attr("state")=='2'){
+				//整点
+				if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect  option:selected").val() == undefined) {
+					var DepartureSelectValue = ''
+				} else {
+					var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+				}
+				if ($(".trainReturnSelect option:selected").val() == "all" || $(".trainReturnSelect  option:selected").val() == undefined) {
+					var ReturnSelectValue = ''
+				} else {
+					var ReturnSelectValue = ' ' + $(".trainReturnSelect  option:selected").val() + ':00:00';
+				}
                 var searchTrainInfo = {
                     'type':'roundTrip',
                     'departureCityText':$('#trainDepartureCity').val(),
@@ -238,8 +332,10 @@ function showContent(){
                     'arrivalCity':$('#trainArrivalCity').attr("code"),
                     'date':$('#trainDepartureDate').val(),
                     'returndate':$('#trainReturnDate').val(),
-                    'queryKey':$('#trainDepartureCity').val()+','+$('#trainArrivalCity').val()+','+$('#trainDepartureDate').val()+',',
-                    'queryKeyReturn':$('#trainArrivalCity').val()+','+$('#trainDepartureCity').val()+','+$('#trainReturnDate').val()+',',
+                    'queryKey':$('#trainDepartureCity').val()+','+$('#trainArrivalCity').val()+','+$('#trainDepartureDate').val()+DepartureSelectValue+',',
+                   'queryKeyReturn':$('#trainArrivalCity').val()+','+$('#trainDepartureCity').val()+','+$('#trainReturnDate').val()+ReturnSelectValue+',',
+				   'domqueryKey':$('#trainDepartureCity').attr('citycode') + ',' + $('#trainArrivalCity').attr('citycode') + ',' + $('#trainDepartureDate').val() + DepartureSelectValue+',ALL',
+				   'domqueryKeyReturn':$('#trainArrivalCity').attr('citycode') + ',' + $('#trainDepartureCity').attr('citycode') + ',' + $('#trainReturnDate').val() +ReturnSelectValue+ ',,ALL',
                 }
                 $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
                 location.replace('../../train/trainTicketList.html');
@@ -248,6 +344,7 @@ function showContent(){
 	})
     if(searchTrainInfo.alterTicketInfo){
         $(".searchBody").hide();
+		searchType=2
     }
 	$("#trainDepartureCity").kuCity();
 	$("#trainArrivalCity").kuCity();
@@ -289,6 +386,17 @@ function showContent(){
         return d.getFullYear()+"-"+month+"-"+day;
     }
 	GetCompanyImageInfos()
+	hideIntegral()
+}
+//隐藏整点
+function hideIntegral(){
+	if(!ProfileInfo.SearchTrainWithTimeDetail){
+		$('.trainDepartureSelect,.trainReturnSelect').remove()
+		$('.trainDepartureDateSearch,.trainReturnDateSearch').css('width',"170px")
+	}else{
+		$('.trainDepartureSelect,.trainReturnSelect').val()
+		$('.trainDepartureSelect,.trainReturnSelect').val()
+	}
 }
 // 广告图片接口
 function GetCompanyImageInfos(){
@@ -375,13 +483,26 @@ function ticketList(){
         if(searchTrainInfo.date== searchTrainInfo.returndate){
             $(".nextDay").hide();
         }
+		
+		
 		$(".preDay").unbind("click").click(function(){
+			//整点
+			if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect option:selected").val() == undefined) {
+				var DepartureSelectValue = ''
+				var domTime=''
+			} else {
+				var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+				var domTime=$(".trainDepartureSelect  option:selected").val()
+			}
 		    if(new Date() <new Date(GetDateStr(0,searchTrainInfo.date).replace(/\-/g, "\/"))) 
 		    {
 					searchTrainInfo.date = preDayDate;
 					var queryKeyList = searchTrainInfo.queryKey.split(',');
-					queryKeyList[2] = preDayDate;
+					var querydomList = searchTrainInfo.domqueryKey.split(',');
+					queryKeyList[2] = preDayDate+DepartureSelectValue;
+					querydomList[2] = preDayDate+DepartureSelectValue
 					searchTrainInfo.queryKey = queryKeyList.join(',');
+					searchTrainInfo.domqueryKey = querydomList.join(',');
 					$.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
 					location.reload();
 		    }else{
@@ -389,10 +510,21 @@ function ticketList(){
 		    }
 		})
 		$(".nextDay").unbind("click").click(function(){
+			//整点
+			if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect option:selected").val() == undefined) {
+				var DepartureSelectValue = ''
+				var domTime=''
+			} else {
+				var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+				var domTime=$(".trainDepartureSelect  option:selected").val()
+			}
 		    searchTrainInfo.date = nextDayDate;
             var queryKeyList = searchTrainInfo.queryKey.split(',');
-            queryKeyList[2] = nextDayDate;
+			var querydomList = searchTrainInfo.domqueryKey.split(',');
+            queryKeyList[2] = nextDayDate + DepartureSelectValue;
+			querydomList[2] = preDayDate+DepartureSelectValue
             searchTrainInfo.queryKey = queryKeyList.join(',');
+			searchTrainInfo.domqueryKey = querydomList.join(',');
 		    $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
 		    location.reload();
 		})
@@ -407,16 +539,67 @@ function ticketList(){
 		    },
 		    success : function(data) {
 		        // $('body').mLoading("hide");
-				tools.searchLoadingHide()
 		        var res = JSON.parse(data);
 		        console.log(res);
                 if(res.length == 0){
                     alert(get_lan("ticketList").listRemind);
                 }
-		        ticketListInfo(res);
-		        ticketFilter(res);
-                sortTicketInfo(res);
-                // chooseStation(res);
+				if(!ProfileInfo.NeedSpecialPolicy){//不需要再查询飞机，也不需要跑新方法
+					tools.searchLoadingHide()
+					ticketListInfo(res);
+					ticketFilter(res);
+					sortTicketInfo(res);
+					// chooseStation(res);
+				}else{
+					if(res[0].swNeedSearchAir){//先查询飞机，成功后再查询火车（新接口QuerySwTrain）
+						//查询飞机
+						//searchTrainInfo.domqueryKey
+						$.ajax({
+							type: 'post',
+							url: $.session.get('ajaxUrl'),
+							dataType: 'json',
+							data: {
+								url: $.session.get('obtCompany') + "/QueryService.svc/GetDomesticSegmentsNew",
+								jsonStr: '{"request":{"queryKey":"' + searchTrainInfo.domqueryKey + '","orgAirport":"","dstAirport":"","id":' + netUserId + ',"Language":"' + obtLanguage + '","showCabins":"","isCodeShare":"","minFare":"","maxFare":"","orgCabinCode":"","IsDirect":"false","isNotOpenedClassNeeded":"","searchType":"'+searchType+'"}}'
+							},
+							success: function(data) {
+								// 1012-1014新增，1026-1028res改为res.segmentList
+								$('body').mLoading("hide");
+								var res = JSON.parse(data);
+								console.log(res);
+								// if(res.code==200){//查询成功去查询火车，7-29无论有没有飞机都查询火车
+									querySWtrain(true)
+								// }else{
+								// 	tools.searchLoadingHide()
+								// }
+							},
+						})
+					}else{
+						querySWtrain(false)
+					}
+					function querySWtrain(isSearchAir){
+						$.ajax({
+							type: 'post',
+							url: $.session.get('ajaxUrl'),
+							dataType: 'json',
+							data: {
+								url: $.session.get('obtCompany') + "/QueryService.svc/QuerySwTrain",
+								jsonStr: '{"type":"1","id":'+netUserId+',"isSearchAir":'+isSearchAir+'}'
+							},
+							success: function(data) {
+								tools.searchLoadingHide()
+								var res = JSON.parse(data);
+								console.log(res);
+								ticketListInfo(res);
+								ticketFilter(res);
+								sortTicketInfo(res);
+							},
+						})
+					}
+				}
+				
+				
+				
 		    },
 		    error : function() {
 		      // alert('fail');
@@ -437,17 +620,47 @@ function ticketList(){
                 $(".preDay").hide();
             }
             $(".preDay").unbind("click").click(function(){
+					//整点
+					if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect option:selected").val() == undefined) {
+						var DepartureSelectValue = ''
+						var domTime=''
+					} else {
+						var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+						var domTime=$(".trainDepartureSelect  option:selected").val()
+					}
                 if(new Date() <new Date(GetDateStr(0,searchTrainInfo.date).replace(/\-/g, "\/"))) 
                 {
                     searchTrainInfo.date = preDayDate;
-                    $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
-                    location.reload();
+					var queryKeyList = searchTrainInfo.queryKey.split(',');
+					var querydomList = searchTrainInfo.domqueryKey.split(',');
+					queryKeyList[2] = nextDayDate + DepartureSelectValue;
+					querydomList[2] = preDayDate+DepartureSelectValue
+					searchTrainInfo.queryKey = queryKeyList.join(',');
+					searchTrainInfo.domqueryKey = querydomList.join(',');
+					$.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
+					location.reload();
+					
                 }else{
                     $(".preDay").hide();
                 }
             })
             $(".nextDay").unbind("click").click(function(){
                 searchTrainInfo.date = nextDayDate;
+				
+				if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect option:selected").val() == undefined) {
+					var DepartureSelectValue = ''
+					var domTime=''
+				} else {
+					var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+					var domTime=$(".trainDepartureSelect  option:selected").val()
+				}
+				var queryKeyList = searchTrainInfo.queryKey.split(',');
+				var querydomList = searchTrainInfo.domqueryKey.split(',');
+				queryKeyList[2] = nextDayDate + DepartureSelectValue;
+				querydomList[2] = preDayDate+DepartureSelectValue
+				searchTrainInfo.queryKey = queryKeyList.join(',');
+				searchTrainInfo.domqueryKey = querydomList.join(',');
+				
                 $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
                 location.reload();
             })
@@ -463,10 +676,27 @@ function ticketList(){
             {
                 $(".preDay").hide();
             }
+			
+			if ($(".trainDepartureSelect  option:selected").val() == "all" || $(".trainDepartureSelect option:selected").val() == undefined) {
+				var DepartureSelectValue = ''
+				var domTime=''
+			} else {
+				var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+				var domTime=$(".trainDepartureSelect  option:selected").val()
+			}
+			
             $(".preDay").unbind("click").click(function(){
                 if(new Date(GetDateStr(0,searchTrainInfo.date).replace(/\-/g, "\/")) <new Date(GetDateStr(0,searchTrainInfo.returndate).replace(/\-/g, "\/"))) 
                 {
                     searchTrainInfo.returndate = preDayDate;
+					
+					var queryKeyList = searchTrainInfo.queryKey.split(',');
+					var querydomList = searchTrainInfo.domqueryKey.split(',');
+					queryKeyList[2] = nextDayDate + DepartureSelectValue;
+					querydomList[2] = preDayDate+DepartureSelectValue
+					searchTrainInfo.queryKey = queryKeyList.join(',');
+					searchTrainInfo.domqueryKey = querydomList.join(',');
+					
                     $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
                     location.reload();
                 }else{
@@ -475,6 +705,13 @@ function ticketList(){
             })
             $(".nextDay").unbind("click").click(function(){
                 searchTrainInfo.returndate = nextDayDate;
+				var queryKeyList = searchTrainInfo.queryKey.split(',');
+				var querydomList = searchTrainInfo.domqueryKey.split(',');
+				queryKeyList[2] = nextDayDate + DepartureSelectValue;
+				querydomList[2] = preDayDate+DepartureSelectValue
+				searchTrainInfo.queryKey = queryKeyList.join(',');
+				searchTrainInfo.domqueryKey = querydomList.join(',');
+				
                 $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
                 location.reload();
             })
@@ -504,9 +741,11 @@ function ticketList(){
         }
         if(!isReturn||isReturn!=1){
             var queryKey = searchTrainInfo.queryKey;
+            var domQueryKey = searchTrainInfo.domqueryKey;
             var routeType = '1';
         }else if(isReturn==1){
             var queryKey = searchTrainInfo.queryKeyReturn;
+            var domQueryKey = searchTrainInfo.domqueryKeyReturn;
             var routeType = '2';
         }
         $.ajax(
@@ -519,15 +758,67 @@ function ticketList(){
                 jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'","routeType":"'+routeType+'","endTime":""}'
             },
             success : function(data) {
-                $('body').mLoading("hide");
                 var res = JSON.parse(data);
                 console.log(res);
                 if(res.length == 0){
                     alert(get_lan("ticketList").listRemind);
                 }
-                ticketListInfo(res);
-                ticketFilter(res);
-                sortTicketInfo(res);//排序
+                // ticketListInfo(res);
+                // ticketFilter(res);
+                // sortTicketInfo(res);//排序
+				if(!ProfileInfo.NeedSpecialPolicy){//不需要再查询飞机，也不需要跑新方法
+					tools.searchLoadingHide()
+					ticketListInfo(res);
+					ticketFilter(res);
+					sortTicketInfo(res);
+					// chooseStation(res);
+				}else{
+					if(res[0].swNeedSearchAir){//先查询飞机，成功后再查询火车（新接口QuerySwTrain）
+						//查询飞机
+						//searchTrainInfo.domqueryKey
+						$.ajax({
+							type: 'post',
+							url: $.session.get('ajaxUrl'),
+							dataType: 'json',
+							data: {
+								url: $.session.get('obtCompany') + "/QueryService.svc/GetDomesticSegmentsNew",
+								jsonStr: '{"request":{"queryKey":"' + domQueryKey + '","orgAirport":"","dstAirport":"","id":' + netUserId + ',"Language":"' + obtLanguage + '","showCabins":"","isCodeShare":"","minFare":"","maxFare":"","orgCabinCode":"","IsDirect":"false","isNotOpenedClassNeeded":"","searchType":"'+searchType+'"}}'
+							},
+							success: function(data) {
+								// 1012-1014新增，1026-1028res改为res.segmentList
+								// $('body').mLoading("hide");
+								var res = JSON.parse(data);
+								console.log(res);
+								// if(res.code==200){//查询成功去查询火车，7-29无论有没有飞机都查询火车
+									querySWtrain(true)
+								// }else{
+								// 	tools.searchLoadingHide()
+								// }
+							},
+						})
+					}else{
+						querySWtrain(false)
+					}
+					function querySWtrain(isSearchAir){
+						$.ajax({
+							type: 'post',
+							url: $.session.get('ajaxUrl'),
+							dataType: 'json',
+							data: {
+								url: $.session.get('obtCompany') + "/QueryService.svc/QuerySwTrain",
+								jsonStr: '{"type":"'+routeType+'","id":'+netUserId+',"isSearchAir":'+isSearchAir+'}'
+							},
+							success: function(data) {
+								tools.searchLoadingHide()
+								var res = JSON.parse(data);
+								console.log(res);
+								ticketListInfo(res);
+								ticketFilter(res);
+								sortTicketInfo(res);
+							},
+						})
+					}
+				}
             },
             error : function() {
               // alert('fail');
@@ -796,7 +1087,7 @@ function ticketListInfo(res){
 		    </div>\
 		    <div class="ticketLiSpread"></div>\
 		')
-		item.FareList.map(function(dItem){
+		item.FareList.map(function(dItem,dindex){
 			var SeatType = obtLanguage == "CN"?dItem.SeatType:dItem.SeatTypeEN;
             // if(ProfileInfo.onlineStyle=="APPLE"){
             //     switch(SeatType) {
@@ -811,48 +1102,149 @@ function ticketListInfo(res){
             
 			var seatLeftNull = dItem.SeatYuPiao == 0?"seatLeftNull":"";
             var showTicketViolation = dItem.SeatShowType !=1 ?"":"hide";
+			if(dItem.SeatYuPiao == 0 && ProfileInfo.RecordTrainNoSeat){
+				var bookBtn='<div class="soldOut" index="'+index+'" dindex="'+dindex+'">'+get_lan('ticketList').soldOut+'</div>'
+				if(ProfileInfo.HasGrabTicketP&&!searchTrainInfo.alterTicketInfo){
+					var standByState = 'standByState';
+					var soldOutRemind = 'soldOutLeft';
+					if((parseInt(item.TimeStart.split(":")[0])-3<=new Date().getHours())&&item.DateStart==getNowDate()){
+						standByState = 'standByState hide';
+						var soldOutRemind = 'soldOutRight';
+					}
+					function getNowDate() {
+						var dd = new Date();
+						var y = dd.getFullYear(); 
+						// var m = dd.getMonth()+1;//获取当前月份的日期 
+						// var d = dd.getDate();
+						var m = (dd.getMonth()+1)<10?'0'+(dd.getMonth()+1):(dd.getMonth()+1);
+						var d = dd.getDate()<10?'0'+dd.getDate():dd.getDate();
+						return y+"-"+m+"-"+d; 
+					}
+					var bookBtn='\
+					<div class="soldOut '+soldOutRemind+'" index="'+index+'" dindex="'+dindex+'">'+get_lan('ticketList').soldOut+'</div>\
+					<div class="bookTrainBtn '+standByState+'" queryKey="'+item.RID+','+dItem.SeatID+'">'+get_lan('ticketList').standBy+'</div>\
+					'
+				}
+			}else{
+				var bookBtn='<div class="bookTrainBtn '+seatLeftNull+'" queryKey="'+item.RID+','+dItem.SeatID+'">'+get_lan('ticketList').reserve+'</div>'
+			}
 			$(".ticketFareList").eq(index).append('\
 				<div class="ticketFareLi flexRow">\
 				  <div class="seatInfo flexRow">\
                   <div class="liSeatType" style="min-width:50px;">'+SeatType+'</div>\
-                  <div class="ticketPrice" style="margin-left:10px;width:58px;"><span style="font-size:12px;">￥</span>'+dItem.Price+'</div>\
+                  <div class="ticketPrice" style="margin-left:10px;width:58px;">'+dItem.Price+'<span style="font-size:12px;">'+ProfileInfo.OfficeCurrency+'</span></div>\
                   <div class="ticketViolationIcon '+showTicketViolation+'">'+get_lan('ticketList').violation+'</div>\
                   </div>\
-				  <div class="seatLeft">'+get_lan('ticketList').left+dItem.SeatYuPiao+'</div>\
-				  <div class="bookTrainBtn '+seatLeftNull+'" queryKey="'+item.RID+','+dItem.SeatID+'">'+get_lan('ticketList').reserve+'</div>\
-				</div>\
+				  <div class="seatLeft">'+get_lan('ticketList').left+dItem.SeatYuPiao+'</div>'
+				  +bookBtn+
+				'</div>\
 			')
 		})
         if(obtLanguage=="CN"){
-            $(".liSeatType").css("min-width",'50px');
+            $(".liSeatType").css("min-width",'80px');
         }else if(obtLanguage=="EN"){
-            $(".liSeatType").css("min-width",'150px');
+            $(".liSeatType").css("min-width",'100px');
         }
 	})
 	$(".bookTrainBtn").unbind("click").click(function(){
+		if(ProfileInfo.HasGrabTicketP&&$(this).hasClass("standByState")){
+			var standBy = true;
+		}else{
+			var standBy = false;
+		}
 		if(searchTrainInfo.type == "oneWay"){
 		    var trainTicketInfo = {
 		        'type':'oneWay',
 		        'queryKey':$(this).attr("queryKey")+','+searchTrainInfo.date,
-                'date':searchTrainInfo.date,
+				'date':searchTrainInfo.date,
+				'standBy':standBy,
 		    }
 		    $.session.set('trainTicketInfo', JSON.stringify(trainTicketInfo));
 		    window.location.href='../../train/bookTrainTicket.html';
 		}else if(searchTrainInfo.type == "roundTrip" && !isReturn){
+			if($(this).hasClass("standByState")){
+				var standByFrom=true;
+			}else{
+				var standByFrom=false;
+			}
             var trainTicketInfo = {
                 'type':'roundTrip',
                 'queryKey':$(this).attr("queryKey")+','+searchTrainInfo.date,
                 'date':searchTrainInfo.date,
-                'returndate':searchTrainInfo.returndate,
+				'returndate':searchTrainInfo.returndate,
+				'standBy':standBy,
+				'standByFrom':standByFrom,
             }
             $.session.set('trainTicketInfo', JSON.stringify(trainTicketInfo));
             window.location.href='../../train/trainTicketList.html?isReturn=1';
         }else if(searchTrainInfo.type == "roundTrip" && isReturn==1){
             var trainTicketInfo = JSON.parse($.session.get('trainTicketInfo'))
-            trainTicketInfo.queryKeyReturn = $(this).attr("queryKey")+','+searchTrainInfo.returndate;
+			trainTicketInfo.queryKeyReturn = $(this).attr("queryKey")+','+searchTrainInfo.returndate;
+			if($(this).hasClass("standByState")){
+				trainTicketInfo.standBy = true;
+				trainTicketInfo.standByReturn = true;
+			}else{
+				trainTicketInfo.standByReturn = false;
+			}
             $.session.set('trainTicketInfo', JSON.stringify(trainTicketInfo));
             window.location.href='../../train/bookTrainTicket.html';
         }
+	})
+	//反馈信息
+	$(".soldOut").unbind("click").click(function(){
+		var index=$(this).attr('index')
+		var dindex=$(this).attr('dindex')
+		var jsonStr={
+			request:{
+				Uid :netUserId.split('"')[1],
+				Language : obtLanguage,
+				OrgCity : res[index].StartCityCode,
+				OrgStation : res[index].StationStartSave,
+				DstCity : res[index].ArriveCityCode,
+				DstStation : res[index].StationArriveSave,
+				DepatureTime :res[index].DateStart+" " + res[index].TimeStart,
+				ArrivalTime :res[index].DateArrive+" " + res[index].TimeArrive,
+				TrainNo :res[index].TrainCode,
+				SeatType:res[index].FareList[dindex].SeatType,
+			}
+		}
+		var option = {
+		    url:$.session.get('ajaxUrl'),
+		    data: {
+				url: $.session.get('obtCompany') + "/QueryService.svc/RecordTrainNoSeatPost",
+				jsonStr: JSON.stringify(jsonStr)
+			},
+		}
+		var tips=obtLanguage=="CN"?"系统已记录您的车次无票信息，谢谢。":"The system has recorded your sold out information, thank you!";
+		var btn=obtLanguage=="CN"?"确定":"Confirm";
+		$('body').mLoading("show");
+		tools.ajax(option,function(data){
+			$('body').mLoading("hide");
+		    var res = JSON.parse(data);
+		    console.log(res);
+			if(res.code==200){
+				$("body").append('\
+					<div class="recordTrainFix">\
+						<div class="recordTrain">\
+							<div class="recordTrainClose"><span class="close"></span></div>\
+							<div class="recordTrainTips">'+tips+'</div>\
+							<div class="recordTrainBtn">'+btn+'</div>\
+						</div>\
+					</div>\
+				')
+				$(".close").unbind("click").click(function(){
+					$('.recordTrainFix').remove()
+				})
+				$(".recordTrainBtn").unbind("click").click(function(){
+					$('.recordTrainFix').remove()
+				})
+			}else{
+				alert('error')
+				// alert(res.message)
+			}
+		})
+		
+		
 	})
 	$(".seatLeftNull").unbind("click");
 }

@@ -232,7 +232,7 @@
 	background-image: url('../../css/images/sortIcon.png');
 	background-position:0px 0px;
 }
-.breakfastBtn,.freeCancelBtn,.noGuaranteeBtn,.protocolBtn{
+.breakfastBtn,.freeCancelBtn,.noGuaranteeBtn,.protocolBtn,.companyBillBtn{
 	width: 115px;
 	height: 25px;
 	line-height: 25px;

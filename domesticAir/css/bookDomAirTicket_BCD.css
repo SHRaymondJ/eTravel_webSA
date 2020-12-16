@@ -230,7 +230,7 @@
 	height: 20px;
 	margin-right: 5px;
 }
-.popNameCn,.popNameEn,.popPhone,.popMail,.popDocuments,.popDocumentsTime,.popFrequentFlier,.newCustomerLi,.popType{
+.popNameCn,.popNameEn,.popPhone,.popMail,.popDocuments,.popDocumentsTime,.popPhone,.popFrequentFlier,.newCustomerLi{
 	height: 20px;
 	line-height: 20px;
 	font-size: 13px;
@@ -239,16 +239,13 @@
 	padding-left: 33px;
 	margin-top: 10px;
 }
-.popPhoneInput,.popMailInput,.popDocumentsInput,.popFrequentFlierInput,.popDocumentsTimeInput,.popFrequentFlierInputStart,.popFrequentFlierInputReturn,.newCustomerInput,.popTypeSelect{
+.popPhoneInput,.popMailInput,.popDocumentsInput,.popFrequentFlierInput,.popDocumentsTimeInput,.popFrequentFlierInputStart,.popFrequentFlierInputReturn,.newCustomerInput{
 	width: 180px;
 	border: 1px solid #979797;
 }
 .newCustomerHalfInput{
 	width: 85px;
 	border: 1px solid #979797;
-}
-.popDocumentsSelect{
-	height: 30px;
 }
 .popDocumentsSelect,.popFrequentFlierSelect,.popFrequentFlierSelectStart,.popFrequentFlierSelectReturn,.newPopDocumentsSelect{
 	width: 90px;
@@ -475,7 +472,8 @@
 	left: 1000px;
 	top: 55px;
 }
-.orderServiceFare{
+.orderServiceFare,
+.orderServiceFare_per{
 	width: 200px;
 	height: 20px;
 	line-height: 20px;
@@ -484,7 +482,12 @@
     color: #4a4a4a;
 	position: absolute;
 	left: 1000px;
+}
+.orderServiceFare{
 	top: 75px;
+}
+.orderServiceFare_per{
+	top: 95px;
 }
 .orderLine{
 	width: 1px;
@@ -694,12 +697,15 @@
 }
 /*总价*/
 .totalAmount{
-	width: 150px;
+	/* width: 150px; */
 	height: 50px;
 	line-height: 50px;
 	font-size: 16px;
 	line-height: 50px;
-	margin:30px 0 0 975px;
+	/* margin:30px 0 0 975px; */
+	width: 100%;
+	margin:30px 0 0 0;
+	text-align: right;
 }
 .totalAmountText{
 	font-size: 20px;
@@ -772,4 +778,17 @@
 	font-size: 16px;
 	color: #4A4A4A;
 	margin-bottom: 22px;
+}
+.luggageReminder{
+	width: 1200px;
+	font-size: 14px;
+	color: #FF7A00;
+	line-height: 20px;
+	text-indent: 20px;
+	margin-top: 12px;
+	
+	background-image: url(../images/icon_hotts.png);
+	background-repeat: no-repeat;
+	background-position: 0 3px;
+	background-size: 14px;
 }

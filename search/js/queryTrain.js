@@ -12,6 +12,8 @@ var TAminDate=0,TAmaxDate=365
 		TAminDate=Dateformat(goOnBooktravelInfo.starTime.split(" ")[0],0)
 		TAmaxDate=goOnBooktravelInfo.endTime.split(" ")[0]
 	}
+//货币单位
+var curreny= ProfileInfo.OfficeCurrency? ProfileInfo.OfficeCurrency : "￥"
 
 $(function(){
     showContent();//内容展示
@@ -216,7 +218,7 @@ function showContent(){
     $("#main").html('\
         <article>\
             <div style="position: relative;height: 340px;">\
-                <img src="../search/images/bgImgTrain.jpg" style="width:100%;height:340px;">\
+                <img class="bannerImg" src="" style="width:100%;height:340px;">\
                 <div class="bgShadow"></div>\
                 <div class="bgBody">\
                     <div class="autoCenter">\
@@ -583,10 +585,72 @@ function searchBody(){
             </div>\
             <div class="switchIconTrain"></div>\
             <div class="dateStyle flexRow">\
-                <div class="dateTittle">'+get_lan('searchBody').departureDate+'</div>\
+				<div class="dateTittle">'+get_lan('searchBody').departureDate+'</div>\
+               <div class="trainDateBody trainReturnDateBody flexRow">\
                 <input type="text" id="trainDepartureDate" readonly="readonly">\
-                <div class="dateTittle trainDateTittle" style="color:#9B9B9B;">'+get_lan('searchBody').returnDate+'</div>\
-                <input type="text" id="trainReturnDate" readonly="readonly">\
+				<select type="text" class="trainDepartureSelect">\
+				            <option value="all" class="trainAllDay">' +
+				get_lan("searchBody").allDay +
+				'</option>\
+				            <option value="0">0:00</option>\
+				            <option value="1">1:00</option>\
+				            <option value="2">2:00</option>\
+				            <option value="3">3:00</option>\
+				            <option value="4">4:00</option>\
+				            <option value="5">5:00</option>\
+				            <option value="6">6:00</option>\
+				            <option value="7">7:00</option>\
+				            <option value="8">8:00</option>\
+				            <option value="9">9:00</option>\
+				            <option value="10">10:00</option>\
+				            <option value="11">11:00</option>\
+				            <option value="12">12:00</option>\
+				            <option value="13">13:00</option>\
+				            <option value="14">14:00</option>\
+				            <option value="15">15:00</option>\
+				            <option value="16">16:00</option>\
+				            <option value="17">17:00</option>\
+				            <option value="18">18:00</option>\
+				            <option value="19">19:00</option>\
+				            <option value="20">20:00</option>\
+				            <option value="21">21:00</option>\
+				            <option value="22">22:00</option>\
+				            <option value="23">23:00</option>\
+				          </select>\
+				</div>\
+					<div class="dateTittle trainDateTittle" style="color:#9B9B9B;">'+get_lan('searchBody').returnDate+'</div>\
+				<div class="trainDateBody trainReturnDateBody flexRow">\
+					<input type="text" id="trainReturnDate" readonly="readonly">\
+					<select type="text" class="trainReturnSelect" disabled="disabled">\
+					            <option value="all" class="trainAllDay">' +
+					get_lan("searchBody").allDay +
+					'</option>\
+					            <option value="0">0:00</option>\
+					            <option value="1">1:00</option>\
+					            <option value="2">2:00</option>\
+					            <option value="3">3:00</option>\
+					            <option value="4">4:00</option>\
+					            <option value="5">5:00</option>\
+					            <option value="6">6:00</option>\
+					            <option value="7">7:00</option>\
+					            <option value="8">8:00</option>\
+					            <option value="9">9:00</option>\
+					            <option value="10">10:00</option>\
+					            <option value="11">11:00</option>\
+					            <option value="12">12:00</option>\
+					            <option value="13">13:00</option>\
+					            <option value="14">14:00</option>\
+					            <option value="15">15:00</option>\
+					            <option value="16">16:00</option>\
+					            <option value="17">17:00</option>\
+					            <option value="18">18:00</option>\
+					            <option value="19">19:00</option>\
+					            <option value="20">20:00</option>\
+					            <option value="21">21:00</option>\
+					            <option value="22">22:00</option>\
+					            <option value="23">23:00</option>\
+					          </select>\
+				</div>\
             </div>\
             <div class="cabinStyle flexRow">\
                 <div class="cabinTittle">'+get_lan('searchBody').trainNo+'</div>\
@@ -622,6 +686,12 @@ function searchBody(){
             if(!res.isTrain){
                 $(".searchBody").hide();
             }
+			if (res.SearchTrainWithTimeDetail) {
+				$(".trainAllDay").remove();
+				// domDepartureSelect
+				$(".trainDepartureSelect").val("8");
+				$('.trainReturnSelect').val('17')
+			}
         },
         error : function() {
           // alert('fail');
@@ -666,7 +736,9 @@ function searchBody(){
     if(!ProfileInfo.QueryDomesticTicketsWithTime){
         $("#domDepartureSelect,#domReturnSelect").remove();
     }
-
+	if (!ProfileInfo.SearchTrainWithTimeDetail) {
+		$(".trainDepartureSelect,.trainReturnSelect").remove();
+	}
     $('.searchPage').hide();
     $('.airDomBody').show();
     //tab切换
@@ -689,10 +761,50 @@ function searchBody(){
     // })
     // chooseDom();//国内机票
     // chooseIntl();//国际机票
+	GetImageInfo()
+	//获取图片
+	function GetImageInfo(){
+			$.ajax({
+				type: 'post',
+				url: $.session.get('ajaxUrl'),
+				dataType: 'json',
+				data: {
+					url: $.session.get('obtCompany') + "/SystemService.svc/GetCompanyImageInfosWType",
+					jsonStr: '{"key":' + netUserId + ',"appType":"WEB"}',
+				},
+				success: function(data) {
+					var res=JSON.parse(data)
+					console.log(res);
+					if(res.code==200){
+						var trainImg=''
+						res.CompanyImageList.map(function(item){
+							if(item.type==14){
+								trainImg=item.path
+							}
+						})
+						if(trainImg==""|| trainImg==null){
+							$('.bannerImg').attr('src','../search/images/bgImgTrain.jpg')
+						}else{
+							$('.bannerImg').attr('src',trainImg)
+						}
+					}else{
+						$('.bannerImg').attr('src','../search/images/bgImgTrain.jpg')
+						// alert(res.errMsg)
+					}
+				},
+				error: function() {
+					// alert('fail');
+				}
+			});
+	}
+	
+	
     chooseTrain();//国内火车票
     // chooseHotel();//酒店
 	if(TAnumber!=undefined){
-		setCity()
+		if($.session.get('goOnBooktravelInfo')){
+            setCity();
+        }
 	}
 }
 //国内机票
@@ -1359,6 +1471,8 @@ function chooseTrain(){
                     $("#trainReturnDate").css('border','1px solid #9b9b9b');
                     $("#trainDepartureDate").datepicker('destroy');
                     $("#trainReturnDate").datepicker('destroy');
+					$(".trainReturnSelect").css('border', '1px solid #9b9b9b');
+					$(".trainReturnSelect").attr("disabled","disabled")
                     $( "#trainDepartureDate").datepicker({
                         dateFormat: 'yy-mm-dd',
                         changeMonth: true,
@@ -1374,6 +1488,8 @@ function chooseTrain(){
                     $(".trainDateTittle,#trainReturnDate").css('color','#000');
                     $("#trainReturnDate").css('border','1px solid #000');
                     $("#trainReturnDate").val(getNextDay($("#trainDepartureDate").val()));
+					$(".trainReturnSelect").css('border', '1px solid #000');
+					$(".trainReturnSelect").removeAttr("disabled")
                     // $("#trainDepartureDate").val(GetDateStr(0));
                     // $("#trainReturnDate").val(GetDateStr(1));
                     $("#trainDepartureDate").datepicker('destroy');
@@ -1400,14 +1516,20 @@ function chooseTrain(){
     })
     $(".searchTrainBtn").unbind("click").click(function(){
         if($('#trainDepartureCity').attr("code")&&$('#trainArrivalCity').attr("code")){
-            if(ProfileInfo.onlineStyle=="APPLE"){
+            // if(ProfileInfo.onlineStyle=="APPLE"){
                 var cityList = '"'+$('#trainDepartureCity').attr("code")+'","'+$('#trainArrivalCity').attr("code")+'"';
                 tools.appleRemindPop(cityList,4,netUserId,function(){searchTrain()});
-            }else{
-                searchTrain();
-            }
+            // }else{
+            //     searchTrain();
+            // }
             function searchTrain(){
                 if($(".searchTrainBtn").attr("state") == "oneWay"){
+					//整点
+					if ($(".trainDepartureSelect  option:selected").val() == "all") {
+						var DepartureSelectValue = ''
+					} else {
+						var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+					}
                     var searchTrainInfo = {
                         'type':'oneWay',
                         'departureCityText':$('#trainDepartureCity').val(),
@@ -1416,10 +1538,22 @@ function chooseTrain(){
                         'arrivalCity':$('#trainArrivalCity').attr("code"),
                         'date':$('#trainDepartureDate').val(),
                         'queryKey':$('#trainDepartureCity').val()+','+$('#trainArrivalCity').val()+','+$('#trainDepartureDate').val()+',',
+						'domqueryKey':$('#trainDepartureCity').attr('code') + ',' + $('#trainArrivalCity').attr('code') + ',' + $('#trainDepartureDate').val() + DepartureSelectValue+',' + $("#trainCabin").val()+ 'ALL',
                     }
                     $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
                     window.location.href='../../train/trainTicketList.html';
                 }else if($(".searchTrainBtn").attr("state") == "roundTrip"){
+					//整点
+					if ($(".trainDepartureSelect  option:selected").val() == "all") {
+						var DepartureSelectValue = ''
+					} else {
+						var DepartureSelectValue = ' ' + $(".trainDepartureSelect  option:selected").val() + ':00:00';
+					}
+					if ($(".trainReturnSelect option:selected").val() == "all") {
+						var ReturnSelectValue = ''
+					} else {
+						var ReturnSelectValue = ' ' + $(".trainReturnSelect  option:selected").val() + ':00:00';
+					}
                     var searchTrainInfo = {
                         'type':'roundTrip',
                         'departureCityText':$('#trainDepartureCity').val(),
@@ -1430,6 +1564,8 @@ function chooseTrain(){
                         'returndate':$('#trainReturnDate').val(),
                         'queryKey':$('#trainDepartureCity').val()+','+$('#trainArrivalCity').val()+','+$('#trainDepartureDate').val()+',',
                         'queryKeyReturn':$('#trainArrivalCity').val()+','+$('#trainDepartureCity').val()+','+$('#trainReturnDate').val()+',',
+						'domqueryKey':$('#trainDepartureCity').attr('code') + ',' + $('#trainArrivalCity').attr('code') + ',' + $('#trainDepartureDate').val() + DepartureSelectValue+',' + $("#trainCabin").val()+ ',ALL',
+						'domqueryKeyReturn':$('#trainArrivalCity').attr('code') + ',' + $('#trainDepartureCity').attr('code') + ',' + $('#trainReturnDate').val() +ReturnSelectValue+ ',' + $("#trainCabin").val()+ ',ALL',
                     }
                     $.session.set('searchTrainInfo', JSON.stringify(searchTrainInfo));
                     window.location.href='../../train/trainTicketList.html';

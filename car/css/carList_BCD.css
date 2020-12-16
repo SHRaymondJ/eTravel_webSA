@@ -36,16 +36,19 @@ input{
     padding: 20px 30px;
 }
 .dateTittle{
-    width: 285px;
+    /* width: 285px; */
+    width: 190px;
     line-height: 40px;
 }
 .dateInputBody{
     font-size: 13px;
 }
 #carDeparture,#carArrival{
-    width: 210px;
+    /* width: 210px; */
+    width: 180px;
     height: 24px;
-    margin-right: 73px;
+    /* margin-right: 73px; */
+    margin-right: 20px;
     box-sizing: border-box;
 }
 #carFromDate,#carToDate,#carFromHour,#carToHour{
@@ -178,6 +181,18 @@ input{
     top: 74px;
     left: 400px;
 }
+.expenseDetails{
+	width: 200px;
+	height: 20px;
+	line-height: 20px;
+	font-size:14px;
+	position: absolute;
+	top: 74px;
+	left:  600px;
+	color: #2D6BD2;
+	text-decoration: underline;
+	cursor: pointer;
+}
 .vendorAllowance{
     width: 400px;
     height: 20px;
@@ -203,19 +218,27 @@ input{
 }
 .carLiPrice{
     width: 200px;
-    height: 60px;
+    height: 30px;
     position: absolute;
     top: 20px;
-    left: 894px;
+    /* left: 894px; */
     line-height: 30px;
+	
+	right: 0;
+	text-align: right;
+	padding-right: 20px;
 }
 .carLiTotal{
     width: 200px;
     height: 22px;
     position: absolute;
-    top: 90px;
-    left: 894px;
+    top: 60px;
+    /* left: 894px; */
     line-height: 22px;
+	
+	right: 0;
+	text-align: right;
+	padding-right: 20px;
 }
 .chooseCar{
     width: 80px;
@@ -228,11 +251,145 @@ input{
     border-radius: 4px;
     position: absolute;
     top: 118px;
-    right: 40px;
+    right: 20px;
     cursor: pointer;
 }
 .totalText{
-    font-size:18px;
-    color:#F6AA25;
+    font-size:14px;
+    color:#333333;
     margin-left: 15px;
+}
+.moreprices{
+	height: 20px;
+	line-height: 20px;
+	font-size:14px;
+	position: absolute;
+	top: 85px;
+	right:  0;
+	padding-right: 20px;
+	text-decoration: underline;
+	cursor: pointer;
+	color:rgba(45,107,210,1);
+}
+/* 费用明细 */
+.rateDetailsFix{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,0.2);
+	z-index: 100;
+}
+.rateDetails{
+	width:640px;
+	height:426px;
+	background:rgba(255,255,255,1);
+	border-radius:16px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -213px;
+	margin-left: -320px;
+	overflow: hidden;
+	padding: 0 30px;
+}
+.rateDetails .rateTitle{
+	height: 50px;
+	line-height: 50px;
+	color: #094B90;
+	font-size: 20px;
+	text-align: center;
+	border-bottom: 1px #50779a dotted;
+	position: relative;
+}
+.rateDetails .closeBtn{
+	position: absolute;
+	right: 0;
+	top: 0;
+	cursor: pointer;
+	width: 20px;
+}
+.headline{
+	height:20px;
+	font-size:14px;
+	font-weight:800;
+	color:rgba(51,51,51,1);
+	line-height:20px;
+	    padding: 12px 0;
+}
+.detailList{
+	font-size:14px;
+	color:rgba(102,102,102,1);
+	line-height:20px;
+	
+	max-height: 175px;
+	overflow-y: auto;
+}
+
+.clearfix{
+	zoom: 1;
+}
+.clearfix::after{
+	content: " ";
+	display: block;
+	height: 0;
+	clear: both;
+}
+/* 表格 */
+.detaileTable{
+	width: 100%;
+}
+.detaileTable tr:first-of-type{
+	background-color: #E5E5E5;
+	color: #333333;
+	font-size: 14px;
+	font-weight: 800;
+	line-height: 20px;
+}
+.detaileTable tr:first-of-type span{
+	color: #999999;
+	font-size: 12px;
+	font-weight: 400;
+}
+.detaileTable td{
+		height: 32px;
+		text-align: center;
+		border-top:1px solid #F3F3F3;
+		border-left:1px solid #F3F3F3;
+	}
+.detaileTable tr td:last-of-type{
+		border-right:1px solid #F3F3F3;
+		text-align: left;
+		padding: 0 12px;
+	}
+.detaileTable tr:last-of-type td{
+		border-bottom:1px solid #F3F3F3;
+	}
+.detaileTable tr:first-of-type td{
+	text-align: center;
+}
+
+/* 协议价 */
+.protocolBody{
+	width: 60px;
+    height: 40px;
+    position: absolute;
+    right: -60px;
+    top: 20px;
+}
+.protocolText{
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+	font-size: 13px;
+	background-color: #8dc73f;
+	color:#fff;
+	text-align: center;
+}
+.triangleTopRight{
+	width: 0;
+    height: 0;
+    border-top: 7px solid #446a10;
+    border-right: 60px solid transparent;
 }

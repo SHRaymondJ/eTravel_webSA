@@ -1,5 +1,7 @@
 var netUserId = $.session.get('netLoginId');
 var obtLanguage = $.session.get('obtLanguage');
+var regPhone = tools.regPhone;
+
 if($.session.get('ProfileInfo')){
 	var ProfileInfo = JSON.parse($.session.get('ProfileInfo'));
 }
@@ -498,7 +500,7 @@ function personalInfoBody(profileInfo){
 		}
 		else if($(".editPhone").attr("state")=="save"){
 			var phoneNum = $(".phoneInput").val();
-			var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+			// var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
 			if(!regPhone.test(phoneNum)){
 			    alert(get_lan("personalInfoBody").remind);
 			    return false;
@@ -779,8 +781,10 @@ function creditCardBody(profileInfo){
 		    url : $.session.get('ajaxUrl'),
 		    dataType : 'json',
 		    data:{
-		        url: $.session.get('obtCompany')+"/SystemService.svc/GetCustomerCreditCardInfoPost",
-		        jsonStr:'{"id":'+netUserId+',"Language ":"'+obtLanguage+'","customerId":"'+profileInfo.ID+'"}'
+		        // url: $.session.get('obtCompany')+"/SystemService.svc/GetCustomerCreditCardInfoPost",
+		        // jsonStr:'{"id":'+netUserId+',"Language ":"'+obtLanguage+'","customerId":"'+profileInfo.ID+'"}',
+				url: $.session.get('obtCompany') + "/SystemService.svc/GetAllCreditCardInfoPost",
+				jsonStr: '{"request":{"Id":'+netUserId+',"CustomerId":"'+ profileInfo.ID +'","UseType":"1","Language ":"' + obtLanguage + '"}}'
 		    },
 		    success : function(data) {
 		        var res = JSON.parse(data);

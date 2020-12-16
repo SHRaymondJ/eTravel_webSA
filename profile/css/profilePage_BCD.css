@@ -146,13 +146,28 @@
 	top:20px;
 	left: 343px;
 	border-radius: 10px;
-	font-size: 15px;
+	/* font-size: 15px; */
+	font-size: 14px;
 	color: #404040;
 }
 .info_box ul .right_first_li{
 	height: 18px;
 	list-style-type: none;
 	margin: 18px 10px 5px 44px;
+	position: relative;
+}
+.right_first_li .rightPoints,.right_first_li .rightRanking{
+	width: 160px;
+	height: 18px;
+	position: absolute;
+	top: 0;
+	right: 180px;
+	color: #FF7A00;
+	font-size: 14px;
+	line-height: 18px;
+}
+.right_first_li .rightRanking{
+	right: 0;
 }
 .info_box ul .right_second_li{
 	border-bottom: 1px dashed  #979797;
@@ -169,7 +184,8 @@
 }
 .info_box ul li span{
 	color: #404040;
-	font-size: 15px;
+	/* font-size: 15px; */
+	font-size: 14px;
 	/*font-family: PingFangSC-Regular;*/
 }
 .info_box ul .right_last_li span{
@@ -239,7 +255,8 @@
 	width: 184px;
 	border:0px;
 	border-radius: 2px;
-	font-size: 15px;
+	/* font-size: 15px; */
+	font-size: 14px;
 	color: #404040;
 	height: 25px;
 }

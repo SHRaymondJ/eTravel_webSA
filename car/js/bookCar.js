@@ -3,6 +3,8 @@ var obtLanguage = $.session.get('obtLanguage');
 var selectCarInfo = JSON.parse($.session.get('selectCarInfo'));
 var ProfileInfo = JSON.parse($.session.get('ProfileInfo'));
 var searchCarInfo = JSON.parse($.session.get('searchCarInfo'));
+var regPhone = tools.regPhone;
+
 // console.log(ProfileInfo)
 console.log(selectCarInfo);
 
@@ -65,6 +67,9 @@ var cn = {
         "price":"每日价",
         "daily":"/天",
         "total":"总金额:",
+		"stroeMoney":"到店付",
+		"about":"约",
+		"tips":"(由于汇率浮动，人民币金额以实际为准)",
         "choose":"选择",
         "pickUpTime":"取车时间",
         "dropOffTime":"还车时间",
@@ -99,6 +104,8 @@ var cn = {
         "givenName":"名",
         "guarantee":"信用卡担保",
     },
+	"Conditions":"费用说明",
+	"Notice":"注意事项",
     "bookCar":"预订",
 }
 var en = {
@@ -155,6 +162,9 @@ var en = {
         "price":"Price",
         "daily":"/day",
         "total":"Total:",
+		"stroeMoney":"Payment upon arrival",
+		"about":"About",
+		"tips":"(Due to the floating exchange rate, the amount of RMB is subject to the actual.)",
         "choose":"Choose",
         "pickUpTime":"Pick-up Time",
         "dropOffTime":"Drop-off Time",
@@ -178,7 +188,7 @@ var en = {
         "ResidentsName":"Roommate：",
         "selectResidentsRemind":"Enter Name/Email to search roommates",
         'delMsg':'Do you want to remove this traveler from this order?',
-        'addNewCustomer':"[Adding new travelers]",
+        'addNewCustomer':"[Add new travelers]",
     },
     "creditCardInfo":{
         "creditCardTittle":"Credit Card",
@@ -193,6 +203,8 @@ var en = {
         "givenName":"Given Name",
         "guarantee":"Credit card guarantee",
     },
+	"Conditions":"Terms and Conditions",
+	"Notice":"Notice",
     "bookCar":"Book",
 }
 
@@ -219,6 +231,7 @@ $(function() {
 	showContent();//内容展示
     surePassengerInfo();//旅客信息确认
     passengerPop();//个人信息弹窗
+	getCarRule()//费用说明及注意事项
 })
 function getWeek(dateStr){
     var myDate = new Date(Date.parse(dateStr.replace(/-/g, "/")));
@@ -281,7 +294,14 @@ function showContent(){
                 \
               </div>\
             </div>\
-            <div class="totalFareBody activeFontColor"></div>\
+			<div class="feeDetails hide">\
+			  <div class="feeDetailsBody flexWrap">\
+				<div class="tabGroup"><div class="tabLi hide" model="feeDescription">'+get_lan('Conditions')+'</div><div class="tabLi hide" model="rule">'+get_lan('Notice')+'</div></div>\
+				<div class="feeDescription tabcontent hide "></div>\
+				<div class="rule tabcontent hide"></div>\
+			  </div>\
+			</div>\
+            <div class="totalFareBody activeFontColor" style="text-align:right;"></div>\
             <div class="bookCarBody flexRow">\
               <div class="bookCarBtn btnBackColor">'+get_lan('bookCar')+'</div>\
             </div>\
@@ -302,7 +322,7 @@ function showContent(){
     // <div class="creditCardPolicy flexRow">\
     //     <div class="creditCardPolicyTittle">'+get_lan('creditCardInfo').cancelPolicy+'</div>\
     //     <div class="creditCardPolicyBody"></div>\
-    // </div>\
+    // </div>
     $(".bookCarBtn").unbind("click").click(function(){
         if($(".passengerLi").length == 0){
             alert(get_lan('bookTicketRemind'));
@@ -376,29 +396,29 @@ function showContent(){
                           <span style="color:#D0021B">'+get_lan("carBody").pickOff+'&nbsp;&nbsp; </span>'+searchCarInfo.arrivalCityText+'\
                         </div>\
                         <div class="pickUpTime">\
-                            <span style="font-size:16px;color:#666">'+get_lan("carBody").pickUpTime+'</span><br>\
+                            <span style="font-size:14px;color:#666">'+get_lan("carBody").pickUpTime+'</span><br>\
                             <span style="font-size:20px;color:#4a4a4a">'+searchCarInfo.date.split(' ')[1]+'</span><br>\
                             <span style="font-size:14px;color:#666">'+searchCarInfo.date.split(' ')[0].split('-')[1]+'-'+searchCarInfo.date.split(' ')[0].split('-')[2]+' '+getWeek(searchCarInfo.date.split(' ')[0])+'</span>\
                         </div>\
                         <div class="carArrow"></div>\
                         <div class="dropOffTime">\
-                            <span style="font-size:16px;color:#666">'+get_lan("carBody").dropOffTime+'</span><br>\
+                            <span style="font-size:14px;color:#666">'+get_lan("carBody").dropOffTime+'</span><br>\
                             <span style="font-size:20px;color:#4a4a4a">'+searchCarInfo.returndate.split(' ')[1]+'</span><br>\
                             <span style="font-size:14px;color:#666">'+searchCarInfo.returndate.split(' ')[0].split('-')[1]+'-'+searchCarInfo.returndate.split(' ')[0].split('-')[2]+' '+getWeek(searchCarInfo.returndate.split(' ')[0])+'</span>\
                         </div>\
                         <div class="carLiLine"></div>\
-                        <div class="carLiPrice">'+get_lan("carBody").price+':<br><span style="font-size:24px;color:#041e5b">'+item.DailyRate+item.CurrencyCode+'</span><span style="font-size:18px;color:#4a4a4a;">'+get_lan("carBody").daily+'</span></div>\
+                        <div class="carLiPrice" style="font-size: 14px;">'+get_lan("carBody").price+':<br><span style="font-size:24px;color:#041e5b">'+item.DailyRate+item.CurrencyCode+'</span><span style="font-size:14px;color:#4a4a4a;">'+get_lan("carBody").daily+'</span></div>\
                     </div>\
                 ')
                 CheckImgExists('../car/images/'+item.VendorShortName+'.png',function(){
                     var vendorName = '<img class="vendorNameImg" src="'+'../car/images/'+item.VendorShortName+'.png'+'">';
-                    console.log('index'+index);
+                    console.log('index:'+index);
                     $(".vendorName").eq(index).html(vendorName);
                 },function(){
                 })
-                $(".totalFareBody").html('\
-                    <span style="font-size:13px;color:#000;margin-right:20px;">'+get_lan("carBody").total+'</span>'+item.TotalAmount+item.CurrencyCode+'\
-                ')
+                // $(".totalFareBody").html('\
+                //     <span style="font-size:13px;color:#000;margin-right:20px;">'+get_lan("carBody").total+'</span>'+item.TotalAmount+item.CurrencyCode+'\
+                // ')
             })
             
         }else{
@@ -424,8 +444,10 @@ function needCreditCard(){
             url : $.session.get('ajaxUrl'),
             dataType : 'json',
             data:{
-                url: $.session.get('obtCompany')+"/SystemService.svc/GetCustomerCreditCardInfoPost",
-                jsonStr:'{"id":'+netUserId+',"Language ":"'+obtLanguage+'","customerId":"'+$(".passengerLi").eq(0).attr("customerId")+'"}'
+                // url: $.session.get('obtCompany')+"/SystemService.svc/GetCustomerCreditCardInfoPost",
+                // jsonStr:'{"id":'+netUserId+',"Language ":"'+obtLanguage+'","customerId":"'+$(".passengerLi").eq(0).attr("customerId")+'"}',
+				url: $.session.get('obtCompany') + "/SystemService.svc/GetAllCreditCardInfoPost",
+				jsonStr: '{"request":{"Id":'+netUserId+',"CustomerId":"'+ $(".passengerLi").eq(0).attr("customerId") +'","UseType":"1","Language ":"' + obtLanguage + '"}}'
             },
             success : function(data) {
                 var res = JSON.parse(data);
@@ -707,6 +729,7 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
             var selectIndex = parseInt($(this).find("option:selected").attr("index"));
             remarks[selectIndex].RelatedRemarkList.map(function(rItem){
                 if(rItem.ChooseMainValue==selectKey){
+				var rIndex=rItem.SubRemarkIndex;
                     rItem.SubRemarkRuleList.map(function(sItem){
                         $("#remarkInput"+rItem.SubRemarkIndex+"").val("");
                         $("#remarkInput"+rItem.SubRemarkIndex+"").removeAttr("key");
@@ -723,12 +746,25 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
                         }else if(sItem.SubRemarkRule==2){
                             // $("#remarkInput"+rItem.SubRemarkIndex+"").val("");
                             if(sItem.SubRemarkValue=="true"){
-                                $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder",get_lan("remarkPop").search);
+                                // $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder",get_lan("remarkPop").search);
                                 $("#remarkInput"+rItem.SubRemarkIndex+"").removeAttr("disabled");
                                 $("#remarkSelect"+rItem.SubRemarkIndex+"").show();
-                                $("#remarkInput"+rItem.SubRemarkIndex+"").searchRemark();
+                                // $("#remarkInput"+rItem.SubRemarkIndex+"").searchRemark();
 								// 12.13新增
 								$("#remarkInput"+rItem.SubRemarkIndex+"").prev().removeAttr("disabled");
+								
+								var remarkObj={}
+								remarks.map(function(remarkList){
+									if(remarkList.Index==rIndex){
+										remarkObj=remarkList
+									}
+								})
+								if (remarkObj.InList) {
+									$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", get_lan("remarkPop").search);
+									$("#remarkInput" + rItem.SubRemarkIndex + "").searchRemark();
+								} else {
+									$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", "");
+								}
                             }else if(sItem.SubRemarkValue=="false"){
                                 $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder","");
                                 $("#remarkInput"+rItem.SubRemarkIndex+"").attr("disabled","disabled");
@@ -745,6 +781,10 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
         /*关闭remark*/
         $(".closeRemarkBtn").unbind("click").click(function(){
             closeRemarkPop();
+			if($('.passengerLi').length<1){
+				$.session.set('TAnumber','')
+			}
+			$(".selectPassengerArrow").click();
         })
         $(".sureRemarkBtn").unbind("click").click(function(){
             var remarks = '';
@@ -788,7 +828,6 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
                         jsonStr:'{"key":'+netUserId+',"customerId":"'+CustomerID+'","companyId":"'+CompanyID+'","remarks":"'+remarks.substring(0,remarks.length-1)+'","isCopy":"'+isCopy+'","language":"'+obtLanguage+'"}'
                     },
                     success : function(data) {
-                        // $('body').mLoading("hide");
                         var res = JSON.parse(data);
                         console.log(res);
                         $(".orderDetail").attr("CompanyID",CompanyID);
@@ -797,6 +836,7 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
                             closeRemarkPop();
                             passengerPopChange(CustomerID,isFirst,1);
                         }else{
+							$('body').mLoading("hide");
                             alert(res);
                         }
                     },
@@ -867,6 +907,68 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
         }
     }
 }
+/*隐藏证件信息*/
+function hideDocument(profile,document,rid){
+	if(profile.HideMyPersonalInfo&&document!=""){
+		if(rid==1&&document.length>10){
+			var starLength = document.length-10;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,6)+starString+document.substring(document.length-4,document.length);
+		}else if(document.length>3){
+			var starLength = document.length-3;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,1)+starString+document.substring(document.length-2,document.length);
+		}else{
+			var DocumentNumber = document;
+		}
+	}else{
+		var DocumentNumber = document
+	}
+	
+	return DocumentNumber;
+}
+/*end*/
+/*隐藏邮箱*/
+function hideEmail(profile,email){
+	if(profile.HideMyPersonalInfo&&email!=""){
+        var starLength = email.split("@")[0].length;
+        var starString = "";
+        for(var i=0;i<starLength-2;i++){
+            starString += "*"
+        }
+        var profileEmail = email.substring(0,1)+starString+email.substring(starLength-1,starLength)+'@'+email.split("@")[1];
+    }else{
+        var profileEmail = email;
+    }
+    return profileEmail;
+}
+/*end*/
+/*隐藏手机号*/
+function hidePhones(profile,phone){
+    if(profile.HideMyPersonalInfo&&phone!=""){
+        var profilePhone = "*******"+phone.substring(phone.length-4,phone.length)
+    }else{
+        var profilePhone = phone;
+    }
+    return profilePhone;
+}
+/*end*/
+/*隐藏证件有效期*/
+function hideDocDate(profile,date){
+    if(profile.HideMyPersonalInfo&&date!=""){
+        var docDate = "****-**-**";
+    }else{
+        var docDate = date;
+    }
+    return docDate;
+}
+/*end*/
 //旅客信息确认
 function surePassengerInfo(){
     $('body').mLoading("show");
@@ -881,14 +983,15 @@ function surePassengerInfo(){
         },
         success : function(data) {
             var passengerJson = JSON.parse(data);
-            console.log(passengerJson);
+            // console.log(passengerJson);
             $(".orderDetail").attr("CompanyID",passengerJson.CompanyID);
             $(".popNameCnText").text(passengerJson.CustomerCN);
             $(".popNameEnText").text(passengerJson.CustomerEN);
             $(".popNameCn .popNameRadio").attr("PassengerName",passengerJson.CustomerCN);
             $(".popNameEn .popNameRadio").attr("PassengerName",passengerJson.CustomerEN);
             //无审批单
-            if(!passengerJson.HasTravelRequest){
+            // if(!passengerJson.HasTravelRequest){//原逻辑
+			if(!passengerJson.HasTravelRequest || passengerJson.HasTravelRequest){//火车的逻辑
                 $.ajax(
                   {
                     type:'post',
@@ -900,7 +1003,7 @@ function surePassengerInfo(){
                     },
                     success : function(data) {
                         var res = JSON.parse(data);
-                        // console.log(res);
+                        console.log(res);
                         $('body').mLoading("hide");
                         //备注信息展示
                         var employeeName = obtLanguage =="CN"?passengerJson.CustomerCN:passengerJson.CustomerEN;
@@ -1087,7 +1190,7 @@ function selectPassengers(){
                     res.map(function(item){
                         var name = obtLanguage=="CN"?item.NameCN:item.NameEN;
                         $(".selectPassengerList").append('\
-                            <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+item.Email+')'+'</div>\
+                            <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+hideEmail(ProfileInfo,item.Email)+')'+'</div>\
                             ')
                     })
                     clickPassengerLi();
@@ -1149,7 +1252,7 @@ function selectPassengers(){
                 res.map(function(item){
                     var name = obtLanguage=="CN"?item.NameCN:item.NameEN;
                     $(".selectPassengerList").append('\
-                        <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+item.Email+')'+'</div>\
+                        <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+hideEmail(ProfileInfo,item.Email)+')'+'</div>\
                         ')
                 })
                 clickPassengerLi();
@@ -1164,7 +1267,8 @@ function selectPassengers(){
         $(".selectPassengerLi").unbind("click").click(function(){
             $('body').mLoading("show");
             $(".selectPassengerList").css("display","none");
-            var queryKey = $(this).attr("searchId")+',1,'+searchCarInfo.departureCity+','+searchCarInfo.arrivalCity+','+searchCarInfo.date+','+searchCarInfo.returnDate;
+            // console.log(searchCarInfo);
+            var queryKey = $(this).attr("searchId")+',1,'+searchCarInfo.departureCityText+','+searchCarInfo.arrivalCityText+','+searchCarInfo.date.split(' ')[0]+','+searchCarInfo.returndate.split(' ')[0];
             var CompanyID = $(this).attr("CompanyID");
 			// 12.17修改
 			var haveCustomer=$('.passengerLi').length
@@ -1186,32 +1290,55 @@ function selectPassengers(){
 			
             var customerId = $(this).attr("searchId");
             var employeeName = $(this).attr("employeeName");
-            $.ajax(
-              {
-                type:'post',
-                url : $.session.get('ajaxUrl'),
-                dataType : 'json',
-                data:{
-                    url: $.session.get('obtCompany')+"/SystemService.svc/CheckCustomerHasTravelRequestPost",
-                    jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'"}'
-                },
-                success : function(data) {
-                    $('body').mLoading("hide");
-                    var res = JSON.parse(data);
-                    console.log(res);
-                    if(res.Remarks.length != 0){
-                        $(".passengerBody").attr("state","true");
-                        if($(".passengerLi").length == 0){
-                            remarkInfoPop(CompanyID,customerId,employeeName,"true");
-                        }else{
-                            remarkInfoPop($(".passengerLi").eq(0).attr("companyId"),customerId,employeeName,"true");
-                        }
-                    }
-                },
-                error : function() {
-                }
-              } 
-            );
+			
+            // $.ajax(
+            //   {
+            //     type:'post',
+            //     url : $.session.get('ajaxUrl'),
+            //     dataType : 'json',
+            //     data:{
+            //         url: $.session.get('obtCompany')+"/SystemService.svc/CheckCustomerHasTravelRequestPost",
+            //         jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'"}'
+            //     },
+            //     success : function(data) {
+            //         $('body').mLoading("hide");
+            //         var res = JSON.parse(data);
+            //         console.log(res);
+            //         if(res.Remarks.length != 0){
+            //             $(".passengerBody").attr("state","true");
+            //             if($(".passengerLi").length == 0){
+            //                 remarkInfoPop(CompanyID,customerId,employeeName,"true");
+            //             }else{
+            //                 remarkInfoPop($(".passengerLi").eq(0).attr("companyId"),customerId,employeeName,"true");
+            //             }
+            //         }
+            //     },
+            //     error : function() {
+            //     }
+            //   } 
+            // );
+			$(".passengerBody").attr("state","true");
+			// 有审批单权限
+			var city=$('.orderDetail').attr('departecity')+','+$('.orderDetail').attr('arrivecity')
+			if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest){
+				city=""//租车目前不需要传othercity，而且没有做审批单
+			    tools.customerTravelRequest(netUserId,queryKey,function(){
+			        $(".requestCover").remove();
+			        if($(".passengerLi").length == 0){
+			            remarkInfoPop(CompanyID,customerId,employeeName,"true");
+			        }else{
+			            remarkInfoPop($(".passengerLi").eq(0).attr("companyId"),customerId,employeeName,"true");
+			        }
+			    },1,city)
+			}else{
+				$(".passengerBody").attr("state","true");
+				if($(".passengerLi").length == 0){
+					remarkInfoPop(CompanyID,customerId,employeeName,"true");
+				}else{
+					remarkInfoPop($(".passengerLi").eq(0).attr("companyId"),customerId,employeeName,"true");
+				}
+			}
+			
         })
     }
 }
@@ -1386,7 +1513,7 @@ function newCustomerPop(CompanyId){
         url : $.session.get('ajaxUrl'), 
         dataType : 'json',
         data:{
-            url: $.session.get('obtCompany')+"/SystemService.svc/GetNewInformationsPost",
+            url: $.session.get('obtCompany')+"/SystemService.svc/GetCarRentalCompanyPost",
             jsonStr: '{"id":'+netUserId+',"culture":"' + obtLanguage + '"}'
         },
         success : function(data) {
@@ -1410,11 +1537,11 @@ function newCustomerPop(CompanyId){
     );
     $(".newCustomerPopBtn").unbind("click").click(function(){
         // console.log($('.popNameRadio:checked').attr("PassengerName"));
-        var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-        var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+        var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+		var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
         if(!regPhone.test($(".newCustomerInputPhone").val())){
            alert(get_lan('passengerPop').phoneRemind);
-        }else if(!regEmail.test($(".newCustomerInputEmail").val())){
+        }else if(!regEmail.test($(".newCustomerInputEmail").val()) && !regEmail2.test($(".newCustomerInputEmail").val())){
             alert(get_lan('passengerPop').emailRemind);
         }
         else if($(".newCustomerInputSurNameCn").val()==""||$(".newCustomerInputGivenNameCn").val()==""||$(".newCustomerInputSurNameEn").val()==""||$(".newCustomerInputGivenNameEn").val()==""||$(".newCustomerInputDocuments").val()==""||!$("#countryInput").attr("code")){
@@ -1530,12 +1657,24 @@ function passengerPopChange(customerId,isFirst,customerRid){
                     $(".popNameEnText").text(item.NameEN);
                     $(".popNameCn .popNameRadio").attr("PassengerName",item.NameCN);
                     $(".popNameEn .popNameRadio").attr("PassengerName",item.NameEN);
-                    if(item.Phones !=null){$(".popPhoneInput").val(item.Phones)}
-                    if(item.Email !=null){$(".popMailInput").val(item.Email)}
+                    if(item.Phones !=null){
+                        $(".popPhoneInput").val(hidePhones(ProfileInfo,item.Phones));
+                        $(".popPhoneInput").attr("hideNo",item.Phones);
+                    }
+                    if(item.Email !=null){
+                        $(".popMailInput").val(hideEmail(ProfileInfo,item.Email));
+                        $(".popMailInput").attr("hideNo",item.Email);
+                    }
                     if(item.Documents.length != 0){
                         $(".popDocumentsSelect").val(item.Documents[0].Rid);
-                        $(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
-                        $(".popDocumentsTimeInput").val(item.Documents[0].docExpiryDate.substring(0,10));
+                        
+                        // $(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
+                        /*隐藏证件信息*/
+                        $(".popDocumentsInput").attr("hideNo",item.Documents[0].DocumentNumber);
+                        $(".popDocumentsInput").val(hideDocument(ProfileInfo,item.Documents[0].DocumentNumber,item.Documents[0].Rid));
+                        /*end*/
+                        $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,item.Documents[0].docExpiryDate.substring(0,10)));
+                        $(".popDocumentsTimeInput").attr("hideNo",item.Documents[0].docExpiryDate.substring(0,10));
                         if(item.Documents[0].Rid!=1){
                             $(".popDocumentsTime ").removeClass("hide");
                         }
@@ -1549,15 +1688,21 @@ function passengerPopChange(customerId,isFirst,customerRid){
                         var ridList=[];
                         item.Documents.map(function(ditem){
                             if($('.popDocumentsSelect').val()==ditem.Rid){
-                                $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                // $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
                                 if(ditem.docExpiryDate.length>=10){
-                                    $(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0,10));
+                                    $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                    $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
                                 }
                             }
                             ridList.push(ditem.Rid);
                         })
                         if(ridList.indexOf($('.popDocumentsSelect').val()) <= -1){
                             $(".popDocumentsInput").val('');
+                            $(".popDocumentsInput").attr("hideNo",'');
                         }
                     })
                     if(isFirst == "true"){
@@ -1569,9 +1714,14 @@ function passengerPopChange(customerId,isFirst,customerRid){
                     }else if(isFirst == "false"){
                         item.Documents.map(function(ditem){
                             if(customerRid==ditem.Rid){
-                                $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                // $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
                                 $(".popDocumentsSelect").val(customerRid);
-                                $(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0,10));
+                                $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
                             }
                         })
                         if(customerRid!=1){
@@ -1590,27 +1740,42 @@ function passengerPopChange(customerId,isFirst,customerRid){
                     }
                 }
             })
+            $(".popPhoneInput,.popMailInput").unbind("focus").focus(function(){
+                if($(this).attr("hideNo")){
+                    $(this).val($(this).attr("hideNo"));
+                }
+            })
+            $(".popPhoneInput").unbind("blur").blur(function(){
+                var phoneNo = $(".popPhoneInput").val();
+                $(".popPhoneInput").attr("hideNo",phoneNo);
+                $(".popPhoneInput").val(hidePhones(ProfileInfo,phoneNo));
+            })
+            $(".popMailInput").unbind("blur").blur(function(){
+                $(".popMailInput").attr("hideNo",$(".popMailInput").val());
+                $(".popMailInput").val(hideEmail(ProfileInfo,$(".popMailInput").attr("hideNo")))
+            })
             $(".passengerPopBtn").unbind("click").click(function(){
                 // console.log($('.popNameRadio:checked').attr("PassengerName"));
-                var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-                var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
-                if(!regPhone.test($(".popPhoneInput").val())){
+                var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+				var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
+                var phoneInfo = $(".popPhoneInput").attr("hideNo")?$(".popPhoneInput").attr("hideNo"):$(".popPhoneInput").val();
+                var emailInfo = $(".popMailInput").attr("hideNo")?$(".popMailInput").attr("hideNo"):$(".popMailInput").val();
+
+                if(!regPhone.test(phoneInfo)){
                    alert(get_lan('passengerPop').phoneRemind);
-                }else if(!regEmail.test($(".popMailInput").val())){
+                }else if(!regEmail.test(emailInfo) && !regEmail2.test(emailInfo)){
                     alert(get_lan('passengerPop').emailRemind);
                 }
-                else if(!$('.popNameRadio:checked').attr("PassengerName")||$(".popDocumentsInput").val()==""||$('.popDocumentsSelect option:selected').val()==""){
+                else if(!$('.popNameRadio:checked').attr("PassengerName")||$(".popDocumentsInput").attr("hideNo")==""||$('.popDocumentsSelect option:selected').val()==""){
                     alert(get_lan('passengerPop').clickRemind);
                 }else if($('.popDocumentsSelect option:selected').val()!=1&&$(".popDocumentsTimeInput").val()==""){
                     alert(get_lan('passengerPop').clickRemind);
                 }
                 else{
-                    var emailInfo = $(".popMailInput").val();
-                    var phoneInfo = $(".popPhoneInput").val();
                     if($('.popDocumentsSelect option:selected').val()==1){
-                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+',,,,'
+                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+',,,,'
                     }else{
-                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+',,,,'+$(".popDocumentsTimeInput").val();
+                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+',,,,'+$(".popDocumentsTimeInput").attr("hideNo");
                     }
                     var memberShipInfo = '';
                     $('body').mLoading("show");
@@ -1700,11 +1865,13 @@ function passengersInOrder(customerState){
             /*乘客信息*/
             $(".passengerList").html('');
             res.map(function(item,index){
+                var passengerName = item.Documents[0].DocNameCn!=null&&item.Documents[0].DocNameCn!=""?item.Documents[0].DocNameCn:item.NameCN;
+                var profilePhone = ProfileInfo.HideMyPersonalInfo&&item.Phones!=""?"*******"+item.Phones.substring(item.Phones.length-4,item.Phones.length):item.Phones;
                 $(".passengerList").append('\
                     <div class="passengerLi flexRow" customerId="'+item.ID+'" companyId="'+item.OrderCompanyId+'">\
-                    <div class="passengerLiDiv" style="width:250px;text-align:left;padding-left:45px;box-sizing:border-box;"><span class="PassengerNameText">'+item.NameCN+'</span><span class="changePassengerInfo specificFontColor" index="'+index+'" customerId="'+item.ID+'" style="margin-left:5px;cursor:pointer;">'+get_lan('passengerInfo').changePassengerInfo+'</span></div>\
-                    <div class="passengerLiDiv passengerPhone" style="width:150px;">'+item.Phones+'</div>\
-                    <div class="passengerLiDiv" style="width:200px;">'+item.Email+'</div>\
+                    <div class="passengerLiDiv" style="width:250px;text-align:left;padding-left:45px;box-sizing:border-box;"><span class="PassengerNameText">'+passengerName+'</span><span class="changePassengerInfo specificFontColor" index="'+index+'" customerId="'+item.ID+'" style="margin-left:5px;cursor:pointer;">'+get_lan('passengerInfo').changePassengerInfo+'</span></div>\
+                    <div class="passengerLiDiv passengerPhone" style="width:150px;" hideNo="'+item.Phones+'">'+profilePhone+'</div>\
+                    <div class="passengerLiDiv" style="width:200px;">'+hideEmail(ProfileInfo,item.Email)+'</div>\
                     <div class="passengerLiDiv passengerLiDocuments" style="width:300px;"><select class="documentsSelect"></select></div>\
                     <div class="passengerLiDiv roommateName flexRow" style="width:170px;color:#1e66ae" index="'+index+'"></div>\
                     <div class="passengerLiDiv changeRemarkBtn specificFontColor" index="'+index+'"  style="width:125px;text-decoration: underline;cursor:pointer">'+get_lan('passengerInfo').remarks+'</div>\
@@ -1714,7 +1881,7 @@ function passengersInOrder(customerState){
                     ')
                 item.Documents.map(function(ditem){
                     $(".documentsSelect").eq(index).append('\
-                        <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+ditem.DocumentNumber+'</option>\
+                        <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid)+'</option>\
                     ')
                 })
                 if(item.UpdatedCustomerInfo!=""&&item.UpdatedCustomerInfo!=null){
@@ -1912,6 +2079,82 @@ function changeNewUid(orderNo){
       } 
     );
 }
+function getCarRule(){
+	    $('body').mLoading("show");
+	    $.ajax(
+	      {
+	        type:'post',
+	        url : $.session.get('ajaxUrl'), 
+	        dataType : 'json',
+	        data:{
+	            url: $.session.get('obtCompany')+"/QueryService.svc/QueryCarRulePost",
+	            jsonStr:'{"rph":"'+selectCarInfo.Rph+'","id":'+netUserId+',"language":"'+obtLanguage+'"}',
+	        },
+	        success : function(data) {
+	            $('body').mLoading("hide");
+	            var res = JSON.parse(data);
+	            console.log(res);
+				//费用说明
+				if(res.FeeDescriptionList.length>0 || res.RuleList.length>0){
+					$('.feeDetails').removeClass('hide')
+				}
+				$('.tabLi').click(function(){
+					$('.tabLi').removeClass('tabActive')
+					$(this).addClass("tabActive")
+					
+					$('.tabcontent').addClass("hide")
+					$('.'+$(this).attr('model')).removeClass('hide')
+				})
+				if(res.FeeDescriptionList.length>0){
+					$('.tabLi').eq(0).removeClass('hide')
+					$('.tabLi').eq(0).addClass('tabActive')
+					$('.feeDescription').removeClass('hide')
+					var FeeDescriptionStr=""
+					
+					res.FeeDescriptionList.map(function(item){
+						$('.feeDescription').append('<p>'+item+'</p>')
+					})
+					$('.feeDescription').append('<div>'+FeeDescriptionStr+'</div>')
+				}else{
+					$('.tabLi').eq(0).hide()
+					$('.feeDescription').hide()
+				}
+				if(res.RuleList.length>0){
+					$('.tabLi').eq(1).removeClass('hide')
+					if(res.FeeDescriptionList.length<1){
+						$('.tabLi').eq(1).addClass('tabActive')
+						$('.rule').removeClass('hide')
+					}
+					var RuleStr=""
+					res.RuleList.map(function(item){
+						// $('.rule').append('<p>'+item+'</p>')
+						RuleStr+= item+' ';
+					})
+					$('.rule').append('<div>'+RuleStr+'</div>')
+					$('.rule').removeClass('hide')
+				}else{
+					$('.tabLi').eq(1).hide()
+					$('.rule').hide()
+				}
+				//到店付
+				var storeMoney='';
+				var aboutMoney='';
+				res.DayHourList.map(function(item){
+					if(item.HourCurrencyCode!='CNY'){
+						storeMoney=item.TotalRate+item.HourCurrencyCode;
+					}else{
+						aboutMoney=item.TotalRate+item.HourCurrencyCode;
+					}
+				})
+				$(".totalFareBody").html('\
+				    <span style="font-size:14px;color:#666;margin-right:10px;">'+get_lan("carBody").stroeMoney+':</span><span style="">'+storeMoney+'</span>\
+					<div style="height: 20px;line-height: 20px;text-align: right;"><span style="font-size:14px;color:#666666;line-height:20px">'+get_lan("carBody").about+' '+aboutMoney+'</span></div>\
+				')
+			}
+	})
+}
+
+
 //打开remark弹窗
 function openRemarkPop(){
     $("#cover").show();

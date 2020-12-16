@@ -1,19 +1,20 @@
-.pic_pop{
-	width: 703px;
+.pic_pop {
+	width: 810px;
 	/* height: 540px; */
 	min-height: 470px;
 	padding: 0 20px;
 	/* border: 10px solid #DCDCDC; */
 	background-color: #fff;
 	position: fixed;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    text-align: center;
-    z-index: 101;
-    box-sizing: border-box;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	z-index: 101;
+	box-sizing: border-box;
 }
-.pop_tittle{
+
+.pop_tittle {
 	height: 52px;
 	width: 100%;
 	line-height: 52px;
@@ -33,58 +34,69 @@
 	height: auto;
 	max-height: 100%;
 }
-.closeImgPop{
+
+.closeImgPop {
 	margin-right: 5px;
-	font-size:35px;
+	font-size: 35px;
 	cursor: pointer;
 }
-.left,.right{
-	width:32px;
-	height:32px;
+
+.left,
+.right {
+	width: 32px;
+	height: 32px;
 	position: absolute;
 	top: calc(50% - 16px);
 	border-radius: 50%;
 	cursor: pointer;
 }
-.left{
+
+.left {
 	left: 8px;
 	background-image: url(../images/pic_hot_leftarrow.png);
 }
-.right{
+
+.right {
 	right: 8px;
 	background-image: url(../images/pic_hot_rightarrow.png);
 }
-.imgBtnList{
-	    height: 68px;
-	    overflow-y: scroll;
+
+.imgBtnList {
+	max-height: 88px;
+	overflow-y: scroll;
 }
-.imgBtnList  .imgBtn:nth-child(-n+3){
+
+.imgBtnList .imgBtn:nth-child(-n+3) {
 	margin-top: 0;
 }
-.pic_pop .imgBtn{
+
+.pic_pop .imgBtn {
 	height: 30px;
-    line-height: 30px;
-    font-size: 14px;
-    width: 85px;
-    margin: 5px 0 0 10px;
-    text-align: center;
-    background-color: #FFFFFF;
-    border-radius: 5px;
-    cursor: pointer;
+	line-height: 30px;
+	font-size: 14px;
+	width: 85px;
+	margin: 5px 0 0 10px;
+	text-align: center;
+	background-color: #FFFFFF;
+	border-radius: 5px;
+	cursor: pointer;
 	border: 1px solid #979797;
 	box-sizing: border-box;
 }
-.pic_pop .imgBtnChecked{
-	border:none;
+
+.pic_pop .imgBtnChecked {
+	border: none;
 	background-color: #D3E0FF;
 	color: #041E5B;
 }
-.imgListBody{
+
+.imgListBody {
 	/* height: 375px; */
-	height: 283px;
+	height: 353px;
 	padding: 5px 10px 0px 0px;
 }
-#imgList li{
+
+#imgList li {
 	width: 85px;
 	height: 65px;
 	cursor: pointer;
@@ -92,60 +104,71 @@
 	margin: 5px 0 0 10px;
 	box-sizing: border-box;
 }
-#imgList .imgLi{
+
+#imgList .imgLi {
 	width: 85px;
 	height: 65px;
 	box-sizing: border-box;
 	/* margin: 5px 5px 0 0; */
 }
-#imgList li:nth-of-type(n+3) .imgLi{
+
+#imgList li:nth-of-type(n+3) .imgLi {
 	/* margin: 5px 0 0 0; */
 }
-#imgList .checkedImg{
-	border:2px solid #FF7A00;
+
+#imgList .checkedImg {
+	border: 2px solid #FF7A00;
 }
 
-.imgFoot{
+.imgFoot {
 	clear: both;
 	width: 350px;
-	height:20px;
-	line-height:20px;
-	font-size:14px;
-	
-	color:rgba(51,51,51,1);
+	height: 20px;
+	line-height: 20px;
+	font-size: 14px;
+
+	color: rgba(51, 51, 51, 1);
 	padding-top: 8px;
+	padding-bottom: 8px;
 }
-.imgFoot .title{
-	font-weight:600;
+
+.imgFoot .title {
+	font-weight: 600;
 	float: left;
 }
-.imgFoot .page{
+
+.imgFoot .page {
 	float: right;
 }
-.imgFoot .page span{
+
+.imgFoot .page span {
 	color: #FF7A00;
 }
+
 /*进度条*/
-.progressBar{
+.progressBar {
 	width: 100%;
 	height: 50px;
 	line-height: 50px;
 	font-size: 14px;
 	color: #9b9b9b;
 }
-.progressLine{
+
+.progressLine {
 	width: 304px;
 	height: 2px;
 	/*background-color: #041e58;*/
-	margin:24px 0 0 30px;
+	margin: 24px 0 0 30px;
 }
-.progressCircle{
+
+.progressCircle {
 	width: 6px;
-    height: 6px;
-    /*background-color: #041e58;*/
-    margin: 22px 10px 0 0;
-    border-radius: 50%;
+	height: 6px;
+	/*background-color: #041e58;*/
+	margin: 22px 10px 0 0;
+	border-radius: 50%;
 }
+
 /*.tabBarColor{
 	color: #F58A00;
 }
@@ -153,26 +176,29 @@
 	background-color: #F58A00;
 }*/
 /*顶部图片*/
-.hotelImgBody{
+.hotelImgBody {
 	width: 100%;
 	height: 210px;
 }
-.hotelImgBody .hotelImg{
+
+.hotelImgBody .hotelImg {
 	width: 295px;
 	margin-right: 5px;
 	height: 210px;
 	display: block;
 	cursor: pointer;
 }
+
 /*酒店信息*/
-.hotelInfoBody{
+.hotelInfoBody {
 	width: 860px;
 	min-height: 160px;
 	border: 1px solid #041e58;
 	border-radius: 15px;
 	position: relative;
 }
-.hotelInfoName{
+
+.hotelInfoName {
 	min-width: 220px;
 	height: 50px;
 	line-height: 50px;
@@ -181,23 +207,26 @@
 	left: 20px;
 	top: 4px;
 }
-.hotelInfoStar{
+
+.hotelInfoStar {
 	position: absolute;
 	top: 50px;
 	left: 115px;
 	height: 16px;
 	background-image: url("../images/starIcon.png");
 }
-.hotelInfoScore{
+
+.hotelInfoScore {
 	position: absolute;
 	top: 50px;
 	left: 20px;
 	height: 16px;
 	line-height: 16px;
 	font-size: 14px;
-	color:  #696A6B;
+	color: #696A6B;
 }
-.hotelReselection{
+
+.hotelReselection {
 	width: 100px;
 	height: 50px;
 	line-height: 50px;
@@ -206,25 +235,28 @@
 	cursor: pointer;
 	text-align: center;
 }
-.hotelInfoTelephone{
+
+.hotelInfoTelephone {
 	position: absolute;
 	top: 75px;
 	left: 20px;
 	height: 20px;
 	line-height: 20px;
 	font-size: 14px;
-	color:  #696A6B;
+	color: #696A6B;
 }
-.hotelInfoFax{
+
+.hotelInfoFax {
 	position: absolute;
 	top: 100px;
 	left: 20px;
 	height: 20px;
 	line-height: 20px;
 	font-size: 14px;
-	color:  #696A6B;
+	color: #696A6B;
 }
-.hotelInfoDescription{
+
+.hotelInfoDescription {
 	/* position: absolute; */
 	width: 800px;
 	/* top: 123px; */
@@ -239,13 +271,15 @@
 	/* height: 20px; */
 	margin: 123px 0 10px 20px;
 }
-.hotelInfoHide{
+
+.hotelInfoHide {
 	position: relative;
 	max-height: 40px;
 	overflow: hidden;
 	word-break: break-all;
 }
-.hotelInfoHide::after{
+
+.hotelInfoHide::after {
 	position: absolute;
 	content: "...";
 	display: inline-block;
@@ -254,25 +288,29 @@
 	right: 0;
 	bottom: 0;
 }
-.showMore,.hideMore{
+
+.showMore,
+.hideMore {
 	width: 150px;
-	margin:auto;
+	margin: auto;
 	cursor: pointer;
 	text-align: center;
 	color: #1e66ae;
 	padding: 10px 0;
 	position: relative;
 }
-.showMoreimg{
+
+.showMoreimg {
 	border: 8px solid transparent;
 	border-top: 10px solid #1e66ae;
 	width: 0;
 	height: 0px;
 	position: absolute;
 	top: 13px;
-	right: -24px;   
+	right: -24px;
 }
-.hideMoreimg{
+
+.hideMoreimg {
 	border: 8px solid transparent;
 	border-bottom: 10px solid #1e66ae;
 	width: 0;
@@ -281,7 +319,8 @@
 	top: 6px;
 	right: -24px;
 }
-.hotelInfoPrice{
+
+.hotelInfoPrice {
 	min-width: 160px;
 	height: 75px;
 	color: #f6aa25;
@@ -292,34 +331,39 @@
 	top: 45px;
 	line-height: 75px;
 }
+
 /*tab框*/
-.hotelTabBody{
+.hotelTabBody {
 	width: 862px;
 	height: 38px;
 	border-bottom: 1px solid #041e58;
 	margin-top: 10px;
 }
-.hotelTab{
+
+.hotelTab {
 	width: 140px;
 	height: 37px;
 	line-height: 37px;
 	text-align: center;
-	border-width:1px 1px 0 1px;
-	border-style:solid;
-	border-color:#a9a9a9;
+	border-width: 1px 1px 0 1px;
+	border-style: solid;
+	border-color: #a9a9a9;
 	margin-right: 5px;
 	background-color: #fff;
-	border-bottom:1px solid #041e58;
+	border-bottom: 1px solid #041e58;
 	cursor: pointer;
 	border-radius: 5px 5px 0 0;
 }
-.hotelTabActive{
+
+.hotelTabActive {
 	color: #041e58;
-	border-color:#041e58;
-	border-bottom:1px solid #fff;
+	border-color: #041e58;
+	border-bottom: 1px solid #fff;
 }
 
-.hotelRoomBody,.hotelIntroBody,.commentListBody{
+.hotelRoomBody,
+.hotelIntroBody,
+.commentListBody {
 	width: 860px;
 	min-height: 500px;
 	border: 1px solid #041e58;
@@ -331,138 +375,163 @@
 	margin-bottom: 50px;
 	position: relative;
 }
-.commentListLi{
+
+.commentListLi {
 	width: 100%;
 	min-height: 50px;
 	margin-top: 10px;
 }
-.commentListLiName{
+
+.commentListLiName {
 	width: 150px;
 	min-height: 50px;
 	font-size: 16px;
 	text-align: center;
 	line-height: 30px;
 }
-.commentListLiBody{
+
+.commentListLiBody {
 	width: 680px;
 	min-height: 50px;
 	border-bottom: 1px dashed #a9a9a9;
 }
-.commentListLiDate{
+
+.commentListLiDate {
 	height: 30px;
 	line-height: 30px;
 	font-size: 13px;
 	color: #a9a9a9;
 }
-.commentListLiStar{
+
+.commentListLiStar {
 	height: 16px;
 	background-image: url("../../css/images/star.png");
 }
-.commentListLiContent{
+
+.commentListLiContent {
 	min-height: 25px;
 	line-height: 25px;
 	font-size: 14px;
 	margin: 15px 0 15px 0;
 	width: 680px;
-	word-wrap:break-word
+	word-wrap: break-word
 }
+
 /*房间列表*/
-.hotelRoomSearch{
-    width: 100%;
-    height: 66px;
-    border-bottom: 1px solid #041e58;
+.hotelRoomSearch {
+	width: 100%;
+	height: 66px;
+	border-bottom: 1px solid #041e58;
 }
-.checkInDateSearch,.checkOutDateSearch {
-    width: 170px;
-    height: 24px;
-    margin: 21px 0 0 20px;
-    position: relative;
-    border: 1px solid #7f7f7f;
+
+.checkInDateSearch,
+.checkOutDateSearch {
+	width: 170px;
+	height: 24px;
+	margin: 21px 0 0 20px;
+	position: relative;
+	border: 1px solid #7f7f7f;
 }
-.checkInDateSearch{
+
+.checkInDateSearch {
 	margin-right: 20px;
 }
-.checkInDateIcon,.checkOutDateIcon {
-    width: 20px;
-    height: 20px;
-    position: absolute;
-    left: 2px;
-    top: 2px;
-    background-image: url(../../css/images/icon_search.png);
-    background-repeat: no-repeat;
-    background-size: auto;
-    background-position: 0 -40px;
+
+.checkInDateIcon,
+.checkOutDateIcon {
+	width: 20px;
+	height: 20px;
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	background-image: url(../../css/images/icon_search.png);
+	background-repeat: no-repeat;
+	background-size: auto;
+	background-position: 0 -40px;
 }
-#checkInDate, #checkOutDate {
-    width: 80px;
-    height: 24px;
-    position: absolute;
-    top: 0;
-    left: 24px;
-    border: 0;
-    outline: none;
+
+#checkInDate,
+#checkOutDate {
+	width: 80px;
+	height: 24px;
+	position: absolute;
+	top: 0;
+	left: 24px;
+	border: 0;
+	outline: none;
 }
-.checkInWeek, .checkOutWeek {
-    width: 66px;
-    height: 24px;
-    line-height: 24px;
-    text-align: center;
-    font-size: 12px;
-    position: absolute;
-    left: 104px;
-    color: #999;
+
+.checkInWeek,
+.checkOutWeek {
+	width: 66px;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	font-size: 12px;
+	position: absolute;
+	left: 104px;
+	color: #999;
 }
-.hotelRoomSearchBtn{
+
+.hotelRoomSearchBtn {
 	width: 90px;
-    height: 35px;
-    line-height: 35px;
-    text-align: center;
-    font-size: 17px;
-    background-color: #041e58;
-    color: #fff;
-    border-radius: 4px;
-    position: absolute;
-    top: 15px;
-    right: 30px;
-    cursor: pointer;
+	height: 35px;
+	line-height: 35px;
+	text-align: center;
+	font-size: 17px;
+	background-color: #041e58;
+	color: #fff;
+	border-radius: 4px;
+	position: absolute;
+	top: 15px;
+	right: 30px;
+	cursor: pointer;
 }
-.hotelRoomListTittle{
+
+.hotelRoomListTittle {
 	width: 100%;
 	height: 40px;
 	line-height: 40px;
 	font-size: 14px;
 }
-.RoomTypeTittle{
+
+.RoomTypeTittle {
 	width: 80px;
 	height: 40px;
 	margin-left: 35px;
 }
-.bedTypeTittle{
+
+.bedTypeTittle {
 	width: 70px;
 	height: 40px;
 	margin-left: 75px;
 }
-.breakfastTittle{
+
+.breakfastTittle {
 	width: 50px;
 	height: 40px;
 	margin-left: 40px;
 }
-.wifiTittle{
+
+.wifiTittle {
 	width: 50px;
 	height: 40px;
 	margin-left: 50px;
 }
-.priceTittle{
+
+.priceTittle {
 	width: 250px;
 	height: 40px;
 	margin-left: 30px;
 }
+
 /*房间列表*/
-.hotelRoomList{
+.hotelRoomList {
 	box-sizing: border-box;
 	padding: 0 15px 0 15px;
 }
-.violationIcon{
+
+.violationIcon {
 	width: 80px;
 	height: 18px;
 	line-height: 18px;
@@ -474,34 +543,38 @@
 	color: #fff;
 	text-align: center;
 }
-.dailyRateBody{
+
+.dailyRateBody {
 	width: 318px;
 	/*min-width: 300px;
     max-width: 500px;*/
-    min-height: 150px;
-    max-height: 500px;
-    border: 1px solid #041e5b;
-    position: absolute;
-    left: 190px;
-    top: 45px;
-    z-index: 10;
-    background: #fff;
-    display: none;
+	min-height: 150px;
+	max-height: 500px;
+	border: 1px solid #041e5b;
+	position: absolute;
+	left: 190px;
+	top: 45px;
+	z-index: 10;
+	background: #fff;
+	display: none;
 }
-.dailyRateBodyTittle{
+
+.dailyRateBodyTittle {
 	width: 100%;
 	height: 25px;
 	line-height: 25px;
 	text-align: center;
 	font-size: 12px;
 }
-.dailyRateBodyLi{
+
+.dailyRateBodyLi {
 	width: 100px;
 	height: 60px;
-	border:1px solid #e9e9e9;
+	border: 1px solid #e9e9e9;
 	margin: 0 2px 5px 2px;
 }
-.dailyRateBodyLiTittle{
+
+.dailyRateBodyLiTittle {
 	width: 100px;
 	height: 20px;
 	line-height: 20px;
@@ -509,20 +582,23 @@
 	text-align: center;
 	background-color: #e9e9e9;
 }
-.dailyRateBodyLiContent{
+
+.dailyRateBodyLiContent {
 	width: 100px;
 	height: 40px;
 	line-height: 40px;
 	font-size: 12px;
 	text-align: center;
 }
-.hotelRoomLi{
+
+.hotelRoomLi {
 	width: 100%;
 	min-height: 185px;
 	border-top: 1px solid #041e5b;
 	position: relative;
 }
-.hotelRoomLi .liRoomType{
+
+.hotelRoomLi .liRoomType {
 	width: 100%;
 	height: 36px;
 	line-height: 36px;
@@ -531,7 +607,8 @@
 	box-sizing: border-box;
 	color: #f6aa25;
 }
-.hotelRoomLi .roomImg{
+
+.hotelRoomLi .roomImg {
 	width: 120px;
 	height: 120px;
 	margin-left: 20px;
@@ -539,76 +616,106 @@
 	background-size: 100% 100%;
 	cursor: pointer;
 }
-.hotelRoomLi .bedList{
+
+.hotelRoomLi .bedList {
 	width: 650px;
 	min-height: 120px;
 	margin-left: 20px;
 }
-.bedList .bedLi{
+
+.bedList .bedLi {
 	width: 100%;
-	height: 60px;
+	/* height: 60px; */
+	height: 74px;
 	line-height: 60px;
 	font-size: 12px;
-	border-bottom:1px dashed #a9a9a9;
+	border-bottom: 1px dashed #a9a9a9;
 	color: #404040;
 	position: relative;
 }
-.bedLiPolicyRule{
-	height:18px;
-	line-height:18px;
+.payType{
+	width: 70px;
+	height: 20px;
+	line-height: 20px;
+	position: absolute;
+	top: 52px;
+	right: 5px;
+	text-align: center;
+	font-size: 12px;
+	font-weight: 500;
+}
+.payCompany{
+	color: #0DCC7E;
+}
+.paySelf{
+	color: #2D6BD2;
+}
+.bedLiPolicyRule {
+	height: 18px;
+	line-height: 18px;
 	width: 100px;
 	margin: 21px 0 0 5px;
 }
-.ruleMarginLeft{
+
+.ruleMarginLeft {
 	margin-left: 100px;
 }
-.policyUnderline{
+
+.policyUnderline {
 	cursor: pointer;
 	text-decoration: underline;
-	text-decoration-style:dotted;
+	text-decoration-style: dotted;
 }
-.rateUnderline{
+
+.rateUnderline {
 	cursor: pointer;
 	text-decoration: underline;
 }
-.bedLiRateType{
-	height:14px;
-	line-height:14px;
-	text-align:center;
+
+.bedLiRateType {
+	height: 14px;
+	line-height: 14px;
+	text-align: center;
 	color: #041e5b;
 	background: #e3edf6;
 	border-radius: 0 0 4px 4px;
 	cursor: pointer;
 	/*transform: scale(0.8333333333333333);*/
 }
-.RateTypeText{
+
+.RateTypeText {
 	margin-top: -4px;
 	font-size: 12px;
 	transform: scale(0.8333333333333333);
 }
-.bedLiBookBody{
+
+.bedLiBookBody {
 	width: 70px;
 	height: 40px;
-    position: absolute;
-    top: 7px;
-    right: 5px;
+	position: absolute;
+	top: 7px;
+	right: 5px;
 }
-.bedLiBook{
+
+.bedLiBook {
 	width: 70px;
 	height: 26px;
 	line-height: 26px;
 	background-color: #041e58;
 	text-align: center;
-    color: #fff;
-    font-size: 14px;
-    border-radius: 4px 4px 0 0;
-    cursor: pointer;
+	color: #fff;
+	font-size: 14px;
+	border-radius: 4px 4px 0 0;
+	cursor: pointer;
 }
-.hotelRoomFinish,.canNotBook{
-	background-color: rgb(126,126,126);
+
+.hotelRoomFinish,
+.canNotBook {
+	background-color: rgb(126, 126, 126);
 	color: #fff;
 }
-.hotelRoomLi .liRoomRemark{
+
+.hotelRoomLi .liRoomRemark {
 	width: 100%;
 	min-height: 30px;
 	line-height: 30px;
@@ -616,17 +723,19 @@
 	padding-left: 20px;
 	box-sizing: border-box;
 }
+
 /*服务列表*/
-.serviceTittle{
+.serviceTittle {
 	width: 100%;
 	height: 35px;
-    line-height: 35px;
-    box-sizing: border-box;
-    padding-left: 20px;
-    color: #041e58;
-    margin-top: 20px;
+	line-height: 35px;
+	box-sizing: border-box;
+	padding-left: 20px;
+	color: #041e58;
+	margin-top: 20px;
 }
-.serviceBody{
+
+.serviceBody {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 0 20px 0 20px;
@@ -635,17 +744,21 @@
 	margin-bottom: 20px;
 	text-indent: 2em;
 }
+
 /*酒店地图*/
-.hotelMapBody{
+.hotelMapBody {
 	width: 320px;
-	height: 570px;
+	/* height: 570px; */
+	min-height: 570px;
 	border: 1px solid #041e58;
 	border-radius: 10px;
 	position: absolute;
 	right: 0;
 	top: 0;
+	padding-bottom: 10px;
 }
-.mapIcon{
+
+.mapIcon {
 	width: 32px;
 	height: 32px;
 	position: absolute;
@@ -655,7 +768,8 @@
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 }
-.hotelAddress{
+
+.hotelAddress {
 	width: 272px;
 	min-height: 40px;
 	line-height: 40px;
@@ -663,14 +777,16 @@
 	color: #4a4a4a;
 	margin: 18px 0 0 32px;
 }
-.mapTrafficTittle{
+
+.mapTrafficTittle {
 	width: 150px;
 	height: 20px;
 	color: #404040;
 	/*font-family: PingFangSC-Semibold;*/
 	margin: 2px 0 9px 14px;
 }
-.mapTrafficInfo{
+
+.mapTrafficInfo {
 	width: 100%;
 	line-height: 16px;
 	font-size: 12px;
@@ -678,13 +794,14 @@
 	padding: 0 14px 0 14px;
 	box-sizing: border-box;
 	margin-bottom: 30px;
-	overflow : hidden;
+	overflow: hidden;
 	text-overflow: ellipsis;
 	display: -webkit-box;
 	-webkit-line-clamp: 4;
 	-webkit-box-orient: vertical;
 }
-#hotelMap{
+
+#hotelMap {
 	width: 306px;
 	height: 380px;
 	margin-left: 7px;
@@ -692,7 +809,7 @@
 
 
 /* 1.7 新增 */
-.hotelLiStarHalf{
+.hotelLiStarHalf {
 	position: absolute;
 	height: 16px;
 	width: 16px;

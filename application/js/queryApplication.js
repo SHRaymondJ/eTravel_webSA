@@ -278,7 +278,7 @@ function approveListShow(approveList){
             $(".approveTable").eq(index).append('\
                 <tr>\
                     <td><div class="planeIcon"></div></td>\
-                    <td>'+sItem[0].DesAirport+'-'+sItem[0].OrgAirport+'</td>\
+                    <td>'+sItem[0].OrgAirport+'-'+sItem[0].DesAirport+'</td>\
                     <td>'+sItem[0].DepartureTime+'~'+sItem[0].ArrivalTime.substring(sItem[0].ArrivalTime.length-5,sItem[0].ArrivalTime.length)+'</td>\
                     <td>'+sItem[0].AirFareAmount+'</td>\
                 </tr>\

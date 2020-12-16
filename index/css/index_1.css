@@ -43,7 +43,7 @@
 	top: 9px;
 	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.50);
 	box-sizing: border-box;
-	padding: 0 6px 0 6px;
+	padding: 0 16px;
 	z-index: 1;
 }
 .tabBar{
@@ -76,10 +76,15 @@
     height: 20px;
     line-height: 20px;
     font-size: 14px;
-    margin: 6px 0 15px 170px;
+    /* margin: 6px 0 15px 170px; */
+	margin: 6px auto 15px auto;
+	text-align: center;
 }
 .intlTabBar{
-	margin-left: 130px;
+	/* 2020-9-16 */
+	/* margin-left: 130px; */
+	width: 100%;
+	text-align: center;
 }
 input[type="radio"]{
 	cursor:pointer;
@@ -88,10 +93,13 @@ input[type="radio"]{
 	width: 800px;
 	min-height: 150px;
 }
-.intlAirMultipleLi{
+.intlAirMultipleLi,.domAirMultipleLi{
 	width: 100%;
 	height: 30px;
 	margin-bottom: 5px;
+}
+.domAirMultipleLi{
+	margin-bottom: 10px;
 }
 .MultipleLiIcon{
 	width: 20px;
@@ -125,13 +133,13 @@ input[type="radio"]{
     /* background-color: #fff; */
     background-color: transparent;
 }
-.MultipleDepartureDate{
+.MultipleDepartureDate,.domMultipleDepartureDate{
 	width: 80px;
 	height: 25px;
 	border: 0;
 	outline: none;
 }
-.MultipleSelect{
+.MultipleSelect,.domMultipleSelect{
 	border: 0;
 	width: 64px;
 	outline: none;
@@ -161,7 +169,7 @@ input[type="radio"]{
 	cursor: pointer;
 }
 /*机票*/
-#domOneWay,#domRoundTrip,#intlOneWay,#intlRoundTrip,#intlMultipleTrip,#domHotel,#intlHotel,#trainOneWay,#trainRoundTrip{
+#domOneWay,#domRoundTrip,#domMultiple,#intlOneWay,#intlRoundTrip,#intlMultipleTrip,#domHotel,#intlHotel,#trainOneWay,#trainRoundTrip{
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
@@ -185,19 +193,42 @@ input[type="radio"]{
 	font-weight: bold;
 	color: #000;
 }
-.intlDirectCheckBox,.domCodeShareCheckBox,.domDirectCheckBox,.alternateCheckBox,.packagePriceCheckBox{
+.intlDirectCheckBox,.domCodeShareCheckBox,.domDirectCheckBox{
 	width: 16px;
 	height: 16px;
 	margin-top: 7px;
 }
 #domDepartureCity,#domArrivalCity,#intlDepartureCity,#intlArrivalCity,#trainDepartureCity,#trainArrivalCity,#hotelCity,#hotelIntlCity,#keyWordInput,#transitCity,#carCompany{
-	width: 347px;
+	/* width: 347px; */
+	width: 350px;
 	height: 28px;
 	border: 1px solid #555555;
 	border-radius: 3px;
 	box-sizing: border-box;
 	padding-left: 5px;
 }
+/*2020-10-9*/
+.pointsRemindBody{
+	width: 535px;
+	height: 17px;
+	margin-left: 103px;
+	line-height: 17px;
+	font-size: 12px;
+	color: #FF7A00;
+	margin-bottom: 5px;
+}
+/*end*/
+/* 2019-12-04 */
+.plusMinus{
+	width: 60px;
+	height: 28px;
+	border: 1px solid #555555;
+	border-radius: 3px;
+	box-sizing: border-box;
+	padding-left: 5px;	
+	margin-left: 10px;
+}
+/* end */
 .transitText{
 	margin-left: 390px;
 	box-sizing: border-box;
@@ -223,7 +254,7 @@ input[type="radio"]{
 	width: 30px;
 	height: 30px;
 	position: absolute;
-	left: 466px;
+	left: 480px;
 	top: 113px;
 	text-align: center;
 	/*border: 1px solid #979797;*/
@@ -235,7 +266,7 @@ input[type="radio"]{
 .switchIconTrain{
 	background-image: url('../images/exchangeTrain.png');
 }
-.domDateBody,.intlDateBody,#domCabin,#intlDepartureDate,#intlReturnDate,#intlCabin,#trainDepartureDate,#trainReturnDate,#trainCabin,#hotelDepartureDate,#hotelReturnDate,#hotelPrice,#hotelAddress,.hotelAddressBody{
+.domDateBody,.intlDateBody,#domCabin,#intlDepartureDate,#intlReturnDate,#intlCabin,#trainDepartureDate,#trainReturnDate,#trainCabin,#hotelDepartureDate,#hotelReturnDate,#hotelPrice,#hotelAddress,.hotelAddressBody,.trainDateBody{
 	width: 146px;
 	height: 28px;
 	border: 1px solid #555555;
@@ -244,6 +275,18 @@ input[type="radio"]{
 	padding-left: 2px;
 	background-color: #fff;
 	position: relative;
+}
+#trainDepartureDate,#trainReturnDate{
+	width: 86px;
+	border: none !important;
+	background-color: transparent;
+}
+.trainDateBody{
+	background-color: #FFFFFF;
+}
+.trainDateBody select{
+	border: none !important;
+	outline: none;
 }
 #hotelAddress{
 	width: 120px;
@@ -313,7 +356,7 @@ input[type="radio"]{
 	line-height: 30px;
 	cursor: pointer;
 }
-.domReturnDateBody,#intlReturnDateBody,#trainReturnDate,#hotelReturnDate
+.domReturnDateBody,#intlReturnDateBody,#trainReturnDate,#hotelReturnDate,.trainReturnDateBody
 {
 	border: 1px solid #9B9B9B;
 	color: #9b9b9b;
@@ -329,6 +372,7 @@ input[type="radio"]{
 	margin-bottom: 8px;
 	margin-top: 10px;
 	cursor: pointer;
+	border-radius: 4px;
 }
 .hotelStar,.hotelKey{
 	height: 25px;
@@ -378,6 +422,24 @@ input[type="radio"]{
 	line-height: 30px;
 	border-bottom: 1px solid #c2c2c2;
 	cursor: pointer;
+}
+/*租车*/
+#carDeparture,#carArrival,#carFromDate,#carToDate,#carFromHour,#carFromMin,#carToHour,#carToMin{
+	/* width: 130px; */
+	width: 150px;
+    height: 28px;
+    border: 1px solid #555555;
+    border-radius: 3px;
+    box-sizing: border-box;
+    padding-left: 5px;
+}
+#carDeparture,#carArrival{
+	width: 310px;
+}
+#carFromHour,#carFromMin,#carToHour,#carToMin{
+	/* width: 80px; */
+	width: 90px;
+	margin-left: 10px;
 }
 /*订单*/
 .orderDetailsTable{
@@ -670,10 +732,11 @@ footer{
 	line-height: 20px;
 	font-size: 14px;
 	box-sizing: border-box;
-	padding: 10px;
+	padding:10px 18px;
 }
 .articlePopContent p{
-	width: 830px;
+	/* width: 830px; */
+	width: 100%;
 	word-wrap: break-word;
 	word-break: break-all;
 	/* overflow: hidden; */
@@ -806,6 +869,7 @@ footer{
 	width: 220px;
 	position: relative;
 	overflow: hidden;
+	margin-top: 6px;
 }
 .picGroup a{
 	display: inline-block;
@@ -823,7 +887,7 @@ footer{
 .videoGroup{
 	width: 220px;
 	height: 220px;
-	margin-top: 6px;
+	/* margin-top: 6px; */
 	position: relative;
 	overflow: hidden;
 }
@@ -930,3 +994,97 @@ footer{
 			background-color: #F6AA25;
 			cursor: pointer;
 		}
+/* 底部新闻 */
+		.clearfix ::after{
+			content: " ";
+			display: block;
+			clear: both;
+		}
+		.indexFooter{
+			color: #FFFFFF;
+		}
+		.l{
+			float: left;
+		}
+		.r{
+			float: right;
+		}
+		.tac{
+			text-align: center;
+		}
+		.newsBody{
+			padding-top: 20px;
+		}
+		.imgGroup{
+			height: 100px;
+			width: 100px;
+		}
+		.newsGroup{
+			padding-left: 40px;
+			padding-right: 60px;
+			width: 480px;
+			border-right: 2px solid rgba(255,255,255,0.2);
+			box-sizing: content-box;
+			min-height: 121px;
+			}
+			
+			.newsLi{
+				height: 20px;
+				line-height: 20px;
+				position: relative;
+				padding: 2px 0;
+				box-sizing: content-box;
+			}
+			.newsLi span{
+				z-index: 10;
+				position: absolute;
+				background-color: rgb(245, 124, 1);
+			}
+			.newsLi span:first-of-type{
+				left: 0;
+				padding-right: 20px;
+				max-width: 260px;
+				overflow: hidden;
+				text-overflow:ellipsis;
+				white-space: nowrap;
+				text-decoration: underline;
+				cursor: pointer;
+			}
+			.newsLi span:last-of-type{
+				right: 0;
+				padding-left: 20px;
+			}
+			.newsLi .line{
+				height: 10px;
+				width: 100%;
+				border-bottom: 1px dotted rgba(255,255,255,.4);
+				position: absolute;
+				z-index: 8;
+			}
+			.QRright .QRgroup{
+				padding-right: 20px;
+				text-align: center;
+			}
+			.QRgroup img{
+				height: 88px;
+				width: auto;
+			}
+			.QRgroup .tac{
+				height: 20px;
+				line-height: 20px;
+				font-size: 14px;
+				padding: 5px 0;
+			}
+			.screenText{
+				height: 112px;
+				line-height: 112px;
+				
+				width:192px;
+				font-size:24px;
+				font-weight:600;
+				color:rgba(255,255,255,1);
+				/* padding-left: 60px; */
+				padding-left: 40px;
+				padding-right: 40px;
+				box-sizing: content-box;
+			}

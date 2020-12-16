@@ -89,6 +89,10 @@
 						alert(get_lan('remind'));
 					}else{
 						// $('body').mLoading("show");
+						var channel = "ONLINE";
+						if(isMobile){
+							channel = "Mobile Phone";
+						}
 						$.ajax(
 							{
 							type:'post',
@@ -112,7 +116,7 @@
 											dataType: 'json',
 											data: {
 												url: $.session.get('obtCompany') + "/SystemService.svc/LoginWithoutPassword",
-												jsonStr: '{"loginname":"' + userName + '","Language":"'+$.session.get('obtLanguage')+'","edition":"SPC1.0.1","channel":"ONLINE"}'
+												jsonStr: '{"loginname":"' + userName + '","Language":"'+$.session.get('obtLanguage')+'","edition":"SPC1.0.1","channel":"'+channel+'"}'
 											},
 											success: function (data) {
 												console.log(data);
@@ -186,7 +190,7 @@
 			  }
 			);
 	}else{
-		window.location.href = 'https://devfederate.pfizer.com/as/authorization.oauth2?client_id=BCD_client&response_type=code&grant_type=authorization_code&scope=MFA&redirect_uri=https://online.bcdtravel.cn/singleSignOn/pfizerSingleSignOn.html'
+		window.location.href = 'https://prodfederate.pfizer.com/as/authorization.oauth2?client_id=BCD_client&response_type=code&grant_type=authorization_code&scope=MFA&redirect_uri=https://online.bcdtravel.cn/singleSignOn/pfizerSingleSignOn.html'
 	}
 </script>
 </html>

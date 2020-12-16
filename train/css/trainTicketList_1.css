@@ -51,6 +51,16 @@ body{
 	position: relative;
 	border: 1px solid #7f7f7f;
 }
+.trainDepartureDateSearch,.trainReturnDateSearch{
+	width: 248px;
+}
+.trainDepartureSelect,.trainReturnSelect{
+    right: 66px;
+    position: absolute;
+    height: 24px;
+    border: none;
+    outline: none;	
+}
 .departureAirIcon,.arrivalAirIcon,.departureDateIcon,.returnDateIcon{
 	width: 20px;
 	height: 20px;
@@ -95,8 +105,11 @@ body{
 	text-align: center;
 	font-size: 12px;
 	position: absolute;
-    left: 104px;
+    /* left: 104px; */
     color: #999;
+	
+	right: 0;
+	top: 0;
 }
 .searchTrainBtn{
 	width: 80px;
@@ -248,10 +261,11 @@ body{
 	position:relative;
 }
 .seatInfo{
-	width: 310px;
+	/* width: 310px; */
+	width: 300px;
     height: 50px;
     line-height: 50px;
-    padding-left: 35px;
+    /* padding-left: 35px; */
     box-sizing: border-box;
     font-size: 16px;
 }
@@ -308,4 +322,100 @@ body{
 	    left: 0;
 	    top: 0;
 		cursor: pointer;
+}
+
+.soldOut{
+	/* width: 134px; */
+	height: 30px;
+	font-size: 14px;
+	color: #3083FB;
+	line-height: 30px;
+	text-decoration: underline;
+	cursor: pointer;
+	
+	position: absolute;
+	top: 10px;
+	right: 20px;
+}
+/* 反馈信息 */
+.recordTrainFix{
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: rgba(0,0,0,0.2);
+}
+.recordTrain{
+    background-color: #ffffff;
+    height: 154px;
+    width: 520px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -77px;
+    margin-left: -260px;
+    padding: 10px;
+	text-align: center;
+}
+.recordTrainClose{
+	text-align: right;
+	padding-right: 10px;
+}
+.recordTrainTips{
+	text-align: center;
+	font-size: 14px;
+	font-family: PingFangSC-Regular, PingFang SC;
+	font-weight: 400;
+	color: #636363;
+	line-height: 20px;
+	text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+	padding: 20px 0;
+}
+.recordTrainBtn{
+	width: 120px;
+    height: 30px;
+    background: #f57c01;
+    box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    line-height: 30px;
+    text-align: center;
+    color: #ffffff;
+	position: absolute;
+	bottom: 20px;
+	left: 50%;
+	margin-left: -60px;
+	cursor: pointer;
+	font-size: 14px;
+}
+
+/* 关闭按钮 */
+.close{
+	position:relative;
+	width:0.2em;
+	height:1.5em;
+	background: #222;
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	-o-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+	display: inline-block;
+	cursor: pointer;
+}
+.close:after{
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width:0.2em;
+	height:1.5em;
+	background: #222;
+	-webkit-transform: rotate(270deg);
+	-moz-transform: rotate(270deg);
+	-o-transform: rotate(270deg);
+	-ms-transform: rotate(270deg);
+	transform: rotate(270deg);
 }

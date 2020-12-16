@@ -4,6 +4,10 @@ window.tools = {};
 tools.ajaxUrl = 'https://online.bcdtravel.cn/SystemAPI_PostSend/api/SystemAPI/PostSend';
 // 添加link.js，判断链接状态
 $('body').append('<script type="text/javascript" charset="UTF-8" src="../js/link.js"></script>')
+// 非purchaseTrip.html页面 删除TrainSeatNum 
+if(window.location.href.indexOf("purchaseTrip.html") == -1){
+	window.sessionStorage.setItem('TrainSeatNum','')
+}
 /*
 * 获取get请求的参数
 * 使用方法： tools.queryString().id
@@ -84,7 +88,7 @@ tools.Dialog = {
     return promise;
   }
 };
-
+tools.regPhone = /^1([47]\d|[98]\d|[99]\d|[66]\d|[38]\d|5[0-35-9]|7[3678])\d{8}$/;//手机验证，新增198，199，166，147号段
 /*
 * loading 数据加载中
 * 使用方法：
@@ -158,12 +162,14 @@ tools.Loading = {
 	  	var type=option.type||'post';
 	  	var url=option.url;
 	  	var dataType=option.dataType||'json';
-	  	var data=option.data;
+		var data=option.data;
+		var timeout=1000*60*5;  
 	  	$.ajax(
 	  	  {
 	  	    type:type,
 	  	    url : url, 
-	  	    dataType : dataType,
+			dataType : dataType,
+			timeout:timeout,  
 	  	    data:data,
 	  	    success : function(data) {
 	  			callback(data)
@@ -175,7 +181,8 @@ tools.Loading = {
 		  var ProfileInfo=JSON.parse($.session.get('ProfileInfo'))
 		  console.log(ProfileInfo.onlineStyle)
 		  if(ProfileInfo.onlineStyle=="APPLE"){
-			$('body').mLoading();  
+				$('.mloading-icon').css({height:"16px",width:"16px",display:"inline-block",margin:"auto"})
+				$('body').mLoading();  
 		  }else{
 			var text="Please wait – we are searching the best options for you"
 			if($.session.get('obtLanguage')=="CN"){
@@ -187,21 +194,21 @@ tools.Loading = {
 			});
 			$('.mloading-icon').css({height:"100px",width:"auto",display:"block",margin:"auto"})
 			$('.mloading-bar').css({width:"250px"})
-			$('body').mLoading({
-				 text:text,
-				 icon:"../images/loading.gif"
-			});
+			// $('body').mLoading({
+			// 	 text:text,
+			// 	 icon:"../images/loading.gif"
+			// });
 			  
 		  }
 	  };
 	  // 隐藏loading
 	  tools.searchLoadingHide=function(){
-	  	$('.mloading-icon').css({height:"16px",width:"16",display:"inline-block",margin:"auto"})
+	  	$('.mloading-icon').css({height:"16px",width:"16px",display:"inline-block",margin:"auto"})
 	  	$('.mloading-bar').css({width:"250px"})
 	  	$('body').mLoading("hide");
 	  };
 	  // 新增权限
-	  tools.addProfileInfo=function(data){
+	  tools.addProfileInfo=function(data,type){
 		  var res = JSON.parse(data);
 		  console.log(res)
 		  // if(res.DocumentsDetail.length == 0||res.Phone==""||res.Email==""||res.Phone==null||res.Email==null||res.NeedCompleteCreditCard){
@@ -403,7 +410,7 @@ tools.Loading = {
 			);
 		  }
 		/*end*/
-		/*2020-3-11 审批单*/
+		/*审批单*/
 		tools.customerTravelRequest = function(netUserId,queryKey,callback,type,city){
 			$('body').mLoading("show");
 			$.ajax(
@@ -412,38 +419,108 @@ tools.Loading = {
 				  url : $.session.get('ajaxUrl'),
 				  dataType : 'json',
 				  data:{
-					  url: $.session.get('obtCompany')+"/SystemService.svc/GetTravelRequestWithOtherCitysPost",
+					  url: $.session.get('obtCompany')+"/SystemService.svc/CheckCustomerHasTravelRequestWithOtherCitysPost",
 					  jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+$.session.get('obtLanguage')+'","otherCitys":"'+city+'"}'
 				  },
 				  success : function(data) {
 					  $('body').mLoading("hide");
-					  var res = JSON.parse(data);
-					  console.log(res);
+					  if(data!=''){
+						var res = JSON.parse(data);
+						console.log(res);
+					  }
 					if($.session.get('obtLanguage')=="CN"){
-						var popTittle = "请选择您的申请单";
+						var popTittle = "申请单选择";
 						var travelApplication = "差旅申请单";
+						var meetingApplication = "会议申请单";
 						var applicationRemind = "当前没有审批单";
 						var select = '选择';
 						var back = '返回';
+						var next = '下一步';
+						var notTravel = '不选择差旅申请单进行预订';
+						var notMeeting = '不以会议为目的预订';
 					}else{
-						var popTittle = "Please select the application form";
-						var travelApplication = "Travel Application Form";
+						var popTittle = "Application Selection";
+						var travelApplication = "Travel Selection";
+						var meetingApplication = "Meeting Selection";
 						var applicationRemind = "Currently there is no travel request.";
 						var select = 'Select';
 						var back = 'Back';
+						var next = 'Next';
+						var notTravel = 'Booking without travel request.';
+						var notMeeting = 'This trip is not for a meeting.';
 					}
+					var showNextBtn = (res&&res.TravelInfos.length!=0)||(JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption&&!$.session.get('goOnBookOrderNo'))?"":"hide";
 					$("body").append('\
 					<div class="requestCover" style="position: fixed;top: 0;left: 0;bottom: 0;right: 0;background: rgba(0, 0, 0, 0.7);z-index: 9999;">\
-					<div class="travelRequestPop" style="position:relative;width: 838px;height: 500px;background-color: #fff;z-index: 101;position: fixed;top: 50%;left: 50%;transform: translate(-50%,-50%);border-radius: 10px;padding: 10px;font-family: Sans-serif,Arial,Verdana;">\
-						<div class="travelRequestPopTittle" style="height:52px;color:#094B90;border-bottom:1px solid #e6e6e6;width: 100%;height: 80px;line-height: 80px;font-size: 26px;font-weight: 600;position: relative;box-sizing: border-box;text-align:center;font-family: Arial,Verdana;">'+popTittle+'</div>\
-						<div style="box-sizing: border-box;padding:10px;font-size: 15px;line-height:24px;height:430px;">\
-						<div style="width:778px;height:40px;margin-left:30px;background:#F2F6FF;line-height:40px;font-size:16px;box-sizing:border-box;padding-left:20px;">'+travelApplication+'</div>\
-						<div class="travelApplicationList" style="width:778px;height:360px;margin-left:30px;"></div>\
+					<div class="travelRequestPop" style="position:relative;width: 838px;height: 600px;background-color: #fff;z-index: 101;position: fixed;top: 50%;left: 50%;transform: translate(-50%,-50%);border-radius: 10px;padding: 10px;font-family: Sans-serif,Arial,Verdana;">\
+						<div class="travelRequestPopTittle" style="height:52px;color:#094B90;border-bottom:1px dashed #e6e6e6;width: 100%;height: 80px;line-height: 80px;font-size: 26px;font-weight: 600;position: relative;box-sizing: border-box;text-align:center;font-family: Arial,Verdana;">'+popTittle+'</div>\
+						<div style="box-sizing: border-box;padding:10px;font-size: 15px;line-height:24px;height:530px;">\
+							<div class="flexRow" style="width:778px;height:40px;margin-left:30px;line-height:40px;font-size:16px;box-sizing:border-box;color:#666">\
+								<div class="applicationTab travelTab applicationTabActive">'+travelApplication+'</div>\
+								<div class="applicationTab meetingTab hide" style="margin-left:30px;">'+meetingApplication+'</div>\
+							</div>\
+							<div class="ApplicationBody travelApplicationBody">\
+								<div class="travelApplicationRemind" style="width: 778px;margin: 20px 0 10px 30px;"></div>\
+								<div class="travelApplicationList" style="width:778px;height:300px;margin-left:30px;"></div>\
+							</div>\
+							<div class="ApplicationBody meetingApplicationBody hide">\
+								<div class="meetingApplicationRemind" style="width: 778px;margin: 20px 0 10px 30px;"></div>\
+								<div class="meetingApplicationList" style="width:778px;height:300px;margin-left:30px;"></div>\
+							</div>\
+							<div class="applicationNext '+showNextBtn+'" style="cursor:pointer;width: 240px;height: 36px;background: #041E5B;border-radius: 4px;color:#fff;font-size:16px;line-height:36px;text-align: center;margin: 0 auto;">'+next+'</div>\
 						</div>\
 					</div>\
 					</div>\
 					')
-					if(res.HasMessage){
+					if($.session.get('obtLanguage')=="CN"){
+						$(".travelApplicationRemind").html('\
+						<div style="line-height:30px;color:#333;font-weight:600;font-size:16px;">此旅行是否以差旅为目的</div>\
+						<div style="line-height:20px;color:#999;font-size:14px;">\
+						  <span>已搜索到与你行程相匹配的差旅申请单。如果旅行以出差为目的，则请</span>\
+						  <span style="margin:0 5px;color:#2D6BD2;">选择该差旅审批单</span>，或\
+						  <span style="margin:0 5px;color:#2D6BD2;">勾选“不选择差旅审批单进行预订”。</span>\
+						</div>\
+						');
+						$(".meetingApplicationRemind").html('\
+						<div style="line-height:30px;color:#333;font-weight:600;font-size:16px;">此旅行是否以会议为目的</div>\
+						<div style="line-height:20px;color:#999;font-size:14px;">\
+						  <span>已搜索到与你行程相匹配的会议。如果旅行以出席会议为目的，则请</span>\
+						  <span style="margin:0 5px;color:#2D6BD2;">选择该会议审批单</span>，或\
+						  <span style="margin:0 5px;color:#2D6BD2;">勾选“不以会议为目的进行预订”。</span>\
+						</div>\
+						');
+					}else{
+						$(".travelApplicationRemind").html('\
+						<div style="line-height:30px;color:#333;font-weight:600;font-size:16px;">Is this trip for business travel？</div>\
+						<div style="line-height:20px;color:#999;font-size:14px;">\
+						  <span>The following travel(s) take place during the same time and location as the trip you are searching for. If the trip is</span>\
+						  <span style="margin:0 5px;color:#2D6BD2;">for the business travel please select it</span>,or\
+						  <span style="margin:0 5px;color:#2D6BD2;">select "Don\'t select the above travel to book."</span>\
+						</div>\
+						');
+						$(".meetingApplicationRemind").html('\
+						<div style="line-height:30px;color:#333;font-weight:600;font-size:16px;">Is this trip for a meeting？</div>\
+						<div style="line-height:20px;color:#999;font-size:14px;">\
+						  <span>The following meeting(s) take place during the same time and location as the trip you are searching for. If the trip is</span>\
+						  <span style="margin:0 5px;color:#2D6BD2;">for the meeting please select it</span>,or\
+						  <span style="margin:0 5px;color:#2D6BD2;">select "This trip is not for a meeting."</span>\
+						</div>\
+						');
+					}
+					$(".applicationTab").unbind("click").click(function(){
+						$(".applicationTab").removeClass("applicationTabActive");
+						$(".ApplicationBody").addClass("hide");
+						$(this).addClass("applicationTabActive");
+						if($(this).hasClass("travelTab")){
+							$('input[name="meetingApplication"]:checked').attr("checked",false);
+							$(".travelApplicationBody").removeClass("hide");
+						}else if($(this).hasClass("meetingTab")){
+							$('input[name="travelApplication"]:checked').attr("checked",false);
+							$(".meetingApplicationBody").removeClass("hide");
+						}
+					})
+					var showNoApplication = JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption&&!$.session.get('goOnBookOrderNo')?"":"hide";
+					if((res.HasMessage&&!JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption)||data==''){
 						// alert(res.Message);
 						$(".travelApplicationList").append('\
 						  <div class="applicationLi" style="width:778px;height:40px;line-height:40px;font-size:16px;box-sizing:border-box;padding-left:20px;">'+applicationRemind+'</div>\
@@ -452,24 +529,100 @@ tools.Loading = {
 						$(".applicationBackBtn").unbind("click").click(function(){
 							history.back();
 						})
-                    }else if(res.TravelInfos.length!=0){
-						res.TravelInfos.map(function(item){
-							$(".travelApplicationList").append('\
-								<div class="applicationLi flexRow" style="width:778px;height:50px;line-height:50px;font-size:16px;box-sizing:border-box;padding-left:20px;position:relative;">\
-								  <div style="color:#1E66AE">'+item.TravelRequestNo+'</div>\
-								  <div style="margin-left:20px;">'+item.StartDate+'~'+item.EndDate+'</div>\
-								  <div style="margin-left:20px;">'+item.TravelItinerary[0]+'</div>\
-								  <div class="selectApplication" CustomerID="'+item.Customers[0].CustomerId+'" CompanyID="'+JSON.parse($.session.get('ProfileInfo')).CompanyID+'" employeeName="'+item.Customers[0].NameCn+'" TravelRequestNo="'+item.TravelRequestNo+'" style="cursor:pointer;position:absolute;width:100px;height:30px;line-height:30px;color:#fff;top:10px;right:20px;background:#041D5C;text-align:center;border-radius:5px;">'+select+'</div>\
-								</div>\
-							')
-						})
-						$(".selectApplication").unbind("click").click(function(){
-							var TravelRequestNo = $(this).attr("TravelRequestNo");
-							$.session.set('TAnumber',TravelRequestNo);
-							if(type==1){
-								$.session.set('TACustomerId', $(this).attr("CustomerID")+','+$(this).attr("CompanyID")+','+$(this).attr("employeeName"));
-							}
+						if(showNoApplication=="hide"){
+							$(".travelApplicationRemind,.meetingApplicationRemind").addClass("hide");
+						}
+                    }else{
+						if(showNoApplication==""&&res.TravelInfos.length==0){
+							$.session.remove("TAnumber");
+							$.session.remove("TACustomerId");
 							callback();
+						}
+						res.TravelInfos.map(function(item){
+							var address=item.TravelItinerary[0]?item.TravelItinerary[0]:"";
+							if(item.Type == 1){
+								$(".travelApplicationList").append('\
+									<div class="applicationLi flexRow" style="width:778px;height:50px;line-height:50px;font-size:16px;box-sizing:border-box;position:relative;">\
+									<input type="radio" name="travelApplication" CustomerID="'+item.Customers[0].CustomerId+'" CompanyID="'+JSON.parse($.session.get('ProfileInfo')).CompanyID+'" employeeName="'+item.Customers[0].NameCn+'" TravelRequestNo="'+item.TravelRequestNo+'" style="width:14px;margin: 18px 10px 0 0;">\
+									<div style="color:#1E66AE">'+item.TravelRequestNo+'</div>\
+									<div style="margin-left:20px;">'+item.StartDate+'~'+item.EndDate+'</div>\
+									<div style="margin-left:20px;">'+address+'</div>\
+									</div>\
+								')
+							}
+							if(item.Type == 3){
+								$(".meetingTab").removeClass("hide");
+								$(".meetingApplicationList").append('\
+									<div class="applicationLi flexRow" style="width:778px;height:50px;line-height:50px;font-size:16px;box-sizing:border-box;position:relative;">\
+									<input type="radio" name="meetingApplication" CustomerID="'+item.Customers[0].CustomerId+'" CompanyID="'+JSON.parse($.session.get('ProfileInfo')).CompanyID+'" employeeName="'+item.Customers[0].NameCn+'" TravelRequestNo="'+item.TravelRequestNo+'" style="width:14px;margin: 18px 10px 0 0;">\
+									<div style="color:#1E66AE">'+item.TravelRequestNo+'</div>\
+									<div style="margin-left:20px;">'+item.StartDate+'~'+item.EndDate+'</div>\
+									<div style="margin-left:20px;">'+address+'</div>\
+									</div>\
+								')
+							}
+						})
+						/*隐藏差旅审批单*/
+						var TravelRequestList = [];
+						res.TravelInfos.map(function(item){
+							if(item.Type == 1){
+								TravelRequestList.push(item);
+							}
+						})
+						if(TravelRequestList.length==0){
+							$(".travelTab").addClass("hide");
+							$(".meetingTab").addClass("applicationTabActive");
+							$(".ApplicationBody").addClass("hide");
+							$(".meetingApplicationBody").removeClass("hide");
+						}
+						/*end*/
+						$(".travelApplicationList").append('\
+							<div class="applicationLi flexRow '+showNoApplication+'" style="width:778px;height:50px;line-height:50px;font-size:16px;box-sizing:border-box;position:relative;">\
+								<input type="radio" name="travelApplication" style="width:14px;margin: 18px 10px 0 0;">\
+								<div style="color:#041D5C">'+notTravel+'</div>\
+							</div>\
+						');
+						$(".meetingApplicationList").append('\
+							<div class="applicationLi flexRow '+showNoApplication+'" style="width:778px;height:50px;line-height:50px;font-size:16px;box-sizing:border-box;position:relative;">\
+								<input type="radio" name="meetingApplication" style="width:14px;margin: 18px 10px 0 0;">\
+								<div style="color:#041D5C">'+notMeeting+'</div>\
+							</div>\
+						');
+						if(showNoApplication=="hide"){
+							$(".travelApplicationRemind,.meetingApplicationRemind").addClass("hide");
+						}
+						if(JSON.parse($.session.get('ProfileInfo')).onlineStyle=='eTravel'){
+							$(".travelRequestPopTittle").css('color',"#F58A00");
+							$(".applicationNext").css('background',"#F58A00");
+							$(".applicationBackBtn").css('background',"#F58A00");
+						}
+						$(".applicationNext").unbind("click").click(function(){
+							if($(".travelTab").hasClass("applicationTabActive")){
+								var that = $('input[name="travelApplication"]:checked');
+							}else{
+								var that = $('input[name="meetingApplication"]:checked');
+							}
+							if(!$('input[name="travelApplication"]:checked').val()&&!$('input[name="meetingApplication"]:checked').val()){
+								if($.session.get('obtLanguage')=="CN"){
+									alert("请选择审批单。")
+								}else{
+									alert("Please select the travel request.")
+								}
+								return false;
+							}
+							if(!that.attr("TravelRequestNo")){
+								// $.session.set('TAnumber','none');
+								$.session.remove("TAnumber");
+								$.session.remove("TACustomerId");
+								callback();
+							}else{
+								var TravelRequestNo = that.attr("TravelRequestNo");
+								$.session.set('TAnumber',TravelRequestNo);
+								if(type==1){
+									$.session.set('TACustomerId', that.attr("CustomerID")+','+that.attr("CompanyID")+','+that.attr("employeeName"));
+								}
+								callback();
+							}
 						})
                     }
 				  },
@@ -535,4 +688,83 @@ tools.Loading = {
 		        return {'status':1,'msg':'校验通过','birthday':birthday}
 	}
 	
+	
+	// 验证是否是json字符串
+	tools.isJSON = function (str) {
+	    if (typeof str == 'string') {
+	        try {
+	            var obj = JSON.parse(str);
+	            if (typeof obj == 'object' && obj) {
+	                return true;
+	            } else {
+	                return false;
+	            }
+	        } catch (e) {
+	            console.log('error：' + str + '!!!' + e);
+	            return false;
+	        }
+	    }
+	    console.log('It is not a string!')
+	}
+	// 去除字符串中的货币单位
+	tools.transformNum = function (str) {
+		var reg = /[a-zA-Z]+/;
+		str=str.replace(reg,"")
+		return str;
+	}
+	
+
+	tools.loadJS = function( url, callback ){
+
+		var script = document.createElement('script'),
+	
+			fn = callback || function(){};
+	
+		script.type = 'text/javascript';
+	
+		
+	
+		//IE
+	
+		if(script.readyState){
+	
+			script.onreadystatechange = function(){
+	
+				if( script.readyState == 'loaded' || script.readyState == 'complete' ){
+	
+					script.onreadystatechange = null;
+	
+					fn();
+	
+				}
+	
+			};
+	
+		}else{
+	
+			//其他浏览器
+	
+			script.onload = function(){
+	
+				fn();
+	
+			};
+	
+		}
+	
+		script.src = url;
+	
+		document.getElementsByTagName('head')[0].appendChild(script);
+	
+	}
+
+	tools.innerHtml = function(sl){
+		sl = sl.replace(/(\n)/g,"");
+		sl = sl.replace(/(\t)/g,"");
+		sl = sl.replace(/(\r)/g,"");
+		sl = sl.replace(/<\/?[^>]*>/g,"");
+		sl = sl.replace(/\s*/g,"");
+		sl = sl.replace(/<[^>]*>/g,"");
+		return sl;
+	}
 	})();

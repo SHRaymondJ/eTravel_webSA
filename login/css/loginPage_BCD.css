@@ -163,7 +163,8 @@
 .forgetPassword{
     width: 100%;
     height: 20px;
-    font-size: 13px;
+    /* font-size: 13px; */
+    font-size: 14px;
     text-align: right;
     color: #fff;
     position: relative;
@@ -189,4 +190,66 @@
 	color: #fff;
     position: absolute;
     width: 100%;
+}
+/* 隐私政策 */
+#Button1{
+	margin-top: 10px;
+}
+.policyLink{
+	margin-top: 30px;
+	text-align: left;
+	color: #fff;
+	font-size: 14px;
+	line-height: 20px;
+}
+.policyLink a{
+	color: #fff;
+}
+.downloadBtn {
+	width:200px;
+	height:36px;
+	background:rgba(77,132,191,1);
+	border-radius:4px;
+	line-height: 36px;
+	justify-content: center;
+}
+.downloadIcon{
+	margin: 0;
+	margin-top: 3px;
+}
+
+.downloadBtn:first-of-type{
+	margin-left: 5%;
+}
+.androidBtn{
+	margin-left: 6%;
+}
+.iosBtn ,.androidBtn {
+	position: relative;
+}
+.QRcode{
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	left: 50px;
+	top: 46px;
+	background-color: #ffff;
+	display: none;
+}
+.QRcode img{
+	width: 80px;
+	height: 80px;
+	margin: auto;
+	margin-top: 10px;
+}
+.QRcode::before{
+	content: '';
+	display: block;
+	height: 8px;
+	width: 8px;
+	background-color: #FFFFFF;
+	position: absolute;
+	transform: rotate(45deg);
+	left: 46px;
+	top: -4px;
 }

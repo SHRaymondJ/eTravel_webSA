@@ -4,6 +4,8 @@ var trainTicketInfo = JSON.parse($.session.get('trainTicketInfo'));
 var searchTrainInfo = JSON.parse($.session.get('searchTrainInfo'));
 var ProfileInfo = JSON.parse($.session.get('ProfileInfo'));
 var TAorderNo = $.session.get('TAorderNo');
+var regPhone = tools.regPhone;
+
 console.log(trainTicketInfo);
 console.log(searchTrainInfo);
 if(trainTicketInfo.type == "oneWay"){
@@ -43,6 +45,7 @@ var cn = {
         "popNameEn":"英文姓名:",
         "ticketName":"购票姓名:",
         "popPhone":"手机号码:",
+        "popPhone12306":"12306手机号码:",
         "popMail":"邮箱:",
         "popDocuments":"证件信息:",
         "popDocumentsRemind":"请选择证件类型",
@@ -99,6 +102,10 @@ var cn = {
         "window":"窗",
         "aisle":"过道",
     },
+    "standByInfo":{
+        'standByRemind':"ⓘ一旦确认候补截止时间，只能等待最后结果，不可中途取消。",
+        'standByTittle':"候补截止时间:",
+    },
     "ricketOut":"预订后直接出票",
     "bookTicket":"预订",
     "bookTicketRemind":"请先选择乘客",
@@ -132,6 +139,7 @@ var en = {
         "popNameEn":"English Name:",
         "ticketName":"Traveler:",
         "popPhone":"Phone:",
+		"popPhone12306":"12306 Phone:",
         "popMail":"Email:",
         "popDocuments":"Document:",
         "popDocumentsRemind":"Please select the type of certificate",
@@ -177,7 +185,7 @@ var en = {
         "selectPassengerSearch":"Search",
         "commonPassengers":"Common Travelers",
         'delMsg':'Do you want to remove this traveler from this order?',
-        'addNewCustomer':"[Adding New Travelers]",
+        'addNewCustomer':"[Add New Travelers]",
     },
     "seatInfo":{
         "seatInfoTittle":"Seat Information",
@@ -187,6 +195,10 @@ var en = {
         "return":"Return",
         "window":"Window",
         "aisle":"Aisle",
+    },
+    "standByInfo":{
+        'standByRemind':"ⓘOnce the waiting deadline is confirmed, you can only wait for the final result and cannot cancel it halfway.",
+        'standByTittle':"Waiting deadline:",
     },
     "serviceInfo":{
         "serviceTittle":"Value-added Service",
@@ -287,6 +299,13 @@ function showContent(){
                   </div>\
                 </div>\
             </div>\
+            <div class="standByInfo hide">\
+              <div class="flexRow standByTime">\
+                <span>'+get_lan("standByInfo").standByTittle+'</span>\
+                <div class="flexRow standByTimeList"></div>\
+              </div>\
+              <div class="standByRemind">'+get_lan("standByInfo").standByRemind+'</div>\
+            </div>\
             <div class="totalAmount">\
             '+get_lan("totalAmount")+'<span class="totalAmountText"></span>\
             </div>\
@@ -344,8 +363,8 @@ function showContent(){
 	                  <div class="orderStationArrive">'+item.StationArrive+'</div>\
 	                  <div class="orderTrainType">'+get_lan('orderDetail').trainType+': '+item.TrainType+'</div>\
 	                  <div class="orderSeatType" SeatType="'+item.FareList[0].SeatType+'">'+get_lan('orderDetail').seatType+': '+SeatType+'</div>\
-	                  <div class="orderFareAmount flexRow"><div style="width:110px;">'+get_lan('orderDetail').ticketPrice+'</div>￥<span style="font-size:20px;">'+item.FareList[0].Price+'</span></div>\
-	                  <div class="orderServiceFare flexRow '+showServiceFare+'"><div style="width:110px;">'+get_lan('orderDetail').serviceFare+'</div>￥<span class="activeFontColor">'+item.FareList[0].ServiceFare+'</span></div>\
+	                  <div class="orderFareAmount flexRow"><div style="width:110px;">'+get_lan('orderDetail').ticketPrice+'</div><span style="font-size:20px;">'+item.FareList[0].Price+ProfileInfo.OfficeCurrency+'</span></div>\
+	                  <div class="orderServiceFare flexRow '+showServiceFare+'"><div style="width:110px;">'+get_lan('orderDetail').serviceFare+'</div><span class="activeFontColor">'+item.FareList[0].ServiceFare+ProfileInfo.OfficeCurrency+'</span></div>\
 	                  <div class="orderLine"></div>\
 	                </div>\
 	            ')
@@ -452,6 +471,376 @@ function showContent(){
                     ')
                 }
             }
+            /*2020-9-21 候补*/
+            if(trainTicketInfo.standBy){
+                $(".standByInfo").removeClass("hide");
+                if(trainTicketInfo.type == "oneWay"){
+                    $(".standByTimeList").html('\
+                    <div class="standByTimeInput flexRow">\
+                      <input class="standByDateInput" id="standByOneWay" type="text" readonly>\
+                      <select class="standByHourSelect standByOneWaySelect"></select>\
+                    </div>\
+                    ')
+                    // $("#standByOneWay").val(GetDateStr(0,new Date()));
+                    
+                    if(trainTicketInfo.date==GetDateStr(0,new Date())){
+                        if(parseInt(new Date().getHours())+1<=res[0].TimeStart.split(":")[0]-2){
+                            $(".standByOneWaySelect").html('');
+                            for(var i=parseInt(new Date().getHours())+1;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                $(".standByOneWaySelect").append('\
+                                <option value="'+i+':00">'+i+':00</option>\
+                                ')
+                            }
+                        }else{
+                            alert("无候补信息");
+                            history.back();
+                        }
+                    }else{
+                        if(parseInt(res[0].TimeStart.split(":")[0])<9){
+                            for(var i=6;i<24;i++){
+                                $(".standByOneWaySelect").append('\
+                                <option value="'+i+':00">'+i+':00</option>\
+                                ')
+                            }
+                        }
+                        else{
+                            for(var i=6;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                $(".standByOneWaySelect").append('\
+                                <option value="'+i+':00">'+i+':00</option>\
+                                ')
+                            }
+                        }
+                    }
+                    if(parseInt(res[0].TimeStart.split(":")[0])<9){
+                        var standByMaxDay = GetDateStr(-1,new Date(trainTicketInfo.date.replace(/-/g, '/')));
+                        //最晚候补时间
+                        $("#standByOneWay").val(GetDateStr(-1,new Date(trainTicketInfo.date.replace(/-/g, '/'))));
+                        $(".standByOneWaySelect").val("23:00");
+                    }else{
+                        var standByMaxDay = trainTicketInfo.date;
+                        //最晚候补时间
+                        $("#standByOneWay").val(trainTicketInfo.date);
+                        $(".standByOneWaySelect").val(res[0].TimeStart.split(":")[0]-3+':00');
+                    }
+                    
+                    $("#standByOneWay").datepicker({
+                        dateFormat: 'yy-mm-dd',
+                        changeMonth: true,
+                        minDate: 0,  // 当前日期之后的 0 天，就是当天
+                        maxDate: standByMaxDay,  // 当前日期之后的 0 天，就是当天
+                        hideIfNoPrevNext: true,
+                        showOtherMonths: true,
+                        selectOtherMonths: true,
+                        onSelect:function(){
+                            if($("#standByOneWay").val()==trainTicketInfo.date){
+                                $(".standByOneWaySelect").html('');
+                                for(var i=6;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                    $(".standByOneWaySelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                                if($("#standByOneWay").val()==GetDateStr(0,new Date())){
+                                    if(parseInt(new Date().getHours())+1<=res[0].TimeStart.split(":")[0]-2){
+                                        $(".standByOneWaySelect").html('');
+                                        for(var i=parseInt(new Date().getHours())+1;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                            $(".standByOneWaySelect").append('\
+                                            <option value="'+i+':00">'+i+':00</option>\
+                                            ')
+                                        }
+                                    }else{
+                                        alert("无候补信息");
+                                        history.back();
+                                    }
+                                }
+                            }else if($("#standByOneWay").val()==GetDateStr(0,new Date())){
+                                $(".standByOneWaySelect").html('');
+                                for(var i=parseInt(new Date().getHours())+1;i<24;i++){
+                                    $(".standByOneWaySelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                                // if($("#standByOneWay").val()==trainTicketInfo.date){
+                                //     console,log(new Date(trainTicketInfo.date+' '+res[0].TimeStart).getTime()-3*3600*1000)
+                                //     if(new Date(trainTicketInfo.date+' '+res[0].TimeStart).getTime()-3*3600*1000<new Date().getTime()){
+
+                                //     }
+                                // }
+                            }
+                            else{
+                                $(".standByOneWaySelect").html('');
+                                for(var i=6;i<24;i++){
+                                    $(".standByOneWaySelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                            }
+                        }
+                    });
+                }else if(trainTicketInfo.type == "roundTrip"){
+                    if(trainTicketInfo.standByFrom){
+                        $(".standByTimeList").append('\
+                            <div class="standByTimeInput flexRow">\
+                            <div class="standByInputTittle">'+get_lan("seatInfo").deaprture+'</div>\
+                            <input class="standByDateInput" id="standByFromInput" type="text" readonly>\
+                            <select class="standByHourSelect standByFromSelect"></select>\
+                            </div>\
+                        ')
+                        // $("#standByFromInput").val(GetDateStr(0,new Date()));
+                        // console.log(parseInt(new Date().getHours())+1)
+                        if(trainTicketInfo.date==GetDateStr(0,new Date())){
+                            if(parseInt(new Date().getHours())+1<=res[0].TimeStart.split(":")[0]-2){
+                                $(".standByFromSelect").html('');
+                                for(var i=parseInt(new Date().getHours())+1;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                    $(".standByFromSelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                            }else{
+                                alert("无候补信息");
+                                history.back();
+                            }
+                        }else{
+                            if(parseInt(res[0].TimeStart.split(":")[0])<9){
+                                for(var i=6;i<24;i++){
+                                    $(".standByFromSelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                            }
+                            else{
+                                for(var i=6;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                    $(".standByFromSelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                            }
+                        }
+                        
+                        if(parseInt(res[0].TimeStart.split(":")[0])<9){
+                            var standByFromMaxDay = GetDateStr(-1,new Date(trainTicketInfo.date.replace(/-/g, '/')));
+                            //最晚候补时间
+                            $("#standByFromInput").val(GetDateStr(-1,new Date(trainTicketInfo.date.replace(/-/g, '/'))));
+                            $(".standByFromSelect").val("23:00");  
+                        }else{
+                            var standByFromMaxDay = trainTicketInfo.date;
+                            //最晚候补时间
+                            $("#standByFromInput").val(trainTicketInfo.date);
+                            $(".standByFromSelect").val(res[0].TimeStart.split(":")[0]-3+':00');
+                        }
+                        $("#standByFromInput").datepicker({
+                            dateFormat: 'yy-mm-dd',
+                            changeMonth: true,
+                            minDate: 0,  // 当前日期之后的 0 天，就是当天
+                            maxDate: standByFromMaxDay,  // 当前日期之后的 0 天，就是当天
+                            hideIfNoPrevNext: true,
+                            showOtherMonths: true,
+                            selectOtherMonths: true,
+                            onSelect:function(){
+                                if($("#standByFromInput").val()==trainTicketInfo.date){
+                                    $(".standByFromSelect").html('');
+                                    for(var i=6;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                        $(".standByFromSelect").append('\
+                                        <option value="'+i+':00">'+i+':00</option>\
+                                        ')
+                                    }
+                                    if($("#standByFromInput").val()==GetDateStr(0,new Date())){
+                                        if(parseInt(new Date().getHours())+1<=res[0].TimeStart.split(":")[0]-2){
+                                            $(".standByFromSelect").html('');
+                                            for(var i=parseInt(new Date().getHours())+1;i<res[0].TimeStart.split(":")[0]-2;i++){
+                                                $(".standByFromSelect").append('\
+                                                <option value="'+i+':00">'+i+':00</option>\
+                                                ')
+                                            }
+                                        }else{
+                                            alert("无候补信息");
+                                            history.back();
+                                        }
+                                    }
+                                }else if($("#standByFromInput").val()==GetDateStr(0,new Date())){
+                                    $(".standByFromSelect").html('');
+                                    for(var i=parseInt(new Date().getHours())+1;i<24;i++){
+                                        $(".standByFromSelect").append('\
+                                        <option value="'+i+':00">'+i+':00</option>\
+                                        ')
+                                    }
+                                }
+                                else{
+                                    $(".standByFromSelect").html('');
+                                    for(var i=6;i<24;i++){
+                                        $(".standByFromSelect").append('\
+                                        <option value="'+i+':00">'+i+':00</option>\
+                                        ')
+                                    }
+                                }
+                                $("#standByReturnInput").datepicker('destroy');
+                                $("#standByReturnInput").val($("#standByFromInput").val());
+                                if(parseInt(res[1].TimeStart.split(":")[0])<9){
+                                    var standByReturnMaxDay = GetDateStr(-1,new Date(trainTicketInfo.returndate.replace(/-/g, '/')));
+                                }else{
+                                    var standByReturnMaxDay = trainTicketInfo.returndate;
+                                }
+                                $("#standByReturnInput").datepicker({
+                                    dateFormat: 'yy-mm-dd',
+                                    changeMonth: true,
+                                    minDate: $("#standByFromInput").val(),  // 当前日期之后的 0 天，就是当天
+                                    maxDate: standByReturnMaxDay,  // 当前日期之后的 0 天，就是当天
+                                    hideIfNoPrevNext: true,
+                                    showOtherMonths: true,
+                                    selectOtherMonths: true,
+                                    onSelect:function(){
+                                        if($("#standByReturnInput").val()==trainTicketInfo.returndate){
+                                            $(".standByReturnSelect").html('');
+                                            for(var i=6;i<res[1].TimeStart.split(":")[0]-2;i++){
+                                                $(".standByReturnSelect").append('\
+                                                <option value="'+i+':00">'+i+':00</option>\
+                                                ')
+                                            }
+                                            if($("#standByReturnInput").val()==GetDateStr(0,new Date())){
+                                                if(parseInt(new Date().getHours())+1<=res[1].TimeStart.split(":")[0]-2){
+                                                    $(".standByReturnSelect").html('');
+                                                    for(var i=parseInt(new Date().getHours())+1;i<res[1].TimeStart.split(":")[0]-2;i++){
+                                                        $(".standByReturnSelect").append('\
+                                                        <option value="'+i+':00">'+i+':00</option>\
+                                                        ')
+                                                    }
+                                                }else{
+                                                    alert("无候补信息");
+                                                    history.back();
+                                                }
+                                            }
+                                        }else if($("#standByReturnInput").val()==GetDateStr(0,new Date())){
+                                            $(".standByReturnSelect").html('');
+                                            for(var i=parseInt(new Date().getHours())+1;i<24;i++){
+                                                $(".standByReturnSelect").append('\
+                                                <option value="'+i+':00">'+i+':00</option>\
+                                                ')
+                                            }
+                                        }
+                                        else{
+                                            $(".standByReturnSelect").html('');
+                                            for(var i=6;i<24;i++){
+                                                $(".standByReturnSelect").append('\
+                                                <option value="'+i+':00">'+i+':00</option>\
+                                                ')
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    if(trainTicketInfo.standByReturn){
+                        $(".standByTimeList").append('\
+                            <div class="standByTimeInput flexRow">\
+                            <div class="standByInputTittle">'+get_lan("seatInfo").return+'</div>\
+                            <input class="standByDateInput" id="standByReturnInput" type="text" readonly>\
+                            <select class="standByHourSelect standByReturnSelect"></select>\
+                            </div>\
+                        ')
+                        // $("#standByReturnInput").val(GetDateStr(1,new Date()));
+                        if(trainTicketInfo.returndate==GetDateStr(0,new Date())){
+                            if(parseInt(new Date().getHours())+1<=res[1].TimeStart.split(":")[0]-2){
+                                $(".standByReturnSelect").html('');
+                                for(var i=parseInt(new Date().getHours())+1;i<res[1].TimeStart.split(":")[0]-2;i++){
+                                    $(".standByReturnSelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                            }else{
+                                alert("无候补信息");
+                                history.back();
+                            }
+                        }else{
+                            if(parseInt(res[1].TimeStart.split(":")[0])<9){
+                                for(var i=6;i<24;i++){
+                                    $(".standByReturnSelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                            }
+                            else{
+                                for(var i=6;i<res[1].TimeStart.split(":")[0]-2;i++){
+                                    $(".standByReturnSelect").append('\
+                                    <option value="'+i+':00">'+i+':00</option>\
+                                    ')
+                                }
+                            }
+                        }
+                        
+                        if(parseInt(res[1].TimeStart.split(":")[0])<9){
+                            var standByReturnMaxDay = GetDateStr(-1,new Date(trainTicketInfo.returndate.replace(/-/g, '/')));
+                            //最晚候补时间
+                            $("#standByReturnInput").val(GetDateStr(-1,new Date(trainTicketInfo.returndate.replace(/-/g, '/'))));
+                            $(".standByReturnSelect").val("23:00");
+                        }else{
+                            var standByReturnMaxDay = trainTicketInfo.returndate;
+                            //最晚候补时间
+                            $("#standByReturnInput").val(trainTicketInfo.returndate);
+                            $(".standByReturnSelect").val(res[1].TimeStart.split(":")[0]-3+':00');
+                        }
+
+                        $("#standByReturnInput").datepicker({
+                            dateFormat: 'yy-mm-dd',
+                            changeMonth: true,
+                            minDate: 0,  // 当前日期之后的 0 天，就是当天
+                            maxDate: standByReturnMaxDay,  // 当前日期之后的 0 天，就是当天
+                            hideIfNoPrevNext: true,
+                            showOtherMonths: true,
+                            selectOtherMonths: true,
+                            onSelect:function(){
+                                if($("#standByReturnInput").val()==trainTicketInfo.returndate){
+                                    $(".standByReturnSelect").html('');
+                                    for(var i=6;i<res[1].TimeStart.split(":")[0]-2;i++){
+                                        $(".standByReturnSelect").append('\
+                                        <option value="'+i+':00">'+i+':00</option>\
+                                        ')
+                                    }
+                                    if($("#standByReturnInput").val()==GetDateStr(0,new Date())){
+                                        if(parseInt(new Date().getHours())+1<=res[1].TimeStart.split(":")[0]-2){
+                                            $(".standByReturnSelect").html('');
+                                            for(var i=parseInt(new Date().getHours())+1;i<res[1].TimeStart.split(":")[0]-2;i++){
+                                                $(".standByReturnSelect").append('\
+                                                <option value="'+i+':00">'+i+':00</option>\
+                                                ')
+                                            }
+                                        }else{
+                                            alert("无候补信息");
+                                            history.back();
+                                        }
+                                    }
+                                }else if($("#standByReturnInput").val()==GetDateStr(0,new Date())){
+                                    $(".standByReturnSelect").html('');
+                                    for(var i=parseInt(new Date().getHours())+1;i<24;i++){
+                                        $(".standByReturnSelect").append('\
+                                        <option value="'+i+':00">'+i+':00</option>\
+                                        ')
+                                    }
+                                }
+                                else{
+                                    $(".standByReturnSelect").html('');
+                                    for(var i=6;i<24;i++){
+                                        $(".standByReturnSelect").append('\
+                                        <option value="'+i+':00">'+i+':00</option>\
+                                        ')
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            //日期
+            function GetDateStr(AddDayCount,date) {
+                var dd = date;
+                dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+                var y = dd.getFullYear(); 
+                // var m = dd.getMonth()+1;//获取当前月份的日期 
+                // var d = dd.getDate();
+                var m = (dd.getMonth()+1)<10?'0'+(dd.getMonth()+1):(dd.getMonth()+1);
+                var d = dd.getDate()<10?'0'+dd.getDate():dd.getDate();
+                return y+"-"+m+"-"+d; 
+            }
+            /*end*/
 	     },
 	     error : function() {
 	       // alert('fail');
@@ -459,6 +848,69 @@ function showContent(){
 	   }
 	);
 }
+
+/*隐藏证件信息*/
+function hideDocument(profile,document,rid){
+	if(profile.HideMyPersonalInfo&&document!=""){
+		if(rid==1&&document.length>10){
+			var starLength = document.length-10;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,6)+starString+document.substring(document.length-4,document.length);
+		}else if(document.length>3){
+			var starLength = document.length-3;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,1)+starString+document.substring(document.length-2,document.length);
+		}else{
+			var DocumentNumber = document;
+		}
+	}else{
+		var DocumentNumber = document
+	}
+	
+	return DocumentNumber;
+}
+/*end*/
+/*隐藏邮箱*/
+function hideEmail(profile,email){
+	if(profile.HideMyPersonalInfo&&email!=""){
+        var starLength = email.split("@")[0].length;
+        var starString = "";
+        for(var i=0;i<starLength-2;i++){
+            starString += "*"
+        }
+        var profileEmail = email.substring(0,1)+starString+email.substring(starLength-1,starLength)+'@'+email.split("@")[1];
+    }else{
+        var profileEmail = email;
+    }
+    return profileEmail;
+}
+/*end*/
+/*隐藏手机号*/
+function hidePhones(profile,phone){
+    if(profile.HideMyPersonalInfo&&phone!=""){
+        var profilePhone = "*******"+phone.substring(phone.length-4,phone.length)
+    }else{
+        var profilePhone = phone;
+    }
+    return profilePhone;
+}
+/*end*/
+/*隐藏证件有效期*/
+function hideDocDate(profile,date){
+    if(profile.HideMyPersonalInfo&&date!=""){
+        var docDate = "****-**-**";
+    }else{
+        var docDate = date;
+    }
+    return docDate;
+}
+/*end*/
 //旅客信息确认
 function surePassengerInfo(){
     $('body').mLoading("show");
@@ -532,7 +984,8 @@ function surePassengerInfo(){
                         }else if(searchTrainInfo.alterTicketInfo&&!$.session.get('goOnBookOrderNo')){
 							// 有了改签信息为什么还要继续预定的单号?
                             var customerId = searchTrainInfo.alterTicketInfo.split(',')[0].split('_')[0];
-                            if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest){
+                            // if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest){
+                            if(!$.session.get('TAnumber')){
                                 //12.27更换接口接口url: $.session.get('obtCompany')+"/SystemService.svc/AddOrderCustomerPost",
                                 // jsonStr:'{"key":'+netUserId+',"companyId":"'+searchTrainInfo.alterTicketInfo.split(',')[2]+'","customerId":"'+customerId+'","remarks":"","isCopy":"false","language":"'+obtLanguage+'"}'
                                 console.log("AddOrderCustomer1")
@@ -573,31 +1026,62 @@ function surePassengerInfo(){
                                 }
                                 );
                             }else{
-                                var queryKey = $.session.get('TAnumber')+','+customerId;
-                                $.ajax(
-                                {
-                                    type:'post',
-                                    url : $.session.get('ajaxUrl'), 
-                                    dataType : 'json',
-                                    data:{
-                                        url: $.session.get('obtCompany')+"/SystemService.svc/AddTravelRequestCustomerPost",
-                                        jsonStr:'{"id":'+netUserId+',"queryKey":"'+queryKey+'","remarks":"","language":"'+obtLanguage+'"}'
-                                    },
-                                    success : function(data) {
-                                        $('body').mLoading("hide");
-                                        var res = JSON.parse(data);
-                                        console.log(res);
-                                        console.log(searchTrainInfo.alterTicketInfo);
-                                        $(".orderDetail").attr("CompanyID",searchTrainInfo.alterTicketInfo.split(',')[2]);
-                                        if(res == "1"){
-                                            passengersInOrder('',"orderChange");
-                                        }
-                                    },
-                                    error : function() {
-                                    // alert('fail');
-                                    }
+                                var city=$('.orderDetail').attr('departecity')+','+$('.orderDetail').attr('arrivecity')
+                                if(searchTrainInfo.alterTicketInfo){
+                                    //如果是改签的话，取改签内的passenger ID
+                                    var queryKey = searchTrainInfo.alterTicketInfo.split('_')[0]+$(".orderDetail").attr("queryKey");
+                                }else{
+                                    var queryKey = passengerJson.ID+$(".orderDetail").attr("queryKey");
                                 }
-                                );
+								if(searchTrainInfo.type == "oneWay"){
+									city=""
+                                }
+                                
+                                tools.customerTravelRequest(netUserId,queryKey,function(){
+                                    $(".requestCover").remove();
+                                    if($.session.get('TAnumber')){
+                                        var queryKey = $.session.get('TAnumber')+','+customerId;
+                                        var url = $.session.get('obtCompany')+"/SystemService.svc/AddTravelRequestCustomerPost";
+                                        var jsonStr = '{"id":'+netUserId+',"queryKey":"'+queryKey+'","remarks":"","language":"'+obtLanguage+'"}';
+                                    }else{
+                                        var orderInfo=JSON.parse($.session.get('trainTicketChanges'))
+                                        var jsonStr = {request:{
+                                            key:netUserId.split('\"')[1],
+                                            companyId:searchTrainInfo.alterTicketInfo.split(',')[2],
+                                            customerId:customerId,
+                                            remarks:"",
+                                            isCopy:false,
+                                            language:obtLanguage,
+                                            orgOrderNo:orderInfo[0].orderNo
+                                        }}
+                                        var url = $.session.get('obtCompany')+"/SystemService.svc/AddOrderCustomer";
+                                        jsonStr = JSON.stringify(jsonStr);
+                                    }
+                                    $.ajax(
+                                        {
+                                            type:'post',
+                                            url : $.session.get('ajaxUrl'),
+                                            dataType : 'json',
+                                            data:{
+                                                url: url,
+                                                jsonStr:jsonStr
+                                            },
+                                            success : function(data) {
+                                                $('body').mLoading("hide");
+                                                var res = JSON.parse(data);
+                                                console.log(res);
+                                                console.log(searchTrainInfo.alterTicketInfo);
+                                                $(".orderDetail").attr("CompanyID",searchTrainInfo.alterTicketInfo.split(',')[2]);
+                                                if(res == "1"){
+                                                    passengersInOrder('',"orderChange");
+                                                }
+                                            },
+                                            error : function() {
+                                            // alert('fail');
+                                            }
+                                        }
+                                    );
+                                },2,city)
                             }
 							
                         }else if($.session.get('goOnBookOrderNo')){//&&!searchTrainInfo.alterTicketInfo
@@ -652,14 +1136,20 @@ function surePassengerInfo(){
 											res.Customers.map(function(item,index){
 											    // $(".passengerList").append('\
 											    //     <div class="passengerLi flexRow" customerId="'+item.CustomerID+'">
-													var Gender=item.Gender==null?"":item.Gender
-													var Nationality=item.Nationality==null?"":item.Nationality
-													console.log(item)
+                                                var Gender=item.Gender==null?"":item.Gender
+                                                var Nationality=item.Nationality==null?"":item.Nationality
+                                                console.log(item)
+												
+												var phoneScreen = item.TrainPhone ? item.TrainPhone : item.Phone;
+												var profilePhone = ProfileInfo.HideMyPersonalInfo&&phoneScreen!=""?"*******"+phoneScreen.substring(phoneScreen.length-4,phoneScreen.length):phoneScreen;
+                                                // var profilePhone = ProfileInfo.HideMyPersonalInfo&&item.Phone!=""?"*******"+item.Phone.substring(item.Phone.length-4,item.Phone.length):item.Phone;
+												var passengerName = item.DocumentsDetail[0].DocNameCn!=null&&item.DocumentsDetail[0].DocNameCn!=""?item.DocumentsDetail[0].DocNameCn:item.NameCN;
+												var CompanyId=item.OrderCompanyId?item.OrderCompanyId:""
 												$(".passengerList").append('\
-													<div class="passengerLi flexRow" Gender="'+Gender+'" Nationality="'+Nationality+'" customerId="'+item.ID+'" companyId="'+item.OrderCompanyId+'">\
-											        <div class="passengerLiDiv" style="width:250px;"><span class="PassengerNameText">'+item.CustomerName+'</span></div>\
-											        <div class="passengerLiDiv passengerPhone" style="width:150px;">'+item.Phone+'</div>\
-											        <div class="passengerLiDiv" style="width:200px;">'+item.Email+'</div>\
+													<div class="passengerLi flexRow" Birthday="'+item.Birthday+'" Gender="'+Gender+'" Nationality="'+Nationality+'" customerId="'+item.CustomerID+'" companyId="'+CompanyId+'">\
+											        <div class="passengerLiDiv" style="width:250px;"><span class="PassengerNameText">'+passengerName+'</span></div>\
+											        <div class="passengerLiDiv passengerPhone" style="width:150px;" hideNo="'+phoneScreen+'">'+profilePhone+'</div>\
+                                                    <div class="passengerLiDiv" style="width:200px;">'+hideEmail(ProfileInfo,item.Email)+'</div>\
 											        <div class="passengerLiDiv passengerLiDocuments" style="width:300px;"><select class="documentsSelect"></select></div>\
 											        </div>\
 											        \
@@ -671,12 +1161,23 @@ function surePassengerInfo(){
 															checkedID=ditem.Rid
 														}
 													}
-													
 											        $(".documentsSelect").eq(index).append('\
-											            <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+ditem.DocumentNumber+'</option>\
+											            <option idValidity="'+ditem.docExpiryDate+'" name="'+ditem.DocNameCn+'" cName="'+item.NameCN+'" value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid)+'</option>\
 											        ')
 											    })
+												$(".documentsSelect").change(function(){
+												    // var name = $(this).children('option:selected').attr("name");
+												    var cName = $(this).children('option:selected').attr("name");
+												    var profileName=item.NameCN
+												    // if(name!="null"&&name!=""){
+												    if(cName!="null"&&cName!=""){
+												        $(".PassengerNameText").eq(index).text(cName);
+												    }else{
+												        $(".PassengerNameText").eq(index).text(profileName);
+												    }
+												})
 												$('.documentsSelect').val(checkedID)
+												$(".documentsSelect").trigger("change");
 											})
 											$('.passengerInfo').css({"position":"absolute","opacity":"0","z-index":'-1'})
 										}else{
@@ -685,22 +1186,36 @@ function surePassengerInfo(){
 											        // <div class="passengerLi flexRow" customerId="'+item.CustomerID+'">
 													var Gender=item.Gender==null?"":item.Gender
 													var Nationality=item.Nationality==null?"":item.Nationality
-													//CustomerID还是ID
+                                                    //CustomerID还是ID
+													var phoneScreen = item.TrainPhone ? item.TrainPhone : item.Phone;
+                                                    var profilePhone = ProfileInfo.HideMyPersonalInfo&&phoneScreen!=""?"*******"+phoneScreen.substring(phoneScreen.length-4,phoneScreen.length):phoneScreen;
+													var passengerName = item.DocumentsDetail[0].DocNameCn!=null&&item.DocumentsDetail[0].DocNameCn!=""?item.DocumentsDetail[0].DocNameCn:item.NameCN;
+													var CompanyId=item.OrderCompanyId?item.OrderCompanyId:""
 													$(".passengerList").append('\
-													    <div class="passengerLi flexRow" Gender="'+Gender+'" Nationality="'+Nationality+'" customerId="'+item.CustomerID+'" companyId="'+item.OrderCompanyId+'">\
-											        <div class="passengerLiDiv" style="width:250px;"><span class="PassengerNameText">'+item.CustomerName+'</span></div>\
-											        <div class="passengerLiDiv passengerPhone" style="width:150px;">'+item.Phone+'</div>\
-											        <div class="passengerLiDiv" style="width:200px;">'+item.Email+'</div>\
+													    <div class="passengerLi flexRow" Birthday="'+item.Birthday+'" Gender="'+Gender+'" Nationality="'+Nationality+'" customerId="'+item.CustomerID+'" companyId="'+CompanyId+'">\
+											        <div class="passengerLiDiv" style="width:250px;"><span class="PassengerNameText">'+passengerName+'</span></div>\
+											        <div class="passengerLiDiv passengerPhone" style="width:150px;" hideNo="'+phoneScreen+'">'+profilePhone+'</div>\
+                                                    <div class="passengerLiDiv" style="width:200px;">'+hideEmail(ProfileInfo,item.Email)+'</div>\
 											        <div class="passengerLiDiv passengerLiDocuments" style="width:300px;"><select class="documentsSelect"></select></div>\
 											        </div>\
 											        \
 											        ')
 											    item.DocumentsDetail.map(function(ditem){
 											        $(".documentsSelect").eq(index).append('\
-											            <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+ditem.DocumentNumber+'</option>\
+											            <option idValidity="'+ditem.docExpiryDate+'" name="'+ditem.DocNameCn+'" cName="'+item.NameCN+'" value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid)+'</option>\
 											        ')
 											    })
-												
+												$(".documentsSelect").change(function(){
+													// var name = $(this).children('option:selected').attr("name");
+													var cName = $(this).children('option:selected').attr("name");
+													var profileName=item.NameCN
+													// if(name!="null"&&name!=""){
+													if(cName!="null"&&cName!=""){
+													    $(".PassengerNameText").eq(index).text(cName);
+													}else{
+													    $(".PassengerNameText").eq(index).text(profileName);
+													}
+												})
 											})
 										}
                                         trainSeat(res.Customers);
@@ -785,7 +1300,15 @@ function surePassengerInfo(){
                             // 有审批单权限
 							var city=$('.orderDetail').attr('departecity')+','+$('.orderDetail').attr('arrivecity')
                             if(passengerJson.HasTravelRequest&&!$.session.get('goOnBookOrderNo')&&!$.session.get('TAnumber')){
-                                var queryKey = passengerJson.ID+$(".orderDetail").attr("queryKey");
+                                if(searchTrainInfo.alterTicketInfo){
+                                    //如果是改签的话，取改签内的passenger ID
+                                    var queryKey = searchTrainInfo.alterTicketInfo.split('_')[0]+$(".orderDetail").attr("queryKey");
+                                }else{
+                                    var queryKey = passengerJson.ID+$(".orderDetail").attr("queryKey");
+                                }
+								if(searchTrainInfo.type == "oneWay"){
+									city=""
+								}
                                 tools.customerTravelRequest(netUserId,queryKey,function(){
                                     $(".requestCover").remove();
                                     tools.getTravelRequestRemark(netUserId,queryKey,function(data){
@@ -845,7 +1368,7 @@ function selectPassengers(){
                     res.map(function(item){
                         var name = obtLanguage=="CN"?item.NameCN:item.NameEN;
                         $(".selectPassengerList").append('\
-                            <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+item.Email+')'+'</div>\
+                            <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+hideEmail(ProfileInfo,item.Email)+')'+'</div>\
                             ')
                     })
                     clickPassengerLi();
@@ -911,7 +1434,7 @@ function selectPassengers(){
                 res.map(function(item){
                     var name = obtLanguage=="CN"?item.NameCN:item.NameEN;
                     $(".selectPassengerList").append('\
-                        <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+item.Email+')'+'</div>\
+                        <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+hideEmail(ProfileInfo,item.Email)+')'+'</div>\
                         ')
                 })
                 clickPassengerLi();
@@ -957,6 +1480,9 @@ function selectPassengers(){
             // 有审批单权限
 			var city=$('.orderDetail').attr('departecity')+','+$('.orderDetail').attr('arrivecity')
             if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest){
+				if(searchTrainInfo.type == "oneWay"){
+					city=""
+				}
                 tools.customerTravelRequest(netUserId,queryKey,function(){
                     $(".requestCover").remove();
                     if($(".passengerLi").length == 0){
@@ -966,32 +1492,35 @@ function selectPassengers(){
                     }
                 },1,city)
             }else{
-                $.ajax(
-                  {
-                    type:'post',
-                    url : $.session.get('ajaxUrl'),
-                    dataType : 'json',
-                    data:{
-                        url: $.session.get('obtCompany')+"/SystemService.svc/CheckCustomerHasTravelRequestPost",
-                        jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'","otherCitys":"'+city+'"}'
-                    },
-                    success : function(data) {
-                        $('body').mLoading("hide");
-                        var res = JSON.parse(data);
-                        console.log(res);
-                        if(res.Remarks.length != 0){
+				//CheckCustomerHasTravelRequestPost更换为CheckCustomerHasTravelRequestWithOtherCitysPost  新增参数otherCitys，城市列表
+                // $.ajax(
+                //   {
+                //     type:'post',
+                //     url : $.session.get('ajaxUrl'),
+                //     dataType : 'json',
+                //     data:{
+                //         url: $.session.get('obtCompany')+"/SystemService.svc/CheckCustomerHasTravelRequestWithOtherCitysPost",
+                //         jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'","otherCitys":"'+city+'"}'
+                //     },
+                //     success : function(data) {
+                //         $('body').mLoading("hide");
+                //         var res = JSON.parse(data);
+                //         console.log(res);
+                //         if(res.Remarks.length != 0){
+							
                             $(".passengerBody").attr("state","true");
                             if($(".passengerLi").length == 0){
                                 remarkInfoPop(CompanyID,customerId,employeeName,"true");
                             }else{
                                 remarkInfoPop($(".passengerLi").eq(0).attr("companyId"),customerId,employeeName,"true");
                             }
-                        }
-                    },
-                    error : function() {
-                    }
-                  } 
-                );
+							
+                //         }
+                //     },
+                //     error : function() {
+                //     }
+                //   } 
+                // );
             }
         })
     }
@@ -1173,7 +1702,7 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
                 $(".remarkInfoBody").append('\
                     <div class="remarkLi flexRow">\
                       <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
-                      <div class="liContent">\
+                      <div class="liContent" index="'+item.Index+'">\
                         <select class="remarkSelect" index="'+index+'" id="remarkSelect'+item.Index+'">\
                           <option>'+get_lan("remarkPop").Choose+'</option>\
                         </select>\
@@ -1186,7 +1715,7 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
                 $(".remarkInfoBody").append('\
                     <div class="remarkLi flexRow">\
                       <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
-                      <div class="liContent">\
+                      <div class="liContent" index="'+item.Index+'">\
                         <select class="remarkSelect" index="'+index+'" id="remarkSelect'+item.Index+'">\
                           <option>'+get_lan("remarkPop").Choose+'</option>\
                         </select>\
@@ -1244,6 +1773,7 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
         var selectIndex = parseInt($(this).find("option:selected").attr("index"));
         remarks[selectIndex].RelatedRemarkList.map(function(rItem){
             if(rItem.ChooseMainValue==selectKey){
+				var rIndex=rItem.SubRemarkIndex;
                 rItem.SubRemarkRuleList.map(function(sItem){
                     $("#remarkInput"+rItem.SubRemarkIndex+"").val("");
                     $("#remarkInput"+rItem.SubRemarkIndex+"").removeAttr("key");
@@ -1260,12 +1790,31 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
                     }else if(sItem.SubRemarkRule==2){
                         // $("#remarkInput"+rItem.SubRemarkIndex+"").val("");
                         if(sItem.SubRemarkValue=="true"){
-                            $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder",get_lan("remarkPop").search);
+                            // $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder",get_lan("remarkPop").search);
                             $("#remarkInput"+rItem.SubRemarkIndex+"").removeAttr("disabled");
                             // 12.13新增
                             $("#remarkInput"+rItem.SubRemarkIndex+"").prev().removeAttr("disabled");
                             $("#remarkSelect"+rItem.SubRemarkIndex+"").show();
-                            $("#remarkInput"+rItem.SubRemarkIndex+"").searchRemark();
+                            // $("#remarkInput"+rItem.SubRemarkIndex+"").searchRemark();
+							
+							var remarkObj={}
+							remarks.map(function(remarkList){
+								if(remarkList.Index==rIndex){
+									remarkObj=remarkList
+								}
+							})
+							if (remarkObj.InList) {
+								$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", get_lan("remarkPop").search);
+								$("#remarkInput" + rItem.SubRemarkIndex + "").searchRemark();
+							} else {
+								$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", "");
+							}
+							$('.liContent').map(function(){
+								var i=$(this).attr('index')
+								if(rItem.SubRemarkIndex==i){
+									renderRight(i,"")
+								}
+							})
                         }else if(sItem.SubRemarkValue=="false"){
                             $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder","");
                             $("#remarkInput"+rItem.SubRemarkIndex+"").attr("disabled","disabled");
@@ -1278,10 +1827,74 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
             }
         })
     })
-
+// 重新渲染 右侧select
+	function renderRight(renderIndex,swRemark){
+		var item=''
+		remarks.map(function(renderItem){
+			if(renderItem.Index==renderIndex){
+				item=renderItem
+			}
+		})
+		$('.liContent').map(function(liItem){
+			var liIndex=$(this).attr("index")
+			if(liIndex==item.Index){
+				// item.CanModify 不再判断，默认为true
+				 var colorRed = item.Input.indexOf("4") != -1||item.Input==""?"":"colorRed";
+				if(item.InList){
+				        if(!item.ListCanSearch){
+				            $(this).html('\
+				                    <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
+				                      <option>'+get_lan("remarkPop").Choose+'</option>\
+				                    </select>\
+				                    <input id="remarkInput'+item.Index+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" readonly placeholder="'+get_lan("remarkPop").Choose+'">\
+				            ')
+				        }else{
+				            $(this).html('\
+				                    <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
+				                      <option>'+get_lan("remarkPop").Choose+'</option>\
+				                    </select>\
+				                    <input class="remarkLiInput '+newInput+'" CompanyID="'+CompanyID+'" id="remarkInput'+item.Index+'" require="'+colorRed+'" value="'+item.Content+'" index="'+item.Index+'"  key="'+item.SubmitContent+'" placeholder="'+get_lan("remarkPop").search+'">\
+				            ')
+				            $("#remarkInput"+item.Index+"").searchRemark();
+				        }
+				    }else if(!item.InList){
+				        $(this).html('\
+				                <select class="remarkSelect '+newSelect+'" index="'+index+'">\
+				                  <option>'+get_lan("remarkPop").Choose+'</option>\
+				                </select>\
+				                <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'"key="">\
+				        ')
+				    }
+				// 
+				item.Items.map(function(selectItem){
+				    var itemValue = selectItem.Value==null||selectItem.Value==""?selectItem.Key:selectItem.Value;
+					if(swRemark=="SWRemark"){
+						$("#remarkSelect"+item.Index).append('\
+								<option class="remarkOption" key="'+selectItem.Key+'" index="'+liIndex+'">'+itemValue+'</option>\
+								')
+					}else{
+						$("#remarkSelect"+item.Index).append('\
+							<option class="remarkOption" key="'+selectItem.Key+'" index="'+liIndex+'">'+itemValue+'</option>\
+							')
+					}
+				})
+				$("#remarkSelect"+item.Index).change(function(){
+				    var index = parseInt($(this).find("option:selected").attr("index"));
+				    $("#remarkInput"+item.Index).val($(this).find("option:selected").text());
+				    $("#remarkInput"+item.Index).attr('key',$(this).find("option:selected").attr("key"));
+				})
+			}
+		})
+	}
+		// end
     /*关闭remark*/
     $(".closeRemarkBtn").unbind("click").click(function(){
         closeRemarkPop();
+		if($('.passengerLi').length<1){
+			$.session.set('TAnumber','')
+			$.session.set('cityTAnumber','')
+		}
+		$(".selectPassengerArrow").click();
     })
     $(".sureRemarkBtn").unbind("click").click(function(){
         var remarks = '';
@@ -1316,7 +1929,8 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
         $('body').mLoading("show");
         console.log("更换remark")
         if(isFirst == "true"){
-            if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber')){
+            // if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber')){
+            if(!$.session.get('TAnumber')){
                 console.log("AddOrderCustomer2")
                 // url: $.session.get('obtCompany')+"/SystemService.svc/AddOrderCustomerPost",
                 // jsonStr:'{"key":'+netUserId+',"customerId":"'+CustomerID+'","companyId":"'+CompanyID+'","remarks":"'+remarks.substring(0,remarks.length-1)+'","isCopy":"'+isCopy+'","language":"'+obtLanguage+'"}'
@@ -1530,6 +2144,10 @@ function passengerPop(){
         <div style="width:130px;">'+get_lan('passengerPop').popDocumentsTime+'<span class="colorRed">*</span></div>\
         <input type="text" class="popDocumentsTimeInput" disabled placeholder="'+get_lan('passengerPop').timeRemind+'">\
         </div>\
+		<div class="popPhone12306 flexRow">\
+		<div style="width:130px;">'+get_lan('passengerPop').popPhone12306+'</div>\
+		<input type="text" class="popPhone12306Input" maxlength="11">\
+		</div>\
         </div>\
         <div class="passengerPopBottom">\
           <div class="passengerPopBtn">'+get_lan('remarkPop').confirm+'</div>\
@@ -1708,9 +2326,9 @@ function newCustomerPop(CompanyId){
     );
     $(".newCustomerPopBtn").unbind("click").click(function(){
         // console.log($('.popNameRadio:checked').attr("PassengerName"));
-        var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+        var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 		var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
-        var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+        // var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
         if(!regPhone.test($(".newCustomerInputPhone").val())){
            alert(get_lan('passengerPop').phoneRemind);
         }else if(!regEmail.test($(".newCustomerInputEmail").val()) && !regEmail2.test($(".newCustomerInputEmail").val())){
@@ -1931,18 +2549,48 @@ function passengerPopChange(customerId,isFirst,customerRid){
             var res = JSON.parse(data);
             console.log(res);
             console.log($(".popDocumentsSelect").length);
+			var old12306Phone=""
             res.map(function(item,index){
                 if(item.ID == customerId){
+					old12306Phone=item.TrainPhones
                     $(".popNameCnText").text(item.NameCN);
                     $(".popNameEnText").text(item.NameEN);
-                    $(".popNameCn .popNameRadio").attr("PassengerName",item.NameCN);
-                    $(".popNameEn .popNameRadio").attr("PassengerName",item.NameEN);
-                    if(item.Phones !=null){$(".popPhoneInput").val(item.Phones)}
-                    if(item.Email !=null){$(".popMailInput").val(item.Email)}
+					//乘客中英文姓名，按照证件信息的显示
+					item.Documents.map(function(ditem){
+					    if(customerRid==ditem.Rid){
+							 var passengerNameCN = ditem.DocNameCn!=null&&ditem.DocNameCn!=""?ditem.DocNameCn:item.NameCN;
+							 var passengerNameEN = ditem.DocNameEn!=null&&ditem.DocNameEn!=""?ditem.DocNameEn:item.NameEN;
+							 $(".popNameCnText").text(passengerNameCN);
+							 $(".popNameEnText").text(passengerNameEN);
+							 $(".popNameCn .popNameRadio").attr("PassengerName",passengerNameCN);
+							 $(".popNameEn .popNameRadio").attr("PassengerName",passengerNameEN);
+					    }
+					})
+                    // $(".popNameCn .popNameRadio").attr("PassengerName",item.NameCN);
+                    // $(".popNameEn .popNameRadio").attr("PassengerName",item.NameEN);
+                    if(item.Phones !=null){
+                        $(".popPhoneInput").val(hidePhones(ProfileInfo,item.Phones));
+                        $(".popPhoneInput").attr("hideNo",item.Phones);
+                    }
+					if(item.TrainPhones !=null){
+					    $(".popPhone12306Input").val(hidePhones(ProfileInfo,item.TrainPhones));
+					    $(".popPhone12306Input").attr("hideNo",item.TrainPhones);
+					    $(".popPhone12306Input").attr("rid",item.TrainPhoneDelID);
+					}
+					
+                    if(item.Email !=null){
+                        $(".popMailInput").val(hideEmail(ProfileInfo,item.Email));
+                        $(".popMailInput").attr("hideNo",item.Email);
+                    }
                     if(item.Documents.length != 0){
                         $(".popDocumentsSelect").val(item.Documents[0].Rid);
-                        $(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
-                        $(".popDocumentsTimeInput").val(item.Documents[0].docExpiryDate.substring(0,10));
+                        // $(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
+                        /*隐藏证件信息*/
+                        $(".popDocumentsInput").attr("hideNo",item.Documents[0].DocumentNumber);
+                        $(".popDocumentsInput").val(hideDocument(ProfileInfo,item.Documents[0].DocumentNumber,item.Documents[0].Rid));
+                        /*end*/
+                        $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,item.Documents[0].docExpiryDate.substring(0,10)));
+                        $(".popDocumentsTimeInput").attr("hideNo",item.Documents[0].docExpiryDate.substring(0,10));
                         if(item.Documents[0].Rid!=1){
                             $(".popDocumentsTime ").removeClass("hide");
                         }
@@ -1960,15 +2608,21 @@ function passengerPopChange(customerId,isFirst,customerRid){
                         var ridList=[];
                         item.Documents.map(function(ditem){
                             if($('.popDocumentsSelect').val()==ditem.Rid){
-                                $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                // $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
                                 if(ditem.docExpiryDate.length>=10){
-                                    $(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0,10));
+                                    $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                    $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
                                 }
                             }
                             ridList.push(ditem.Rid);
                         })
                         if(ridList.indexOf($('.popDocumentsSelect').val()) <= -1){
                             $(".popDocumentsInput").val('');
+                            $(".popDocumentsInput").attr("hideNo",'');
                         }
                     })
                     if(isFirst == "true"){
@@ -1978,18 +2632,6 @@ function passengerPopChange(customerId,isFirst,customerRid){
                             passengersInOrder();
                         }
                     }else if(isFirst == "false"){
-                        item.Documents.map(function(ditem){
-                            if(customerRid==ditem.Rid){
-                                $(".popDocumentsInput").val(ditem.DocumentNumber);
-                                $(".popDocumentsSelect").val(customerRid);
-                                $(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0,10));
-                            }
-                        })
-                        if(customerRid!=1){
-                            $(".popDocumentsTime ").removeClass("hide");
-                        }else{
-                            $(".popDocumentsTime ").addClass("hide");
-                        }
                         $(".passengerPopBottom").addClass("flexRow");
                         $(".passengerPopBottom").html('\
                             <div class="passengerPopCancel" style="background-color:#979797;margin:16px 0 27px 30px;">'+get_lan('remarkPop').cancel+'</div>\
@@ -1998,59 +2640,184 @@ function passengerPopChange(customerId,isFirst,customerRid){
                         $(".passengerPopCancel").unbind("click").click(function(){
                             closePassengerPop();
                         })
+                        item.Documents.map(function(ditem){
+                            if(customerRid==ditem.Rid){
+                                // $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
+                                $(".popDocumentsSelect").val(customerRid);
+                                $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
+                            }
+                        })
+                        if(customerRid!=1){
+                            $(".popDocumentsTime ").removeClass("hide");
+                        }else{
+                            $(".popDocumentsTime ").addClass("hide");
+                        }
                     }
                 }
             })
+            $(".popPhoneInput,.popMailInput,.popPhone12306Input").unbind("focus").focus(function(){
+                if($(this).attr("hideNo")){
+                    $(this).val($(this).attr("hideNo"));
+                }
+            })
+            $(".popPhoneInput").unbind("blur").blur(function(){
+                var phoneNo = $(".popPhoneInput").val();
+                $(".popPhoneInput").attr("hideNo",phoneNo);
+                $(".popPhoneInput").val(hidePhones(ProfileInfo,phoneNo));
+            })
+			$(".popPhone12306Input").unbind("blur").blur(function(){
+			    var phoneNo = $(".popPhone12306Input").val();
+			    $(".popPhone12306Input").attr("hideNo",phoneNo);
+			    $(".popPhone12306Input").val(hidePhones(ProfileInfo,phoneNo));
+			})
+            $(".popMailInput").unbind("blur").blur(function(){
+                $(".popMailInput").attr("hideNo",$(".popMailInput").val());
+                $(".popMailInput").val(hideEmail(ProfileInfo,$(".popMailInput").attr("hideNo")))
+            })
             $(".passengerPopBtn").unbind("click").click(function(){
                 // console.log($('.popNameRadio:checked').attr("PassengerName"));
-                var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 				var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
-                var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
-                if(!regPhone.test($(".popPhoneInput").val())){
+                // var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+                var phoneInfo = $(".popPhoneInput").attr("hideNo")?$(".popPhoneInput").attr("hideNo"):$(".popPhoneInput").val();
+                var emailInfo = $(".popMailInput").attr("hideNo")?$(".popMailInput").attr("hideNo"):$(".popMailInput").val();
+                
+                if(!regPhone.test(phoneInfo)){
                    alert(get_lan('passengerPop').phoneRemind);
-                }else if(!regEmail.test($(".popMailInput").val()) && !regEmail2.test($(".popMailInput").val())){
+                }else if(!regEmail.test(emailInfo) && !regEmail2.test(emailInfo)){
                     alert(get_lan('passengerPop').emailRemind);
                 }
-                else if(!$('.popNameRadio:checked').attr("PassengerName")||$(".popDocumentsInput").val()==""||$('.popDocumentsSelect option:selected').val()==""){
+                else if(!$('.popNameRadio:checked').attr("PassengerName")||$(".popDocumentsInput").attr("hideNo")==""||$('.popDocumentsSelect option:selected').val()==""){
                     alert(get_lan('passengerPop').clickRemind);
                 }else if($('.popDocumentsSelect option:selected').val()!=1&&$(".popDocumentsTimeInput").val()==""){
                     alert(get_lan('passengerPop').clickRemind);
                 }
                 else{
-                    var emailInfo = $(".popMailInput").val();
-                    var phoneInfo = $(".popPhoneInput").val();
                     if($('.popDocumentsSelect option:selected').val()==1){
-                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+',,,,'
+                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+',,,,'
                     }else{
-                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+',,,,'+$(".popDocumentsTimeInput").val();
+                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+',,,,'+$(".popDocumentsTimeInput").attr("hideNo");
                     }
                     var memberShipInfo = '';
+					
+					//12306手机号
+					// var Phone12306=$('.popPhone12306Input').val()
+					var Phone12306=$('.popPhone12306Input').attr('hideno')
+					if(Phone12306!="" && Phone12306!=undefined){
+						if(!regPhone.test(Phone12306)){
+						   alert(get_lan('passengerPop').phoneRemind);
+						   return false;
+						}
+					}
+					// var hasPhone12306=$('.popPhone12306Input').attr('hideno')?true:false;//有hideno说明之前是有号码的
+					var hasPhone12306=old12306Phone?true:false;//有hideno说明之前是有号码的
+					var operation=""
                     $('body').mLoading("show");
-                    $.ajax(
-                      {
-                        type:'post',
-                        url : $.session.get('ajaxUrl'), 
-                        dataType : 'json',
-                        data:{
-                            url: $.session.get('obtCompany')+"/SystemService.svc/CustomerInfoUpdateOrAddPost",
-                            jsonStr:'{"id":'+netUserId+',"language":"'+obtLanguage+'","customerId":"'+customerId+'","emailInfo":"'+emailInfo+'","docInfo":"'+docInfo+'","phoneInfo":"'+phoneInfo+'","memberShipInfo":"'+memberShipInfo+'"}'
-                        },
-                        success : function(data) {
-                            $('body').mLoading("hide");
-                            var res = JSON.parse(data);
-                            console.log(res);
-                            if(res.message){
-                                alert(res.message);
-                            }else{
-                                closePassengerPop();
-                                chooseNameAndDocument(customerId,$('.popNameRadio:checked').attr("PassengerName"),$('.popDocumentsSelect option:selected').val(),'','');
-                            }
-                        },
-                        error : function() {
-                          // alert('fail');
-                        }
-                      } 
-                    );
+					if(Phone12306 ==""){
+						if(hasPhone12306){
+							//删除
+							console.log("删除")
+							operation="delete"
+						}else{
+							console.log("无操作")
+							operation=""
+							//无操作
+						}
+					}else{
+						//修改，且传12306的手机号码
+						// phoneInfo=Phone12306
+						// if(Phone12306 == $('.popPhone12306Input').attr('hideno')){
+						if(Phone12306 == old12306Phone){
+							console.log("不修改")
+							operation=""
+						}else{
+							console.log("修改")
+							operation="modify"
+						}
+					}
+					var jsonObj={
+						"id":netUserId.split('"')[1],
+						"language":obtLanguage,
+						"customerId":customerId,
+						"emailInfo":emailInfo,
+						"docInfo":docInfo,
+						"phoneInfo":phoneInfo,
+						"memberShipInfo":memberShipInfo
+					}
+					console.log(res)
+					updateCustomerInfo(jsonObj,operation,Phone12306)
+					function updateCustomerInfo(jsonStr,operation,Phone12306){
+						$.ajax(
+						  {
+						    type:'post',
+						    url : $.session.get('ajaxUrl'), 
+						    dataType : 'json',
+						    data:{
+						        url: $.session.get('obtCompany')+"/SystemService.svc/CustomerInfoUpdateOrAddPost",
+						        // jsonStr:'{"id":'+netUserId+',"language":"'+obtLanguage+'","customerId":"'+customerId+'","emailInfo":"'+emailInfo+'","docInfo":"'+docInfo+'","phoneInfo":"'+phoneInfo+'","memberShipInfo":"'+memberShipInfo+'"}'
+						        jsonStr:JSON.stringify(jsonStr)
+						    },
+						    success : function(data) {
+						        $('body').mLoading("hide");
+						        var res = JSON.parse(data);
+						        console.log(res);
+						        if(res.message){
+						            alert(res.message);
+						        }else{
+									if(operation=="delete"){//删除
+										var rid=$('.popPhone12306Input').attr('rid')
+										DelCustomerInfo(customerId,rid)
+									}else if(operation=="modify"){//修改
+										// customerId
+										jsonStr.phoneInfo=Phone12306+",19"
+										updateCustomerInfo(jsonStr,"","")//再次修改12306手机号
+									}else{
+										//这里是干嘛的？流程不清楚
+										closePassengerPop();
+										chooseNameAndDocument(customerId,$('.popNameRadio:checked').attr("PassengerName"),$('.popDocumentsSelect option:selected').val(),'','');
+									}
+								}
+								
+						    },
+						    error : function() {
+						      // alert('fail');
+						    }
+						  } 
+						);
+					}
+                    // 删除12306手机号
+					function DelCustomerInfo(customerId,rid){
+						$.ajax(
+						  {
+						    type:'post',
+						    url : $.session.get('ajaxUrl'), 
+						    dataType : 'json',
+						    data:{
+						        url: $.session.get('obtCompany')+"/SystemService.svc/DelInformotionPost",
+						        jsonStr:'{"rid":"'+rid+'","customerID":"'+customerId+'","type":"cell-phone"}'
+						    },
+						    success : function(data) {
+						        $('body').mLoading("hide");
+						        var res = JSON.parse(data);
+						        console.log(res);
+						        if(res.message){
+						            alert(res.message);
+						        }else{
+						            closePassengerPop();
+						            chooseNameAndDocument(customerId,$('.popNameRadio:checked').attr("PassengerName"),$('.popDocumentsSelect option:selected').val(),'','');
+						        }
+						    },
+						    error : function() {
+						      // alert('fail');
+						    }
+						  } 
+						);
+					}
                 }
             })
         },
@@ -2113,12 +2880,18 @@ function passengersInOrder(customerState,ischanges){
             res.map(function(item,index){
 				
 				var Gender=item.Gender==null?"":item.Gender
-				var Nationality=item.Nationality==null?"":item.Nationality
+                var Nationality=item.Nationality==null?"":item.Nationality;
+				
+				var passengerName = item.Documents[0].DocNameCn!=null&&item.Documents[0].DocNameCn!=""?item.Documents[0].DocNameCn:item.NameCN;
+				var phoneScreen = item.TrainPhones ? item.TrainPhones : item.Phones;
+                var profilePhone = ProfileInfo.HideMyPersonalInfo&&phoneScreen!=""?"*******"+phoneScreen.substring(phoneScreen.length-4,phoneScreen.length):phoneScreen;
+				
+				var CompanyId=item.OrderCompanyId?item.OrderCompanyId:""
                 $(".passengerList").append('\
-                    <div class="passengerLi flexRow" Gender="'+Gender+'" Nationality="'+Nationality+'" customerId="'+item.ID+'" companyId="'+item.OrderCompanyId+'">\
-                    <div class="passengerLiDiv" style="width:250px;text-align:left;padding-left:45px;box-sizing:border-box;"><span class="PassengerNameText">'+item.NameCN+'</span><span class="changePassengerInfo specificFontColor" index="'+index+'" customerId="'+item.ID+'" style="margin-left:5px;cursor:pointer;">'+get_lan('passengerInfo').changePassengerInfo+'</span></div>\
-                    <div class="passengerLiDiv passengerPhone" style="width:150px;">'+item.Phones+'</div>\
-                    <div class="passengerLiDiv" style="width:200px;">'+item.Email+'</div>\
+                    <div class="passengerLi flexRow" Birthday="'+item.Birthday+'" Gender="'+Gender+'" Nationality="'+Nationality+'" customerId="'+item.ID+'" companyId="'+CompanyId+'">\
+                    <div class="passengerLiDiv" style="width:250px;text-align:left;padding-left:45px;box-sizing:border-box;"><span class="PassengerNameText">'+passengerName+'</span><span class="changePassengerInfo specificFontColor" index="'+index+'" customerId="'+item.ID+'" style="margin-left:5px;cursor:pointer;">'+get_lan('passengerInfo').changePassengerInfo+'</span></div>\
+                    <div class="passengerLiDiv passengerPhone" style="width:150px;" hideNo="'+phoneScreen+'">'+profilePhone+'</div>\
+                    <div class="passengerLiDiv" style="width:200px;">'+hideEmail(ProfileInfo,item.Email)+'</div>\
                     <div class="passengerLiDiv passengerLiDocuments" style="width:300px;"><select class="documentsSelect"></select></div>\
                     <div class="passengerLiDiv frequentCardsText" style="width:240px;"></div>\
                     <div class="passengerLiDiv changeRemarkBtn specificFontColor" index="'+index+'"  style="width:125px;text-decoration: underline;cursor:pointer">'+get_lan('passengerInfo').remarks+'</div>\
@@ -2134,14 +2907,23 @@ function passengersInOrder(customerState,ischanges){
 						}
 					}
                     $(".documentsSelect").eq(index).append('\
-                        <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+ditem.DocumentNumber+'</option>\
-                    ')
+						<option idValidity="'+ditem.docExpiryDate+'" value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'" name="'+ditem.DocNameCn+'" cName="'+item.NameCN+'" index="'+index+'" docDelId="'+ditem.delDocId+'">'+ditem.nameDoc+':'+hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid)+'</option>\
+					')
                 })
                 if(item.UpdatedCustomerInfo!=""&&item.UpdatedCustomerInfo!=null){
                     var UpdatedCustomerList = item.UpdatedCustomerInfo.split(',');
-                    $(".PassengerNameText").text(UpdatedCustomerList[1]);
-                    $(".documentsSelect").val(UpdatedCustomerList[2]);
+                    $(".PassengerNameText").eq(index).text(UpdatedCustomerList[1]);
+                    $(".documentsSelect").eq(index).val(UpdatedCustomerList[2]);
                 }
+					//证件名字
+					var name = $(".documentsSelect").eq(index).find("option:checked").attr("name")
+					var cName = $(".documentsSelect").eq(index).find("option:checked").attr("cname")
+					
+					if(name!="null"&&name!=""){
+					    $(".PassengerNameText").eq(index).text(name);
+					}else{
+					    $(".PassengerNameText").eq(index).text(cName);
+					}
 				if(ischanges == 'orderChange'){
 					$('.documentsSelect').val(checkedID)
 				}
@@ -2149,6 +2931,20 @@ function passengersInOrder(customerState,ischanges){
 			if(ischanges == 'orderChange'){
 				$('.passengerInfo').css({"position":"absolute","opacity":"0","z-index":'-1'})
 			}
+			
+			$(".documentsSelect").change(function(){
+			    // var name = $(this).children('option:selected').attr("name");
+			    var cName = $(this).children('option:selected').attr("name");
+			    var index = parseInt($(this).children('option:selected').attr("index"));
+				var profileName=res[index].NameCN
+			    // if(name!="null"&&name!=""){
+			    if(cName!="null"&&cName!=""){
+			        $(".PassengerNameText").eq(index).text(cName);
+			    }else{
+			        $(".PassengerNameText").eq(index).text(profileName);
+			    }
+			})
+			
             totalAmount();
             if($.session.get("TAnumber")){
                 $(".delIcon").remove();
@@ -2217,7 +3013,7 @@ function passengersInOrder(customerState,ischanges){
                 selectPassengers();
             }
             /*有审批单*/
-            if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&$(".passengerLi").length==1){
+            if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&$(".passengerLi").length==1&&!JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption){
                 $(".choosePassengerBody").addClass("hide");
             }else{
                 $(".choosePassengerBody").removeClass("hide");
@@ -2370,16 +3166,19 @@ function totalAmount(personNum){
 	// 	console.log(total)
 	// }
 	total = $(".passengerLi").length*total;
-    $(".totalAmountText").html('<span style="font-size:16px;">￥</span>'+(total));
+    $(".totalAmountText").html((total)+'<span style="font-size:16px;">'+ProfileInfo.OfficeCurrency+'</span>');
 }
 //订火车票
 function clickBookBtn(){
     // $(".bookTicketBtn2").unbind("click").click(function(){
     $(".bookTicketBtn").unbind("click").click(function(){
-		if(ProfileInfo.onlineStyle=="APPLE"){
-			bookTicketBtn()
-			return false;
-		}
+		//苹果火车票也需要验证 7-3，暂时不给苹果
+		// if(ProfileInfo.onlineStyle=="APPLE"){
+		// 	bookTicketBtn()
+		// 	return false;
+		// }
+		
+		$('body').mLoading("show");
 		var PassengerVerificationInfoList=[]//旅客列表
 		var notVerifiedList=[]//未验证旅客列表
 		var userInfos=[]//未验证旅客列表
@@ -2395,21 +3194,34 @@ function clickBookBtn(){
 				 	phone:"",
 				 	//passengerType:"",//暂不需要
 				 	sex:"",//0女1男
-				 	Nationalit:"",
+				 	Nationality:"",
+					idValidity:"",
+					birthday:""
 				 } 
 				 var customerid = $(arr[i]).attr("customerid")
-				 var passengerPhone=$('.passengerLi').eq(i).find('.passengerPhone').text()
+				 var passengerPhone=$('.passengerLi').eq(i).find('.passengerPhone').attr("hideNo")
 				 var PassengerNameText=$('.passengerLi').eq(i).find('.PassengerNameText').text()
 				 var cardType = $('.passengerLi').eq(i).find('.documentsSelect').val()
 				 var cardNo = $('.passengerLi').eq(i).find('.documentsSelect').find("option[value="+cardType+"]")
 				 var gender = $('.passengerLi').eq(i).attr("gender")
 				 var nationality = $('.passengerLi').eq(i).attr("nationality")
+				 var birthday = $('.passengerLi').eq(i).attr("birthday")
+				 //证件有效期
+				 var idValidity = $('.passengerLi').eq(i).find('.documentsSelect').find("option[value="+cardType+"]").attr("idvalidity")
+				cardType==1?idValidity="":"";//身份证不传有效期
+				if(cardType == null){
+					cardType=""
+					// alert('')
+					// return false;
+				}
 				PassengerVerificationInfo.cardType=cardType
 				PassengerVerificationInfo.cardNo= $(cardNo).attr("doctext")
 				PassengerVerificationInfo.passengerName=PassengerNameText
 				PassengerVerificationInfo.phone=passengerPhone
-				PassengerVerificationInfo.sex=gender?"0":"1"
-				PassengerVerificationInfo.Nationalit=nationality
+				PassengerVerificationInfo.Nationality=nationality
+				PassengerVerificationInfo.sex=gender==1?"1":"0"//性别
+				PassengerVerificationInfo.birthday=birthday//生日
+				PassengerVerificationInfo.idValidity=idValidity//证件有效期
 				PassengerVerificationInfoList.push(PassengerVerificationInfo)
 		}
 
@@ -2417,6 +3229,7 @@ function clickBookBtn(){
 			id:netUserId.split('\"')[1],
 			// depDate:"",
 			passengers:PassengerVerificationInfoList,
+			Language:obtLanguage,
 		}}
 		$.ajax(
 		  {
@@ -2429,19 +3242,35 @@ function clickBookBtn(){
 		        jsonStr:JSON.stringify(jsonStr)
 		    },
 		    success : function(data) {
+		        $('body').mLoading("hide");
 		        var res = JSON.parse(data);
 					// res.passengerInfos[0].status="failed"
 		        console.log(res);
-		        $('body').mLoading("hide");
 		        if(res.code==200){
-					userInfos=res.passengerInfos.filter(function(item){
-						//获取并过滤 是否需要验证 
+					//身份验证失败
+					var testing=false;
+					res.passengerInfos.map(function(item){
+					// userInfos=res.passengerInfos.filter(function(item){
 						// return item.cardType==1?item:false
+						//获取并过滤 是否需要验证 
 						if((item.status=="succeed"|| item.status=="unknown") && item.mobileStatus=="failed"){
-							return item
+							userInfos.push(item)
+							// return item
 						}
 						if(item.status=="failed"){
-							var tips=obtLanguage=="CN"?"身份验证失败，请联系线下服务小组":"Passenger validate failed, please contact service team for help.";
+							testing=true;
+							
+							if(ProfileInfo.onlineStyle=="APPLE"){
+								var tips='Passenger identification validate failed. Please make sure the Traveler Name and Document info at this page are the same as your verified Passenger identification in 12306.com or 12306 app. Any question please contact Apple Travel for help.';
+								if(obtLanguage=="CN"){
+									tips='身份验证失败。请确保此页面的乘客姓名、证件信息与您在12306.com或12306 app中”已通过"的身份验证信息一致。如有问题请联系Apple Travel寻求帮助。'
+								}
+							}else{
+								var tips='Passenger identification validate failed. Please make sure the Traveler Name and Document info at this page are the same as your verified Passenger identification in 12306.com or 12306 app. Any question please contact service team for help.';
+								if(obtLanguage=="CN"){
+									tips='身份验证失败。请确保此页面的乘客姓名、证件信息与您在12306.com或12306 app中”已通过"的身份验证信息一致。如有问题请联系服务组寻求帮助。'
+								}
+							}
 							var closeBtn=obtLanguage=="CN"?"关闭":"Close"
 							$('body').append('\
 								<div id="coverCredent">\
@@ -2461,9 +3290,9 @@ function clickBookBtn(){
 							return false
 						}
 					})
-					if(userInfos.length>0){
+					if(userInfos.length>0 && testing==false){
 						VerificationPop(res,"",InfoIndex);
-					}else{
+					}else if(testing==false){
 						//继续预订
 						bookTicketBtn()
 					}
@@ -2489,13 +3318,14 @@ function clickBookBtn(){
 				return false;
 				//继续预定
 			}
-			var title=obtLanguage=="CN"?"乘客手机核验":"乘客手机核验";
+			var title=obtLanguage=="CN"?"乘客手机核验":"Passenger Verification";
 			var str1=obtLanguage=="CN"?"已过期":"Expired";
 			var str2=obtLanguage=="CN"?"即将过期":"Expire Soon";
-			// var tips=obtLanguage=="CN"?"请注意更新您的证件以免耽误您的行程。":"Please renew it so as not to delay your trip.";
-			var tips=obtLanguage=="CN"?"请注意更新您的证件以免耽误您的行程。":"";
+			var tips=obtLanguage=="CN"?"请注意更新您的证件以免耽误您的行程。":"Please renew it so as not to delay your trip.";
+			// var tips=obtLanguage=="CN"?"请注意更新您的证件以免耽误您的行程。":"";
 			var btn=obtLanguage=="CN"?"我已完成校验，刷新结果":"Refresh the Result";
 			var cancelbtn=obtLanguage=="CN"?"取消":"Cancel";
+			var states=obtLanguage=="CN"?"当前核验状态":"Current verification status";
 			//检测状态
 			var stateStr=obtLanguage=="CN"?"待核验":"Pending verification",stateStyle="#333"
 			if(state=="changeState"){
@@ -2517,7 +3347,7 @@ function clickBookBtn(){
 						<div class="credentTitle">'+title+'</div>\
 						<div class="credentList">\
 						</div>\
-							<div style="margin-top:20px;font-size:14px;color:#333;line-height:22px;font-weight:600;line-height:25px;">当前核验状态：</div>\
+							<div style="margin-top:20px;font-size:14px;color:#333;line-height:22px;font-weight:600;line-height:25px;">'+states+'：</div>\
 							<div style="margin-top:8px;font-size:14px;color:'+stateStyle+';line-height:22px;line-height:25px;">'+stateStr+'</div>'
 							+btnGroup+
 					'</div>\
@@ -2526,6 +3356,11 @@ function clickBookBtn(){
 			$(".cancelBtn").click(function(){
 				$("#coverCredent").remove()
 			})
+			
+			var langPhone=obtLanguage=="CN"?"请使用手机号码":"Please use mobile number ";
+			var langSend=obtLanguage=="CN"?"发送验证码":"Send PIN ";
+			var langTo=obtLanguage=="CN"?"至":"to";
+			var langPassenger=obtLanguage=="CN"?"乘客":"passenger";
 			
 			userInfos.map(function(item,index){
 				console.log(InfoIndex)
@@ -2538,13 +3373,13 @@ function clickBookBtn(){
 				
 				$('.credentList').append('\
 				<div class="credentLi">\
-					<div style="margin-top:20px;font-size:14px;color:#333;line-height:22px;">乘客：<span style="font-weight: 600;">'+userName+'</span></div>\
+					<div style="margin-top:20px;font-size:14px;color:#333;line-height:22px;">'+langPassenger+'：<span style="font-weight: 600;">'+userName+'</span></div>\
 					<div style="margin-top:8px;font-size:14px;color:#333;line-height:22px">\
-					请使用手机号码\
+					'+langPhone+'\
 					<span style="font-size:16px;font-weight:600"> '+item.encMobileNo+' </span>\
-					发送验证码\
-						<span style="font-size:16px;color:'+numColor+';font-weight:600"> 91967239'+item.captcha+' </span>\
-						至\
+					'+langSend+'\
+						<span style="font-size:16px;color:'+numColor+';font-weight:600"> '+item.captcha+' </span>\
+						'+langTo+'\
 						<span style="font-size:16px;color:'+numColor+';font-weight:600"> 12306 </span>\
 					</div>\
 				</div>\
@@ -2579,7 +3414,7 @@ function clickBookBtn(){
 						$("#coverCredent").remove()
 				        if(res.code==200){
 							var rDate=res.passengerInfos[InfoIndex]
-							if((rDate.status=="succeed" || rDate.status== "unknown") && (rDate.mobileStatus=="succeed" || rDate.mobileStatus== "unknown") ){
+							if((rDate.status=="succeed" || rDate.status== "unknown")){
 								//通过验证
 								if(InfoIndex<userInfos.length-1){
 									InfoIndex++
@@ -2656,9 +3491,10 @@ function clickBookBtn(){
 			if($.session.get('TAnumber')){
 			    var customerList = '';
 			    for(var i=0;i<$(".passengerLi").length;i++){
-			        customerList += '"'+$(".passengerLi").eq(i).attr("customerId")+'"';
+			        customerList += ''+$(".passengerLi").eq(i).attr("customerId")+'';
 			        customerList += ',';
-			    }
+                }
+                var timeList = $(".orderDetail").attr("timeList").split('"')[1];
 			    customerList = customerList.substring(0,customerList.length-1);
 			    $('body').mLoading("show");
 			    $.ajax(
@@ -2668,16 +3504,16 @@ function clickBookBtn(){
 			        dataType : 'json',
 			        data:{
 			            url: $.session.get('obtCompany')+"/OrderService.svc/CheckTripCompareTA",
-			            jsonStr:'{"request":{"key":'+netUserId+',"TANo":"'+$.session.get('TAnumber')+'","Language":"'+obtLanguage+'","cityList":['+$(".orderDetail").attr("cityList")+'],"timeList":['+$(".orderDetail").attr("timeList")+'],"tripType":"4","customerList":['+customerList+']}}'
+			            jsonStr:'{"request":{"key":'+netUserId+',"TANo":"'+$.session.get('TAnumber')+'","Language":"'+obtLanguage+'","cityList":['+$(".orderDetail").attr("cityList")+'],"timeList":['+ timeList +'],"tripType":"4","customerList":['+customerList+']}}'
 			        },
 			        success : function(data) {
 			            var res = JSON.parse(data);
 			            console.log(res);
-			            // $('body').mLoading("hide");
 			            if(res.code==200){
 			                checkRepeat();
 			            }else{
 			                alert(res.message);
+							$('body').mLoading("hide");
 			            }
 			        },
 			        error : function() {
@@ -2714,12 +3550,14 @@ function clickBookBtn(){
 				        }else if(res.stateValue == 3){
 							var r=confirm(res.message.split('<br>').join('\n'));
 							if(ProfileInfo.onlineStyle=="APPLE"){
-							    var finishedInfo = {
-							        'orderNo':res.orderNo,
-							    }
-							    console.log($.session.get('finishedInfo'));
-							    $.session.set('finishedInfo', JSON.stringify(finishedInfo));
-							    window.location.href='../../purchaseTrip/purchaseTrip.html';
+                                if(r==true){
+                                    var finishedInfo = {
+                                        'orderNo':res.orderNo,
+                                    }
+                                    console.log($.session.get('finishedInfo'));
+                                    $.session.set('finishedInfo', JSON.stringify(finishedInfo));
+                                    window.location.href='../../purchaseTrip/purchaseTrip.html';
+                                }
 							}
 						}else{
 				            bookTicket();
@@ -2770,20 +3608,42 @@ function bookTicket(){
         var desCodeTrain = $(".deaprtureSeat").attr("passengerseat")+','+$(".returnSeat").attr("passengerseat");
     }
     console.log(desCodeTrain);
-
+    var classLimitation = 'NO';
+    var classLimitationBack = 'NO';
 	// var sj='{"id":'+netUserId+',"classLimitation":"NO","classLimitationBack":"NO","documentNos":"'+documentNos+'","orgTicketInfo":"'+orgTicketInfo+'","queryKey":"'+queryKey+'","trainNoLimitation":"'+trainNoLimitation+'","isDirectTicket":"'+isDirectTicket+'","trainNoLimitationBack":"'+trainNoLimitationBack+'","Language":"'+obtLanguage+'","desCodeTrain":"'+desCodeTrain+'","isGrabGo":"'+isGrabGo+'","isGrabBack":"'+isGrabBack+'","carTaxiInfo":"'+carTaxiInfo+'"}'
 	// console.log("预定信息")
 	// console.log(sj)
 	// $('body').mLoading("hide");
-	// return false;
+    // return false;
+    var standByLimitTimeGo = '';
+    var standByLimitTimeBack = '';
+    if(trainTicketInfo.standBy){
+        if(trainTicketInfo.type=="oneWay"){
+            standByLimitTimeGo = $("#standByOneWay").val()+" "+$(".standByOneWaySelect").val();
+            isGrabGo = 1;
+            classLimitation =$(".orderSeatType").eq(0).attr("seatType");
+        }else if(trainTicketInfo.type=="roundTrip"){
+            if(trainTicketInfo.standByFrom){
+                standByLimitTimeGo = $("#standByFromInput").val()+" "+$(".standByFromSelect").val();
+                isGrabGo = 1;
+                classLimitation = $(".orderSeatType").eq(0).attr("seatType");
+            }
+            if(trainTicketInfo.standByReturn){
+                standByLimitTimeBack = $("#standByReturnInput").val()+" "+$(".standByReturnSelect").val();
+                isGrabBack = 1;
+                classLimitationBack = $(".orderSeatType").eq(1).attr("seatType");
+            }
+        }
+    }
     $.ajax(
       {
         type:'post',
         url : $.session.get('ajaxUrl'), 
         dataType : 'json',
         data:{
-            url: $.session.get('obtCompany')+"/OrderService.svc/BookTrainSecondPost",
-            jsonStr:'{"id":'+netUserId+',"classLimitation":"NO","classLimitationBack":"NO","documentNos":"'+documentNos+'","orgTicketInfo":"'+orgTicketInfo+'","queryKey":"'+queryKey+'","trainNoLimitation":"'+trainNoLimitation+'","isDirectTicket":"'+isDirectTicket+'","trainNoLimitationBack":"'+trainNoLimitationBack+'","Language":"'+obtLanguage+'","desCodeTrain":"'+desCodeTrain+'","isGrabGo":"'+isGrabGo+'","isGrabBack":"'+isGrabBack+'","carTaxiInfo":"'+carTaxiInfo+'"}'
+            // url: $.session.get('obtCompany')+"/OrderService.svc/BookTrainSecondPost",
+            url: $.session.get('obtCompany')+"/OrderService.svc/TrainBookPost",
+            jsonStr:'{"request":{"id":'+netUserId+',"classLimitation":"'+classLimitation+'","classLimitationBack":"'+classLimitationBack+'","documentNos":"'+documentNos+'","orgTicketInfo":"'+orgTicketInfo+'","queryKey":"'+queryKey+'","trainNoLimitation":"'+trainNoLimitation+'","isDirectTicket":"'+isDirectTicket+'","trainNoLimitationBack":"'+trainNoLimitationBack+'","Language":"'+obtLanguage+'","desCodeTrain":"'+desCodeTrain+'","isGrabGo":"'+isGrabGo+'","isGrabBack":"'+isGrabBack+'","carTaxiInfo":"'+carTaxiInfo+'","standByLimitTimeGo":"'+standByLimitTimeGo+'","standByLimitTimeBack":"'+standByLimitTimeBack+'"}}'
         },
         success : function(data) {
             $('body').mLoading("hide");

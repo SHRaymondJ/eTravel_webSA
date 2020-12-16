@@ -206,7 +206,7 @@ input[type="radio"]{
 .switchIconTrain{
 	background-image: url('../../index/images/exchangeTrain.png');
 }
-.domDateBody,#domCabin,#intlDepartureDate,#intlReturnDate,#intlCabin,#trainDepartureDate,#trainReturnDate,#trainCabin,#hotelDepartureDate,#hotelReturnDate,#hotelPrice,#hotelAddress,.hotelAddressBody{
+.domDateBody,#domCabin,#intlDepartureDate,#intlReturnDate,#intlCabin,#trainDepartureDate,#trainReturnDate,#trainCabin,#hotelDepartureDate,#hotelReturnDate,#hotelPrice,#hotelAddress,.hotelAddressBody,.trainDateBody{
 	width: 146px;
 	height: 28px;
 	border: 1px solid #555555;
@@ -215,6 +215,18 @@ input[type="radio"]{
 	padding-left: 2px;
 	background-color: #fff;
 	position: relative;
+}
+#trainDepartureDate,#trainReturnDate{
+	width: 86px;
+	border: none !important;
+	background-color: transparent;
+}
+.trainDateBody{
+	background-color: #FFFFFF;
+}
+.trainDateBody select{
+	border: none !important;
+	outline: none;
 }
 #hotelAddress{
 	width: 120px;
@@ -283,7 +295,7 @@ input[type="radio"]{
 	margin: 0 auto;
 	text-align: center;
 	margin-bottom: 8px;
-	margin-top: 10px;
+	margin-top: 10px;border-radius:4px;
 	cursor: pointer;
 }
 .hotelStar,.hotelKey{

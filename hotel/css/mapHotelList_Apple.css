@@ -366,6 +366,110 @@ background-color:#fff;
 	cursor: pointer;
 	word-break: break-word;
 }
+/*班车*/
+.shuttleRemind{
+	width: 235px;
+	min-height: 30px;
+	position: absolute;
+	top: 46px;
+    left: 65px;
+	font-size: 12px;
+	z-index: 10;
+}
+.shuttleRemindText{
+	width: 235px;
+	min-height: 20px;
+	line-height: 20px;
+	border:1px solid #3083FB;
+	background-color: #fff;
+	box-sizing: border-box;
+	padding: 10px;
+}
+.shuttleRemindText:before{
+	box-sizing: content-box;
+	width: 0px;
+	height: 0px;
+	position: absolute;
+	top: -19px;;
+	left:50px;
+	padding:0;
+	border-bottom:10px solid #FFFFFF;
+	border-top:10px solid transparent;
+	border-left:10px solid transparent;
+	border-right:10px solid transparent;
+	display: block;
+	content:'';
+	z-index: 12;
+}
+.shuttleRemindText:after{
+	box-sizing: content-box;
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    top: -20px;
+    left: 50px;
+    padding: 0;
+    border-bottom: 10px solid #3083FB;
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    display: block;
+    content: '';
+    z-index: 10;
+}
+/*end*/
+/*绿色酒店*/
+.greenRemind{
+	width: 257px;
+	min-height: 30px;
+	position: absolute;
+	top: 46px;
+    left: 65px;
+	font-size: 12px;
+	z-index: 10;
+}
+.greenRemindText{
+	width: 257px;
+	min-height: 20px;
+	line-height: 20px;
+	border:1px solid #3083FB;
+	background-color: #fff;
+	box-sizing: border-box;
+	padding: 10px;
+}
+.greenRemindText:before{
+	box-sizing: content-box;
+	width: 0px;
+	height: 0px;
+	position: absolute;
+	top: -19px;;
+	left:50px;
+	padding:0;
+	border-bottom:10px solid #FFFFFF;
+	border-top:10px solid transparent;
+	border-left:10px solid transparent;
+	border-right:10px solid transparent;
+	display: block;
+	content:'';
+	z-index: 12;
+}
+.greenRemindText:after{
+	box-sizing: content-box;
+    width: 0px;
+    height: 0px;
+    position: absolute;
+    top: -20px;
+    left: 50px;
+    padding: 0;
+    border-bottom: 10px solid #3083FB;
+    border-top: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    display: block;
+    content: '';
+    z-index: 10;
+}
+/*end*/
 .hotelLiScore{
 	width: 30px;
     height: 30px;

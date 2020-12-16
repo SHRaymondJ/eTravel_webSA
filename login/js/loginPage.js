@@ -22,7 +22,7 @@ function get_lan(m)
 //中英文对象
 var cn = {
     "customer":'企业客户',
-    'login':'登陆',
+    'login':'登录',
     'company':'公司名',
     'userName':'用户名',
     'password':'密码',
@@ -31,6 +31,8 @@ var cn = {
     'forgetPassword':'忘记密码',
     "passwordRemind":"账号或密码错误",
 	"remainUsername":"记住用户名",
+	"policy":"登录即代表您同意我们的",
+	"policyLink":"隐私政策",
 }
 var en = {
     "customer":'Enterprise Customer',
@@ -43,6 +45,8 @@ var en = {
     'forgetPassword':'Forget Password',
     "passwordRemind":"Account or password error",
 	"remainUsername":"Remember user name",
+	"policy":"By logging I accept all terms and conditionsopens in ",
+	"policyLink":"BCD's global privacy policy",
 }
 var SelectUrl="http://appservice.etravel.net.cn/SystemService.svc/SelectUrlPost"
 $(function(){
@@ -64,7 +68,7 @@ $(function(){
   $("header").remove();
   $(".pageHeader").css("height","80px")
   showContent();//内容展示
-  login();//登陆
+  login();//登录
   document.onkeydown = function (event) {
      var e = event || window.event || arguments.callee.caller.arguments[0];
      if (e && e.keyCode == 13) {
@@ -88,7 +92,8 @@ function showContent(){
             <label for="txtLoginPassword">\
                 '+get_lan('password')+'</label>\
             <input name="txtLoginPassword" type="password" id="txtLoginPassword" tabindex="3">\
-            <input type="submit" name="Button1" value="'+get_lan('login')+'" id="Button1" class="btnLogin">\
+            <div class="policyLink">'+get_lan('policy')+'<a target="_blank" href="https://www.bcdtravel.com/privacy-policy/#privacy_policy_ch">'+get_lan('policyLink')+'</a></div>\
+			<input type="submit" name="Button1" value="'+get_lan('login')+'" id="Button1" class="btnLogin">\
             <div class="forgetPassword">\
 			<label name="Remember">\
 				<span class="checkboxSpan"></span>\
@@ -127,13 +132,13 @@ function rememberUser(){
 		window.localStorage.removeItem('historyUserName')
 	}
 }
-//登陆事件
+//登录事件
 function login(){
 	$.session.set('TAnumber','')
 	$.session.set('trainTicketChanges','');
 	$.session.set('TAorderNo','');
 	$.session.set('noChangePasserword','');
-    //点击登陆
+    //点击登录
     $(".btnLogin").unbind('click').click(function(){
         var companyName = 'BCD';
         var userName = $('#txtLoginName').val();
@@ -159,8 +164,7 @@ function login(){
                     var res = JSON.parse(data);
                     console.log(res);
                     if(res.Company_Url){
-                        // $.session.set('obtCompany', res.Company_Url)
-                        $.session.set('obtCompany', "https://mobileservicetest.bcdtravel.cn:8089/AndroidService.testForIT")    //测试
+                        $.session.set('obtCompany', res.Company_Url)
                         $.ajax(
                           {
                               type: 'post',

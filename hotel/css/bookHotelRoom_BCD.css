@@ -724,6 +724,8 @@
 	width: 120px;
 	height: 30px;
 	margin-top: 5px;
+	box-sizing: border-box;
+    padding-left: 5px;
 }
 /*信用卡信息*/
 .creditCardBody{
@@ -777,7 +779,9 @@
 }
 .creditCardTypeBody{
 	float: left;
-	height: 35px;
+	/* height: 35px; */
+	    min-height: 35px;
+	    max-width: 973px;
 }
 .creditCardTypeBody img{
 	height: 25px;
@@ -787,12 +791,34 @@
 /*总金额*/
 .totalFareBody{
 	width: 250px;
-    height: 50px;
+    /* height: 50px; */
     line-height: 50px;
     color: #f58a00; 
-    margin: -45px 0 100px 950px;
+    /* margin: -45px 0 100px 950px; */
     /* text-align: right; */
-    font-size: 28px;
+	font-size: 28px;
+	position: absolute;
+    right: 0;
+    top: 0;
+}
+.hotelTips{
+	    position: absolute;
+		text-align: center;
+	    left: 0;
+	    right: 0;
+		color: #E31836;
+		font-size:14px;
+		position: relative;
+}
+.hotelTips::before{
+	    content: ".";
+	    display: inline-block;
+	    width: 14px;
+	    background-image: url(../images/icon_hotts_red.png);
+	    background-position: center;
+	    background-repeat: no-repeat;
+	    margin-right: 5px;
+		color: transparent;
 }
 /*集中开票*/
 .centralFapiao{
@@ -801,7 +827,7 @@
 	line-height: 30px;
 	font-size: 14px;
 	box-sizing: border-box;
-	margin-top: 40px;
+	margin-top: 10px;
 	/*text-align: center;*/
 	padding-left: 15px;
 }

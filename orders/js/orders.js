@@ -299,6 +299,24 @@ function searchOrders(){
 	        $("#endTime").val(getNextDay($("#startTime").val()));
 	    }
 	});
+	
+	setTimeout(function(){
+		var departureValue = new Date($("#startTime").val().replace(/-/g, "/"));
+		// var nowdate = new Date();
+		// var onemonthdate = new Date(nowdate.getTime() + 30*24*3600*1000);//一个月后
+		$("#endTime").datepicker('destroy');
+		$("#endTime").datepicker({
+		    dateFormat: 'yy-mm-dd',
+		    changeMonth: true,
+		    minDate: departureValue,  // 当前日期之后的 0 天，就是当天
+			maxDate: getNextYear(departureValue),  // 当前日期之后的 0 天，就是当天
+		    // maxDate: onemonthdate,
+		    hideIfNoPrevNext: true,
+		    showOtherMonths: true,
+		    selectOtherMonths: true,
+		});
+	},10)
+	
 	$.ajax(
 	  { 
 	    type:'post', 
@@ -373,6 +391,39 @@ function searchOrders(){
 	})
 }
 function allOrderList(){
+	var searchName = $("#searchName").val();
+	
+	var nowdate = new Date();
+	var onemonthdate = new Date(nowdate.getTime() + 30*24*3600*1000);//一个月后
+	$('#startTime').val(dateForma(nowdate,'-'))
+	$('#endTime').val(dateForma(onemonthdate,'-'))
+	var startTime = dateForma(nowdate)+' 00:00:00';
+	var endTime = dateForma(onemonthdate)+' 23:59:59' ;
+	
+	function dateForma(time,splitSign){
+		splitSign=splitSign?splitSign:"/"
+		var y = time.getFullYear();
+		var m = time.getMonth()+1;
+		var d = time.getDate()
+		return y + splitSign + m + splitSign + d
+	}
+	var searchOrderNo = $("#searchOrderNo").val();
+	var searchType = $('#searchType option:selected').val();
+	var remarkIndex = $('#remarkIndex option:selected').val();
+	var remarkValue = $("#remarkValue").val();
+	// console.log(searchType);
+		var o={
+			"id":netUserId.split("\"")[1],
+			"Language":obtLanguage,
+			"startTime":startTime,
+			"endTime":endTime,
+			"searchType":searchType,
+			"searchName":searchName,
+			"remarkIndex":remarkIndex,
+			"remarkValue":remarkValue,
+			"searchOrderNo":searchOrderNo,
+			}
+		console.log(o)
 	$('body').mLoading("show");
 	$.ajax( 
 	  { 
@@ -380,8 +431,10 @@ function allOrderList(){
 	    url : $.session.get('ajaxUrl'), 
 	    dataType : 'json',
 	    data:{
-	        url: $.session.get('obtCompany')+"/OrderService.svc/MyTripListPost",
-	        jsonStr:'{"id":'+netUserId+',"Language":"'+obtLanguage+'"}'
+	        url: $.session.get('obtCompany')+"/OrderService.svc/NewTripList",
+			jsonStr: JSON.stringify(o),
+	        // url: $.session.get('obtCompany')+"/OrderService.svc/MyTripListPost",//更换为查询按钮得接口
+	        // jsonStr:'{"id":'+netUserId+',"Language":"'+obtLanguage+'"}'
 	    },
 	    success : function(data) {
 	    	$('body').mLoading("hide");

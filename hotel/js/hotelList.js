@@ -101,12 +101,14 @@ var cn = {
         "freeCancel":"免费取消",
         "noGuarantee":"免担保",
         "protocol":"协议酒店",
+        "companyBill":"公司支付"
     },
     "hotelsNumber":{
         "hotelsNumber1":"根据您的需求，共有",
         "hotelsNumber2":"家酒店供您选择",
     },
     'searchRemind':'请正确填写！',
+    'points':" 分",
 }
 var en = {
     "progressBar":{
@@ -171,12 +173,15 @@ var en = {
         "freeCancel":"Free Cancellation",
         "noGuarantee":"Without Guarantee",
         "protocol":"Corporate",
+        "companyBill":"Company Bill"
+
     },
     "hotelsNumber":{
         "hotelsNumber1":"According to your needs, there are",
         "hotelsNumber2":"hotels",
     },
     'searchRemind':'Please fill in correctly!',
+    'points':" Points",
 }
 function get_lan(m)
 {
@@ -314,12 +319,12 @@ function showContent(){
             '+get_lan('searchBody').price+'\
           </div>\
           <div class="hotelPriceBtn" minPrice="0" maxPrice="5000">'+get_lan('searchBody').allStar+'</div>\
-          <div class="hotelPriceBtn" id="price1" minPrice="0" maxPrice="150">￥0-150</div>\
-          <div class="hotelPriceBtn" id="price2" minPrice="150" maxPrice="300">￥150-300</div>\
-          <div class="hotelPriceBtn" id="price3" minPrice="300" maxPrice="450">￥300-450</div>\
-          <div class="hotelPriceBtn" id="price4" minPrice="450" maxPrice="600">￥450-600</div>\
-          <div class="hotelPriceBtn" id="price5" minPrice="600" maxPrice="1000">￥600-1000</div>\
-          <div class="hotelPriceBtn" id="price6" minPrice="1000" maxPrice="5000">￥1000-5000</div>\
+          <div class="hotelPriceBtn" id="price1" minPrice="0" maxPrice="150">0-150</div>\
+          <div class="hotelPriceBtn" id="price2" minPrice="150" maxPrice="300">150-300</div>\
+          <div class="hotelPriceBtn" id="price3" minPrice="300" maxPrice="450">300-450</div>\
+          <div class="hotelPriceBtn" id="price4" minPrice="450" maxPrice="600">450-600</div>\
+          <div class="hotelPriceBtn" id="price5" minPrice="600" maxPrice="1000">600-1000</div>\
+          <div class="hotelPriceBtn" id="price6" minPrice="1000" maxPrice="5000">1000-5000</div>\
           <input type="text" value="0" class="searchMinPrice">\
           <div style="height:23px;width:30px;border-bottom:2px solid #979797"></div>\
           <input type="text" value="700" class="searchMaxPrice">\
@@ -329,6 +334,27 @@ function showContent(){
     $(".searchMinPrice").val(queryKeyList[7]);
     $(".searchMaxPrice").val(queryKeyList[8]);
     
+	//默认选择星级
+	var choosedStars = queryKey.split(',')[6]
+	if(choosedStars=="0-1-2-3-4-5"){
+		$('.hotelStarBtn').removeClass('starChoose')
+		$('.hotelStarBtn').eq(0).addClass('starChoose')
+	}else{
+		$('.hotelStarBtn').removeClass('starChoose')
+		if(choosedStars.indexOf('1-2')>-1){//二星级以及一下
+			$('.hotelStarBtn').eq(1).addClass('starChoose')
+		}
+		if(choosedStars.indexOf('3')>-1){//三星级
+			$('.hotelStarBtn').eq(2).addClass('starChoose')
+		}
+		if(choosedStars.indexOf('4')>-1){//四星级
+			$('.hotelStarBtn').eq(3).addClass('starChoose')
+		}
+		if(choosedStars.indexOf('5')>-1){//五星级
+			$('.hotelStarBtn').eq(4).addClass('starChoose')
+			
+		}
+	}
     $("#hotelAddress").on('input propertychange',function(){
         $("#hotelAddress").removeAttr("key");
     })
@@ -719,6 +745,7 @@ function showContent(){
 		return currentdate;
 	}
     $(".searchHotelBtn").unbind("click").click(function(){
+        var that = this;
         if($(this).attr("state")=="domHotel"){
             var hotelCityCode = $('#hotelCity').attr("code");
             var hotelCityText = $('#hotelCity').val();
@@ -729,71 +756,83 @@ function showContent(){
             var hotelState = "intlHotel";
         }
         if(hotelCityCode){
-			if ($(this).attr("startlimit") && parseInt($(this).attr("startlimit")) > 0) {
-				if (datedifference(getNowFormatDate(), $('#hotelDepartureDate').val()) < parseInt($(this).attr("startlimit"))) {
-					if ($(this).attr("CanSearch") != "true") {
-						if ($(this).attr("Message").indexOf("\\n") != -1) {
-							alert($(this).attr("Message").split("\\n").join('\n'));
-						} else {
-							alert($(this).attr("Message"));
-						}
-						return false;
-					}else{
-						if ($(this).attr("Message").indexOf("\\n") != -1) {
-							var mymessage = confirm($(this).attr("Message").split("\\n").join('\n'));
-						} else {
-							var mymessage = confirm($(this).attr("Message"));
-						}
-						if (mymessage == true) {
-							if ($(this).attr("CanSearch") != "true") {
-								return false;
-							}
-						} else {
-							return false;
-						}
-					}
-				}
-			}
-            var hotelAreaTypeID = $("#keyWordInput").attr("hoteltype")&&$("#keyWordInput").attr("hoteltype")!=5?$("#keyWordInput").attr("relationId")+'-'+$("#keyWordInput").attr("hoteltype"):'';
-            var hotelname = !$("#keyWordInput").attr("hoteltype")||$("#keyWordInput").attr("hoteltype")==5?$("#keyWordInput").val().split(",").join(' '):'';
-            if($(this).attr("state")=="domHotel"){
-                if($("#hotelAddress").val()!=""){
-                    if($("#hotelAddress").attr("key")){
-                        var address = $("#hotelCity").val()+$("#hotelAddress").attr("key").split(",").join(' ');
+			var cityList = '"' + hotelCityCode + '"';
+            tools.appleRemindPop(cityList, 2, netUserId, function() {
+                if ($(that).attr("startlimit") && parseInt($(that).attr("startlimit")) > 0) {
+                    if (datedifference(getNowFormatDate(), $('#hotelDepartureDate').val()) < parseInt($(that).attr("startlimit"))) {
+                        if ($(that).attr("CanSearch") != "true") {
+                            if ($(that).attr("Message").indexOf("\\n") != -1) {
+                                alert($(that).attr("Message").split("\\n").join('\n'));
+                            } else {
+                                alert($(that).attr("Message"));
+                            }
+                            return false;
+                        }else{
+                            if ($(that).attr("Message").indexOf("\\n") != -1) {
+                                var mymessage = confirm($(that).attr("Message").split("\\n").join('\n'));
+                            } else {
+                                var mymessage = confirm($(that).attr("Message"));
+                            }
+                            if (mymessage == true) {
+                                if ($(that).attr("CanSearch") != "true") {
+                                    return false;
+                                }else{
+                                    searchHotel()
+                                }
+                            } else {
+                                return false;
+                            }
+                        }
                     }else{
-                        var address = $("#hotelCity").val()+$("#hotelAddress").val().split(",").join(' ');
+                        searchHotel()
                     }
                 }else{
-                    var address = "";
+                    searchHotel()
                 }
-            }else if($(this).attr("state")=="intlHotel"){
-                if($("#hotelAddress").val()!=""){
-                    if($("#hotelAddress").attr("key")){
-                        var address = $("#hotelIntlCity").val()+$("#hotelAddress").attr("key").split(",").join(' ');
+            });
+            function searchHotel(){
+                var hotelAreaTypeID = $("#keyWordInput").attr("hoteltype")&&$("#keyWordInput").attr("hoteltype")!=5?$("#keyWordInput").attr("relationId")+'-'+$("#keyWordInput").attr("hoteltype"):'';
+                var hotelname = !$("#keyWordInput").attr("hoteltype")||$("#keyWordInput").attr("hoteltype")==5?$("#keyWordInput").val().split(",").join(' '):'';
+                if($(that).attr("state")=="domHotel"){
+                    if($("#hotelAddress").val()!=""){
+                        if($("#hotelAddress").attr("key")){
+                            var address = $("#hotelCity").val()+$("#hotelAddress").attr("key").split(",").join(' ');
+                        }else{
+                            var address = $("#hotelCity").val()+$("#hotelAddress").val().split(",").join(' ');
+                        }
                     }else{
-                        var address = $("#hotelIntlCity").val()+$("#hotelAddress").val().split(",").join(' ');
+                        var address = "";
                     }
-                }else{
-                    var address = "";
+                }else if($(that).attr("state")=="intlHotel"){
+                    if($("#hotelAddress").val()!=""){
+                        if($("#hotelAddress").attr("key")){
+                            var address = $("#hotelIntlCity").val()+$("#hotelAddress").attr("key").split(",").join(' ');
+                        }else{
+                            var address = $("#hotelIntlCity").val()+$("#hotelAddress").val().split(",").join(' ');
+                        }
+                    }else{
+                        var address = "";
+                    }
                 }
+                var stars = '0-';
+                console.log(stars);
+                for(var i=0;i<$('.searchStarBody .starChoose').length;i++){
+                    stars += $('.searchStarBody .starChoose').eq(i).attr("star");
+                    stars += '-';
+                }
+                stars = stars.substring(0,stars.length-1);
+                var queryKey = hotelCityCode+','+hotelAreaTypeID+','+hotelname+','+address+','+$("#hotelDepartureDate").val()+','+$("#hotelReturnDate").val()+','+stars+','+$(".searchMinPrice").val()+','+$(".searchMaxPrice").val()+",1,1,1,2000,,";
+                var searchHotelInfo = {
+                    'queryKey':queryKey,
+                    'hotelCode':hotelCityCode,
+                    'hotelCityText':hotelCityText,
+                    'hotelState':hotelState,
+                    'hotelAddressText':$("#hotelAddress").val(),
+                }
+                $.session.set('searchHotelInfo', JSON.stringify(searchHotelInfo));
+                location.reload();
             }
-            var stars = '0-';
-            console.log(stars);
-            for(var i=0;i<$('.searchStarBody .starChoose').length;i++){
-                stars += $('.searchStarBody .starChoose').eq(i).attr("star");
-                stars += '-';
-            }
-            stars = stars.substring(0,stars.length-1);
-            var queryKey = hotelCityCode+','+hotelAreaTypeID+','+hotelname+','+address+','+$("#hotelDepartureDate").val()+','+$("#hotelReturnDate").val()+','+stars+','+$(".searchMinPrice").val()+','+$(".searchMaxPrice").val()+",1,1,1,2000,,";
-            var searchHotelInfo = {
-                'queryKey':queryKey,
-                'hotelCode':hotelCityCode,
-                'hotelCityText':hotelCityText,
-                'hotelState':hotelState,
-                'hotelAddressText':$("#hotelAddress").val(),
-            }
-            $.session.set('searchHotelInfo', JSON.stringify(searchHotelInfo));
-            location.reload();
+            
         }else{
             alert(get_lan('searchRemind'))
         }
@@ -810,6 +849,7 @@ function showContent(){
         <div class="tabBtn freeCancelBtn" state="none">'+get_lan('siftBody').freeCancel+'</div>\
         <div class="tabBtn noGuaranteeBtn" state="none">'+get_lan('siftBody').noGuarantee+'</div>\
         <div class="protocolBtn">'+get_lan('siftBody').protocol+'</div>\
+        <div class="companyBillBtn" state="none">'+get_lan('siftBody').companyBill+'</div>\
     ')
     //<div class="recommendList" style="min-width:50px;margin-left:30px;color:#F58A00;cursor:pointer">'+get_lan('siftBody').recommend+'</div>
     $(".hotelsNumber").html('\
@@ -934,6 +974,11 @@ function hotelList(){
       }
     );
 }
+function setInactiveStyleForFilterBtn(btn){
+    $(btn).css("background-color","#fff");
+    $(btn).css("color","#000");
+    $(btn).attr("state","none");
+}
 //酒店筛选新
 function hotelFilter(allData){
 	
@@ -941,6 +986,8 @@ function hotelFilter(allData){
     var freeCancelData = [];
     var protocolData = [];
     var breakfastAndFreeCancel = [];
+    var companyBillData = [];
+    
     allData.hotels.map(function(item){
         if(item.Breakfast>0){
             breakfastData.push(item);
@@ -951,7 +998,13 @@ function hotelFilter(allData){
         if(item.IsAgreement||item.IsTMCAgreement){
             protocolData.push(item);
         }
+        if(item.IsFXHotel){
+            companyBillData.push(item);
+        }
     })
+    if(companyBillData.length == 0){
+        $('.companyBillBtn').hide();
+    }
     breakfastData.map(function(item){
         if(item.CancelRuleType>0){
             breakfastAndFreeCancel.push(item);
@@ -992,9 +1045,8 @@ function hotelFilter(allData){
                 // $(".recommendList").css("color","#F58A00");
                 $(".priceSort,.starSort,.scoreSort,.distanceSort").css("color","#000");
                 $(".sortTabIcon").css("background-position","0px 0px");
-                $(".protocolBtn").css("background-color","#fff");
-                $(".protocolBtn").css("color","#000");
-                $(".protocolBtn").attr("state","none");
+                setInactiveStyleForFilterBtn(".protocolBtn");
+                setInactiveStyleForFilterBtn(".companyBillBtn");
                 if($(".tabBtn").eq(0).attr("state")=="none"){
                     $(".tabBtn").css("background-color","#f2f2f2");
                     $(".tabBtn").css("color","#000");
@@ -1040,9 +1092,8 @@ function hotelFilter(allData){
                 // $(".recommendList").css("color","#F58A00");
                 $(".priceSort,.starSort,.scoreSort,.distanceSort").css("color","#000");
                 $(".sortTabIcon").css("background-position","0px 0px");
-                $(".protocolBtn").css("background-color","#fff");
-                $(".protocolBtn").css("color","#000");
-                $(".protocolBtn").attr("state","none");
+                setInactiveStyleForFilterBtn(".protocolBtn");
+                setInactiveStyleForFilterBtn(".companyBillBtn");
                 if($(".tabBtn").eq(1).attr("state")=="none"&&$(".tabBtn").eq(2).attr("state")=="none"){
                     if($(this).attr("state")=="none"){
                         $(this).css("background-color","#1e66ae");
@@ -1098,9 +1149,8 @@ function hotelFilter(allData){
                 // $(".recommendList").css("color","#F58A00");
                 $(".priceSort,.starSort,.scoreSort,.distanceSort").css("color","#000");
                 $(".sortTabIcon").css("background-position","0px 0px");
-                $(".protocolBtn").css("background-color","#fff");
-                $(".protocolBtn").css("color","#000");
-                $(".protocolBtn").attr("state","none");
+                setInactiveStyleForFilterBtn(".protocolBtn");
+                setInactiveStyleForFilterBtn(".companyBillBtn");
                 if($(".tabBtn").eq(0).attr("state")=="none"){
                     $(".tabBtn").css("background-color","#f2f2f2");
                     $(".tabBtn").css("color","#000");
@@ -1147,9 +1197,7 @@ function hotelFilter(allData){
                 $(".priceSort,.starSort,.scoreSort,.distanceSort").css("color","#000");
                 $(".sortTabIcon").css("background-position","0px 0px");
                 console.log(protocolData);
-				if(protocolData.length==0 && SabreShopKey!=""){
-					nextHotelList()
-				}
+                setInactiveStyleForFilterBtn(".companyBillBtn");
                 $(".tabBtn").css("background-color","#fff");
                 $(".tabBtn").css("color","#000");
                 $(".tabBtn").attr("state","none");
@@ -1159,6 +1207,32 @@ function hotelFilter(allData){
                     $(this).attr("state","click");
                     hotelListInfo(protocolData);
                     hotelSort(protocolData);
+                    clickHotelLi();
+                }else if($(this).attr("state")=="click"){
+                    $(this).css("background-color","#fff");
+                    $(this).css("color","#000");
+                    $(this).attr("state","none");
+                    hotelListInfo(allData.hotels);
+                    hotelSort(allData.hotels);
+                    clickHotelLi();
+                }
+            })
+            //是否公司支付
+            $(".companyBillBtn").unbind("click").click(function(){
+                // $(".recommendList").css("color","#F58A00");
+                $(".priceSort,.starSort,.scoreSort,.distanceSort").css("color","#000");
+                $(".sortTabIcon").css("background-position","0px 0px");
+                console.log(companyBillData);
+                setInactiveStyleForFilterBtn(".protocolBtn");
+                $(".tabBtn").css("background-color","#fff");
+                $(".tabBtn").css("color","#000");
+                $(".tabBtn").attr("state","none");
+                if(!$(this).attr("state")||$(this).attr("state")=="none"){
+                    $(this).css("background-color","#4c81dd");
+                    $(this).css("color","#fff");
+                    $(this).attr("state","click");
+                    hotelListInfo(companyBillData);
+                    hotelSort(companyBillData);
                     clickHotelLi();
                 }else if($(this).attr("state")=="click"){
                     $(this).css("background-color","#fff");
@@ -1743,8 +1817,12 @@ function hotelListInfo(res){
 		 }
         $(".hotelList").append('\
             <div class="hotelLi">\
-              <div class="hotelLiImg" style="background-image:url('+imageUrl+')"></div>\
-              <div class="hotelLiName mainFontColor" hotelId="'+item.ID+'" hotelType="'+item.HotelType+'" cityCode="'+item.CityCode+'">'+item.HotelName+'<div class="companyPay '+companyPayshow+'">'+companyPay+'</div></div>\
+              <div class="hotelLiImg" style="background-image:url('+imageUrl+')">\
+              <div class="hotelHoneyPoint hide" style="width:48px;height:36px;line-height:36px;border-radius:0 0 40px 0;top:0;text-align:center;background:rgb(0,0,0,0.6);">\
+                <img src="../images/honeyIcon.png" class="honeyIcon" style="width:14px;height:14px;">\
+              </div>\
+              </div>\
+              <div class="hotelLiName mainFontColor" hotelId="'+item.ID+'" hotelType="'+item.HotelType+'" cityCode="'+item.CityCode+'">'+item.HotelName+'<div class="companyPay '+companyPayshow+'">'+companyPay+'</div> <div class="companyPay '+showHandimgOrange+' HandimgOrange">'+get_lan('hotelList').protocol2+'</div> <div class="companyPay '+showHandImg+' Handimg">'+get_lan('hotelList').protocol+'</div></div>\
               <div class="hotelLiScore '+showHotelLiScore+' btnBackColor">'+item.HotelRating+'</div>\
               <div class="hotelLiGrade">'+grade+'</div>\
               <div class="hotelLiLine"></div>\
@@ -1753,6 +1831,7 @@ function hotelListInfo(res){
                 <div class="hotelLiStar"><div class="hotelLiStarHalf"></div></div>\
                 <div class="hotelLiAddress flexRow"><div class="mapIcon" imgSrc="'+item.imageUrl+'" name="'+item.HotelName+'" address="'+item.HotelAddress+'" telePhone="'+item.HotelPhone+'" Longitude="'+item.Longitude+'" Laitude="'+item.Laitude+'"></div>'+get_lan('hotelList').address+item.HotelAddress+'</div>\
                 <div class="hotelLiTelephone">'+get_lan('hotelList').telephone+item.HotelPhone+'</div>\
+                <div class="hotelPoints hide"></div>\
               </div>\
 				<div class="hotelLiPrice">\
 					<span style="font-size:26px;margin-right:5px">'+item.Price+'</span>\
@@ -1770,6 +1849,30 @@ function hotelListInfo(res){
 			  </div>\
             </div>\
             ')
+        /*积分*/
+        var PointValue = '';
+        if(ProfileInfo.PointInfo&&ProfileInfo.PointInfo.PointRuleList){
+        ProfileInfo.PointInfo.PointRuleList.map(function(item){
+            if(searchHotelInfo.hotelState=="intlHotel"){
+                if(item.PointTypeId==3&&(item.RegionType=="ALL"||item.RegionType=="I")&&(item.PointServiceType==0||item.PointServiceType==2)){
+                    PointValue = item.PointValue;
+                }
+            }else{
+                if(item.PointTypeId==3&&(item.RegionType=="ALL"||item.RegionType=="D")&&(item.PointServiceType==0||item.PointServiceType==2)){
+                    PointValue = item.PointValue;
+                }
+            }
+        })
+        if(PointValue!=''&&(showHandImg!="hide"||showHandimgOrange!="hide")){
+            if(!ProfileInfo.PointHoney){
+                $(".hotelPoints").eq(index).removeClass("hide");
+                $(".hotelPoints").eq(index).text("+"+PointValue+get_lan("points"));
+            }else{
+                $(".hotelHoneyPoint").eq(index).removeClass("hide");
+            }
+        }
+        }
+        /*end*/
         //<div class="hotelLiComment">'+item.ReviewInfo.Count+get_lan('hotelList').comment+'</div>
         switch(item.StarLevel)
         {
@@ -1986,7 +2089,6 @@ function checkScrollSlide(){
 						}
 					})
 				}
-				
 				//协议酒店
 				if(protocol=='click'){
 					res.hotels = res.hotels.filter(function(item) {
@@ -1994,9 +2096,6 @@ function checkScrollSlide(){
 							return item;
 						}
 					})
-				}
-				if(protocol=='click' && SabreShopKey!=""){
-					nextHotelList()
 				}
 	            // hotelListInfo(res.hotels);
 	            // hotelFilter(res);

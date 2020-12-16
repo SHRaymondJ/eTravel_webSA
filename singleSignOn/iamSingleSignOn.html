@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
@@ -180,7 +180,7 @@
 	}else{
 		var state = Math.random().toString(36).substr(2);
 		$.session.set('iamState', state);
-		window.location.href = 'https://iamtest.baxter.com/oauth2/default/v1/authorize?response_type=code&client_id=0oa2sqtsn90yNBWaw297&scope=openid%20profile%20email%20address%20phone&state='+state+'&redirect_uri=https://online.bcdtravel.cn/singleSignOn/iamSingleSignOn.html';//正式
+		window.location.href = 'https://iam.baxter.com/oauth2/default/v1/authorize?response_type=code&client_id=0oa4fls7qrzU82qxz297&scope=openid%20profile%20email%20address%20phone&state='+state+'&redirect_uri=https://online.bcdtravel.cn/singleSignOn/iamSingleSignOn.html';//正式
 		//window.location.href = 'https://nike-qa.oktapreview.com/oauth2/ausa0mcornpZLi0C40h7/v1/authorize?response_type=code&client_id=nike.wdc.obt&scope=openid%20profile%20email%20address%20phone&state='+state+'&redirect_uri=https://online.bcdtravel.cn/singleSignOn/nikeSingleSignOn.html';//test
 	}
 </script>

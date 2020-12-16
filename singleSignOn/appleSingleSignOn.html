@@ -92,7 +92,7 @@
 		              var ProfileInfo = {
 		                "customerId":res.ID,
 		                "isTrain":res.isTrain,
-		                "onlineStyle":res.onlineStyle,
+		                "onlineStyle": 'APPLE',
 		                "loginOutUrl":res.loginOutUrl,
 		                "companyId":res.CompanyID,
 		                "NeedApproval":res.NeedApproval,
@@ -131,7 +131,9 @@
 						"CCKey":res.CCKey.toString(),
 						/*end*/ 
 		              }
-		              $.session.set('ProfileInfo', JSON.stringify(ProfileInfo));
+					
+		            $.session.set('ProfileInfo', JSON.stringify(ProfileInfo));
+					tools.addProfileInfo(data);
 		              /*2020-2-26 武汉提醒*/
 		            //   $("body").append('\
 					// 	<div class="remindCover" style="position: fixed;top: 0;left: 0;bottom: 0;right: 0;background: rgba(0, 0, 0, 0.7);z-index: 9999;">\

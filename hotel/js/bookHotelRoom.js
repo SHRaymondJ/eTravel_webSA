@@ -3,6 +3,8 @@ var obtLanguage = $.session.get('obtLanguage');
 var hotelChooseInfo = JSON.parse($.session.get('hotelChooseInfo'));
 var ProfileInfo = JSON.parse($.session.get('ProfileInfo'));
 var TAorderNo = $.session.get('TAorderNo');
+var regPhone = tools.regPhone;
+
 console.log(hotelChooseInfo);
 var queryKeySelect = hotelChooseInfo.queryKey;
 $(function() {
@@ -22,34 +24,32 @@ function addRemark(res){
 	// if(res.ReasonCodeContent==null){
 	// 	res.ReasonCodeContent="您选择的价格超过了公司规定的房费，请选择符合政策的价格。"
 	// }
-	var placeholderStr = "请选择一个原因"
-	var tips = "如无符合政策的价格，请选择您违反政策的原因。如果不止一个原因，请选择最适用的。"
-	var subText = "提交"
-	if (obtLanguage == "EN") {
-		placeholderStr = "Please choose a reason";
-		tips =
-			"Please choose the reason for selecting this travel option. If more than one reason applies, choose the most applicable."
-		subText = "Submit"
+	var placeholderStr="请选择一个原因"
+	var tips="如无符合政策的价格，请选择您违反政策的原因。如果不止一个原因，请选择最适用的。"
+	var subText="提交"
+	if(obtLanguage=="EN"){
+		placeholderStr="Please choose a reason";
+		tips="Please choose the reason for selecting this travel option. If more than one reason applies, choose the most applicable."
+		subText="Submit"
 	}
 	// 没有图片  改为X
-	'<div class="Reasontitle">' + res.ReasonCodeTitle +
-		'<span class="closeBtn"><img src="./images/icon_close.png"></span></div>' +
-		$('body').append('<div class="fixed">' +
-			'<div class="ReasonGroup">' +
-			'<div class="Reasontitle">' + res.ReasonCodeTitle + '<span class="closeBtn">X</span></div>' +
-			'<div class="Reasoncontent">' +
-			'<div class="content">' +
-			res.ReasonCodeContent +
-			'</div>' +
-			'</div>' +
-			'<div class="ReasonOption">' +
-			'<select class="popReasonSelect">' +
-			'<option value="" disabled selected style="display:none;">' + placeholderStr + '</option>' +
-			'</select>' +
-			'</div>' +
-			'<div class="Reasonbtn">' + subText + '</div>' +
-			'</div>' +
-			'</div>')
+	'<div class="Reasontitle">'+res.ReasonCodeTitle+'<span class="closeBtn"><img src="./images/icon_close.png"></span></div>'+
+	$('body').append('<div class="fixed">'+
+		'<div class="ReasonGroup">'+
+			'<div class="Reasontitle">'+res.ReasonCodeTitle+'<span class="closeBtn">X</span></div>'+
+			'<div class="Reasoncontent">'+
+				'<div class="content">'+
+					res.ReasonCodeContent+
+				'</div>'+
+			'</div>'+
+			'<div class="ReasonOption">'+
+				'<select class="popReasonSelect">'+
+					'<option value="" disabled selected style="display:none;">'+placeholderStr+'</option>'+
+				'</select>'+
+			'</div>'+
+			'<div class="Reasonbtn">'+subText+'</div>'+
+		'</div>'+
+	'</div>')
 	// option
 	res.ReasonCodes.map(function(item) {
 		$(".popReasonSelect").append('\
@@ -58,9 +58,9 @@ function addRemark(res){
 	        ')
 	})
 	$(".Reasonbtn").unbind("click").click(function() {
-		if ($('.popReasonSelect').val() == null) {
+		if($('.popReasonSelect').val()==null){
 			// alert('请选择一个理由')
-		} else {
+		}else{
 			$('.hotelReasonSelect').val($('.popReasonSelect').val())
 			$('.fixed').hide()
 		}
@@ -114,7 +114,7 @@ var cn = {
 		'birthday': "生日:",
 		"surname": "姓",
 		"givenName": "名",
-		"required": "为必填项",
+		"required":"为必填项",
 	},
 	"progressBar": {
 		"search": "查询",
@@ -178,22 +178,23 @@ var cn = {
 	},
 	"creditCardInfo": {
 		"creditCardTittle": "信用卡",
-		"creditCardtips": "* 您的酒店预订将使用信用卡担保",
+		"creditCardtips":"* 您的酒店预订将使用信用卡担保",
 		"creditCardName": "持卡人姓名",
 		"creditCardNumber": "信用卡卡号",
 		"creditCardDate": "信用卡有效期",
-		"creditCardCvv": "Cvv",
-		"creditCardDocumentType": "证件类型",
-		"creditCardDocumentNumber": "证件号码",
+		"creditCardCvv": "*CVV",
+		"creditCardDocumentType": "*证件类型",
+		"creditCardDocumentNumber": "*证件号码",
 		"cancelPolicy": "取消政策",
 		"surname": "姓",
 		"givenName": "名",
-		"creditCardType": "可担保卡类型",
+		"creditCardType":"可担保卡类型",
 	},
 	"hotelReason": "原因：",
 	"hotelReasonRemind": "请选择",
 	"bookReasonRemind": "请先选择理由",
 	"totalFare": "总金额:",
+	"hotelTips":"请注意：您选择的是公付，房费将由公司付款，其它费用请自行与酒店协商解决。",
 	"bookTicket": "预定",
 	"bookTicketRemind": "请先选择旅客",
 	"success": "预订成功！",
@@ -205,10 +206,13 @@ var cn = {
 		"shuttleBusTittle": "班车",
 		"checkBus": "我需要班车服务",
 		"date": "日期",
-		"morningBus": "早班车",
-		"arrival": "到达",
-		"eveningBus": "晚班车",
-		"departure": "出发",
+		"morningBus": "出发时间",
+		"arrival": "",
+		"eveningBus": "出发时间",
+		"departure": "",
+		"to":"to ",
+		"from":"form ",
+		"noNeed":"不需要",
 	},
 }
 var en = {
@@ -256,7 +260,7 @@ var en = {
 		'birthday': "Birthday:",
 		"surname": "Surname",
 		"givenName": "Given Name",
-		"required": "is required",
+		"required":"is required",
 	},
 	"progressBar": {
 		"search": "Search",
@@ -291,7 +295,7 @@ var en = {
 		"ResidentsName": "Roommate：",
 		"selectResidentsRemind": "Enter Name/Email to search roommates",
 		'delMsg': 'Do you want to remove this traveler from this order?',
-		'addNewCustomer': "[Adding new travelers]",
+		'addNewCustomer': "[Add new travelers]",
 	},
 	"frequentCardsInfo": {
 		"tittle": "Loyalty Membership",
@@ -320,22 +324,23 @@ var en = {
 	},
 	"creditCardInfo": {
 		"creditCardTittle": "Credit Card",
-		"creditCardtips": "* Your hotel booking will be guaranteed by credit card.",
+		"creditCardtips":"* Your hotel booking will be guaranteed by credit card.",
 		"creditCardName": "*Cardholder",
 		"creditCardNumber": "*Card Number",
 		"creditCardDate": "*Expiry Date",
-		"creditCardCvv": "Cvv",
-		"creditCardDocumentType": "Certificate Type",
-		"creditCardDocumentNumber": "Document Number",
+		"creditCardCvv": "*CVV",
+		"creditCardDocumentType": "*Certificate Type",
+		"creditCardDocumentNumber": "*Document Number",
 		"cancelPolicy": "Cancel policy",
 		"surname": "Surname",
 		"givenName": "Given Name",
-		"creditCardType": "Guarantee Card Type",
+		"creditCardType":"Guarantee Card Type",
 	},
 	"hotelReason": "City Rate Cap Violation：",
 	"hotelReasonRemind": "Please Select",
 	"bookReasonRemind": "Please choose reasons first.",
 	"totalFare": "Total Rate:",
+	"hotelTips":"Friendly reminder: The hotel payment is central paid, please handle the other spending directly with the hotel. ",
 	"bookTicket": "Book",
 	"bookTicketRemind": "Please select travelers first.",
 	"success": "Booking Successful!",
@@ -347,32 +352,15 @@ var en = {
 		"shuttleBusTittle": "Shuttle Bus",
 		"checkBus": "I need a shuttle bus service",
 		"date": "Date",
-		"morningBus": "Morning Bus",
-		"arrival": "Arrival",
-		"eveningBus": "Evening Bus",
-		"departure": "Departure",
+		"morningBus": "Departure Time",
+		"arrival": "",
+		"eveningBus": "Departure Times",
+		"departure": "",
+		"to":"to ",
+		"from":"from ",
+		"noNeed":"No Need",
 	},
 }
-
-var orderType = 2;  //订单类型 1机票 2酒店
-// //获得机票杂项的请求参数
-// var orderFinishDetail = {
-//     request: {
-//         id: "",  //用户ID
-//         orderRids: [],   //预定接口返回的AirMainRids参数
-//         orderType: 1,    //订单类型 1机票 2酒店
-//         Language: ""     //用户环境语言
-//     }
-// }
-//获得酒店杂项的请求参数
-function OrderFinishDetail(__id,__orderRids,__orderType,__Language){
-    this.request = {};
-    this.request.id = __id; //<String>用户ID
-    this.request.orderRids = __orderRids,   //<Array>预定接口返回的AirMainRids参数
-    this.request.orderType = __orderType,   //<int>订单类型 1机票 2酒店
-    this.request.Language = __Language      //<String>用户环境语言
-}
-
 if (ProfileInfo.onlineStyle == "APPLE") {
 	cn.remarkPop.remarkInfoRemind = "";
 	en.remarkPop.remarkInfoRemind = "";
@@ -426,8 +414,7 @@ function showContent() {
 		'\
         <div class="autoCenter">\
             <div class="progressBar flexRow activeFontColor"></div>\
-            <div class="orderDetail" queryKey="' +
-		travelQueryKey + '">\
+            <div class="orderDetail" queryKey="'+travelQueryKey+'">\
             <div class="orderDetailTittle tittleBackColor">' +
 		get_lan('orderDetail').orderDetailTittle +
 		'</div>\
@@ -519,35 +506,62 @@ function showContent() {
                 </div>\
               </div>\
             </div>\
-            <div class="shuttleBusInfo hide">\
-              <div class="shuttleBusTittle flexRow">' +
-		get_lan('shuttleBusBody').shuttleBusTittle + '<input type="checkbox" class="checkBusInput">' + get_lan(
-			'shuttleBusBody').checkBus +
-		'</div>\
+            <div class="creditCardInfo hide">\
+              <div class="creditCardTittle">' +
+			  '<span style="display: inline-block;min-width: 140px;">'+get_lan('creditCardInfo').creditCardTittle +'</span>'+'<span class="creditCardtips hide" style="color: #ED8322;font-size: 16px;">'+get_lan('creditCardInfo').creditCardtips+'</span>'+'</div>\
+              <div class="creditCardBody flexWrap">\
+                <div class="creditCardName flexRow">\
+                  <div class="creditCardDetailTittle">' +get_lan('creditCardInfo').creditCardName +'</div>\
+                  <input class="creditCardInput creditCardSurname" placeholder="' + get_lan('creditCardInfo').surname +'" style="width:78px;">\
+                  <input class="creditCardInput creditCardGivenName" placeholder="' +get_lan('creditCardInfo').givenName +'" style="width:80px;margin-left:20px;">\
+                </div>\
+                <div class="creditCardNumber flexRow">\
+                  <div class="creditCardDetailTittle">' +get_lan('creditCardInfo').creditCardNumber +'</div>\
+                  <input class="creditCardInput creditCardNumberInput">\
+                </div>\
+                <div class="creditCardDate flexRow">\
+                  <div class="creditCardDetailTittle">' +get_lan('creditCardInfo').creditCardDate +'</div>\
+                  <input class="creditCardInput creditCardDateInput" readonly>\
+                </div>\
+                <div class="creditCardCvv flexRow">\
+                  <div class="creditCardDetailTittle">' +get_lan('creditCardInfo').creditCardCvv +'</div>\
+                  <input class="creditCardInput creditCardCvvInput" maxlength="3">\
+                </div>\
+                <div class="creditCardDocumentType flexRow">\
+                  <div class="creditCardDetailTittle">' +get_lan('creditCardInfo').creditCardDocumentType +'</div>\
+                  <select class="creditCardInput creditCardDocumentTypeSelect"></select>\
+                </div>\
+                <div class="creditCardDocumentNumber flexRow">\
+                  <div class="creditCardDetailTittle">' +get_lan('creditCardInfo').creditCardDocumentNumber +'</div>\
+                  <input class="creditCardInput creditCardDocumentNumberInput">\
+                </div>\
+				<div class="creditCardType hide">\
+					<div class="creditCardTypeTittle">'+get_lan('creditCardInfo').creditCardType +'</div>\
+					<div class="creditCardTypeBody"></div>\
+				</div>\
+                <div class="creditCardPolicy flexRow">\
+                  <div class="creditCardPolicyTittle">' +get_lan('creditCardInfo').cancelPolicy +'</div>\
+                  <div class="creditCardPolicyBody"></div>\
+                </div>\
+              </div>\
+			</div>\
+			<div class="shuttleBusInfo hide">\
+              <div class="shuttleBusTittle flexRow">' +get_lan('shuttleBusBody').shuttleBusTittle + '<input type="checkbox" class="checkBusInput">' + get_lan('shuttleBusBody').checkBus +'</div>\
               <div class="shuttleBusBody">\
                 <div class="shuttleBusBodyTittle flexRow">\
-                  <div style="width:200px;margin-left:50px;">' +
-		get_lan('shuttleBusBody').date +
-		'</div>\
-                  <input type="checkbox" class="checkBusMorning" checked>\
-                  <div style="width:120px;">' +
-		get_lan('shuttleBusBody').morningBus + '</div>\
-                  <div style="width:380px;">' + get_lan(
-			'shuttleBusBody').arrival +
-		'</div>\
-                  <input type="checkbox" class="checkBusEvening" checked>\
-                  <div style="width:120px;">' +
-		get_lan('shuttleBusBody').eveningBus + '</div>\
-                  <div>' + get_lan('shuttleBusBody').departure +
-		'</div>\
+                  <div style="width:200px;margin-left:50px;">' +get_lan('shuttleBusBody').date +'</div>\
+                  <input type="checkbox" class="checkBusMorning hide" checked>\
+                  <div style="width:120px;">' +get_lan('shuttleBusBody').morningBus + '</div>\
+					<div style="width:417px;">' + get_lan('shuttleBusBody').arrival +'</div>\
+                  <input type="checkbox" class="checkBusEvening hide" checked>\
+                  <div style="width:120px;">' +get_lan('shuttleBusBody').eveningBus + '</div>\
+                  <div>' + get_lan('shuttleBusBody').departure +'</div>\
                 </div>\
                 <div class="shuttleBusBodyList"></div>\
               </div>\
-            </div>\
-            <div class="lastestTime hide">\
-              ' +
-		get_lan('lastestTime') +
-		'\
+			</div>\
+			<div class="lastestTime hide">\
+              ' +get_lan('lastestTime') +'\
               <select class="lastestTimeSelect">\
                 <option value="14:00">14:00</option>\
                 <option value="15:00">15:00</option>\
@@ -568,84 +582,19 @@ function showContent() {
                 <option value="6:00">6:00</option>\
               </select>\
             </div>\
-            <div class="creditCardInfo hide">\
-              <div class="creditCardTittle">' +
-		'<span style="display: inline-block;min-width: 140px;">' + get_lan('creditCardInfo').creditCardTittle + '</span>' +
-		'<span class="creditCardtips hide" style="color: #ED8322;font-size: 16px;">' + get_lan('creditCardInfo').creditCardtips +
-		'</span>' +
-		'</div>\
-              <div class="creditCardBody flexWrap">\
-                <div class="creditCardName flexRow">\
-                  <div class="creditCardDetailTittle">' +
-		get_lan('creditCardInfo').creditCardName +
-		'</div>\
-                  <input class="creditCardInput creditCardSurname" placeholder="' + get_lan(
-			'creditCardInfo').surname +
-		'" style="width:78px;">\
-                  <input class="creditCardInput creditCardGivenName" placeholder="' +
-		get_lan('creditCardInfo').givenName +
-		'" style="width:80px;margin-left:20px;">\
-                </div>\
-                <div class="creditCardNumber flexRow">\
-                  <div class="creditCardDetailTittle">' +
-		get_lan('creditCardInfo').creditCardNumber +
-		'</div>\
-                  <input class="creditCardInput creditCardNumberInput">\
-                </div>\
-                <div class="creditCardDate flexRow">\
-                  <div class="creditCardDetailTittle">' +
-		get_lan('creditCardInfo').creditCardDate +
-		'</div>\
-                  <input class="creditCardInput creditCardDateInput" readonly>\
-                </div>\
-                <div class="creditCardCvv flexRow">\
-                  <div class="creditCardDetailTittle">' +
-		get_lan('creditCardInfo').creditCardCvv +
-		'</div>\
-                  <input class="creditCardInput creditCardCvvInput" maxlength="3">\
-                </div>\
-                <div class="creditCardDocumentType flexRow">\
-                  <div class="creditCardDetailTittle">' +
-		get_lan('creditCardInfo').creditCardDocumentType +
-		'</div>\
-                  <select class="creditCardInput creditCardDocumentTypeSelect"></select>\
-                </div>\
-                <div class="creditCardDocumentNumber flexRow">\
-                  <div class="creditCardDetailTittle">' +
-		get_lan('creditCardInfo').creditCardDocumentNumber +
-		'</div>\
-                  <input class="creditCardInput creditCardDocumentNumberInput">\
-                </div>\
-				<div class="creditCardType hide">\
-					<div class="creditCardTypeTittle">' +
-		get_lan('creditCardInfo').creditCardType +
-		'</div>\
-					<div class="creditCardTypeBody"></div>\
-				</div>\
-                <div class="creditCardPolicy flexRow">\
-                  <div class="creditCardPolicyTittle">' +
-		get_lan('creditCardInfo').cancelPolicy +
-		'</div>\
-                  <div class="creditCardPolicyBody"></div>\
-                </div>\
-              </div>\
-            </div>\
             <div class="hotelReason hide">\
-              <span class="hotelReasonText">' +
-		get_lan('hotelReason') +
-		'</span>\
+              <span class="hotelReasonText">' +get_lan('hotelReason') +'</span>\
               <select class="hotelReasonSelect">\
               </select>\
-            </div>\
-            <div class="centralFapiao hide">\
-              <input type="checkbox" class="IsCentralFapiao">' +
-		get_lan("centralFapiao") +
-		'\
-            </div>\
-            <div class="totalFareBody activeFontColor"></div>\
+			</div>\
+			<div style="height:50px;position:relative;margin:40px 0 50px 0;">\
+				<div class="centralFapiao hide">\
+					<input type="checkbox" class="IsCentralFapiao">' +get_lan("centralFapiao") +'\
+				</div>\
+				<div class="totalFareBody activeFontColor"></div>\
+			</div>\
             <div class="bookHotelBody flexRow">\
-              <div class="bookHotelBtn btnBackColor">' +
-		get_lan('bookTicket') + '</div>\
+              <div class="bookHotelBtn btnBackColor">' +get_lan('bookTicket') + '</div>\
             </div>\
           </div>\
     ')
@@ -703,14 +652,15 @@ function showContent() {
 						$.datepicker._clearDate($('#' + inst.id));
 						var month = $("#ui-datepicker-div .ui-datepicker-month option:selected").val(); //得到选中的月份值
 						var year = $("#ui-datepicker-div .ui-datepicker-year option:selected").val(); //得到选中的年份值
-						$('.creditCardDateInput').val(year + '-' + (parseInt(month) + 1)); //给input赋值，其中要对月值加1才是实际的月份
+						$('.creditCardDateInput').val(hideDocDate(ProfileInfo,year + '-' + (parseInt(month) + 1)));
+						$('.creditCardDateInput').attr("hideNo",year + '-' + (parseInt(month) + 1)); //给input赋值，其中要对月值加1才是实际的月份
 					}
 				}).appendTo(buttonPane);
 			}, 1);
 		},
 		beforeShow: function(input) {
 			$('style').append('.ui-datepicker-calendar{display: none;}')
-			$(".creditCardDateInput").datepicker('setDate', new Date($(".creditCardDateInput").val())); //设置为当前日期
+			$(".creditCardDateInput").datepicker('setDate', new Date($(".creditCardDateInput").attr("hideNo"))); //设置为当前日期
 		},
 
 	});
@@ -729,12 +679,13 @@ function showContent() {
 		success: function(data) {
 			var res = JSON.parse(data);
 			console.log(res);
+		
+			$('.lastestTimeSelect').val(hotelChooseInfo.lastestTime);
 			// 12.26如果HotelType=”ManualAgreement”时,苹果的写死18:00
 			if (res.RoomInfos[0].HotelType == "ManualAgreement" && ProfileInfo.onlineStyle == "APPLE") {
 				$('.lastestTimeSelect').val('18:00');
 				$('.lastestTimeSelect').attr('disabled', 'disabled');
 			}
-
 			if (res.CityId == "LHN" || res.CityId == "RMQ" || res.CityId == "TNN" || res.CityId == "TPE" || res.CityId ==
 				"TTT" || res.CityId == "MZG" || res.CityId == "KNH") {
 				$(".bookHotelBtn").attr("tw", "no");
@@ -764,9 +715,9 @@ function showContent() {
 					}
 				})
 			}
-			if (ProfileInfo.onlineStyle == "APPLE") {
+			if(ProfileInfo.onlineStyle=="APPLE"){
 				ImageUrl = res.ImageUrl == "" || res.ImageUrl == null ? "../../hotel/images/noPicture2.png" : res.ImageUrl;
-			} else {
+			}else{
 				ImageUrl = res.ImageUrl == "" || res.ImageUrl == null ? "../../hotel/images/BCDnoPicture.png" : res.ImageUrl;
 			}
 			var dailyRateText = hotelChooseInfo.LocalCurrency != "null" ? hotelChooseInfo.LocalDailyRate +
@@ -822,12 +773,13 @@ function showContent() {
 			$(".reselection").unbind("click").click(function() {
 				window.history.go(-1);
 			})
-			var totalFareText = hotelChooseInfo.LocalCurrency != "null" ? hotelChooseInfo.LocalTotalFare +
-				'<span style="font-size:12px;margin-left:5px;">' + hotelChooseInfo.LocalCurrency + '</span>' : hotelChooseInfo.TotalFare +
+			var totalFareText = hotelChooseInfo.LocalCurrency != "null" ? '<span class="TotalFare">'+ hotelChooseInfo.LocalTotalFare +'</span>'+
+				'<span style="font-size:12px;margin-left:5px;">' + hotelChooseInfo.LocalCurrency + '</span>' : '<span class="TotalFare">'+hotelChooseInfo.TotalFare +'</span>'+
 				'<span style="font-size:12px;margin-left:5px;">CNY</span>'
 			$(".totalFareBody").html('\
                 <span style="font-size:13px;color:#000;margin-right:20px;">' +
 				get_lan('totalFare') + '</span>' + totalFareText + '\
+				<div class="hotelTips activeFontColor hide">'+get_lan('hotelTips')+'</div>\
               ')
 			/*班车信息*/
 			$.ajax({
@@ -857,12 +809,12 @@ function showContent() {
                                         <select class="selectMorning" index="' + index +
 									'"></select>\
                                         <div class="selectMorningText" style="width:382px;margin-left:33px">' +
-									item.HotelBusList[0].Destination +
+									get_lan("shuttleBusBody").to+item.HotelBusList[0].Destination +
 									'</div>\
                                         <select class="selectEvening" index="' + index +
 									'"></select>\
                                         <div class="selectEveningText" style="width:230px;margin-left:35px">' +
-									item.CompanyBusList[0].Departure +
+									get_lan("shuttleBusBody").from+item.CompanyBusList[0].Departure +
 									'</div>\
                                     </div>\
                                     ')
@@ -873,6 +825,10 @@ function showContent() {
 										'</option>\
                                         ')
 								})
+								$(".selectMorning").eq(index).append('\
+								    <option value="" key="">' + get_lan("shuttleBusBody").noNeed +
+									'</option>\
+								');
 								item.CompanyBusList.map(function(cItem) {
 									$(".selectEvening").eq(index).append('\
                                         <option value="' +
@@ -880,6 +836,25 @@ function showContent() {
 										'</option>\
                                         ')
 								})
+								$(".selectEvening").eq(index).append('\
+								    <option value="" key="">' + get_lan("shuttleBusBody").noNeed +
+									'</option>\
+								');
+								/*新增修改 2020-12-9*/
+								$(".checkBusDate").eq(index).change(function(){
+									if ($(this).is(':checked')) {
+										$(".selectMorning").eq(index).removeAttr("disabled");
+										$(".selectEvening").eq(index).removeAttr("disabled");
+										$(".selectMorning").eq(index).find("option").eq(0).prop("selected",true);
+										$(".selectEvening").eq(index).find("option").eq(0).prop("selected",true);
+									} else {
+										$(".selectMorning").eq(index).val('');
+										$(".selectEvening").eq(index).val('');
+										$(".selectMorning").eq(index).attr("disabled","disabled");
+										$(".selectEvening").eq(index).attr("disabled","disabled");
+									}
+								})
+								/*end*/
 							})
 							$(".selectMorning").change(function() {
 								var index = parseInt($(this).attr("index"));
@@ -931,13 +906,20 @@ function needCreditCard(queryKeySelect) {
 			$('body').mLoading("hide");
 			var res = JSON.parse(data);
 			console.log(res);
+			if(ProfileInfo.NeedSpecialPolicy){
+				$(".hotelReasonText").text(res.DisplayMessage);
+			}
 			if (!res.IsCentralFapiao) {
 				$(".centralFapiao").remove();
-				$(".totalFareBody").css("margin", "40px 0 60px 950px");
+				if(hotelChooseInfo.FuXunPayType == "公司支付" || hotelChooseInfo.FuXunPayType == "Central Pay"){
+					$('.hotelTips').removeClass('hide') 
+					$(".totalFareBody").css({"position":"relative","margin":"40px 0 60px 0px","text-align":"right","width":"100%"});
+				}else{
+					$(".totalFareBody").css("margin", "40px 0 60px 950px");
+				}
 			} else {
 				$(".centralFapiao").removeClass("hide");
 			}
-
 			if (res.IsNeedCreditCard) {
 				$(".creditCardInfo").removeClass("hide");
 				$(".creditCardPolicyBody").html('');
@@ -947,20 +929,17 @@ function needCreditCard(queryKeySelect) {
 					var canPolicyColor = "#3083fb"
 				}
 				//4-23新增 添加信用卡担保类型
-				function format(str) {
-					return str.toLocaleLowerCase().replace(/\s*/g, "");
+				function format(str){
+					return str.toLocaleLowerCase().replace(/\s*/g,"");
 				}
-				if (res.AcceptedCreditCards != null && res.AcceptedCreditCards.length > 0 && ProfileInfo.onlineStyle != "APPLE") {
+				if(res.AcceptedCreditCards!=null && res.AcceptedCreditCards.length>0 && ProfileInfo.onlineStyle!="APPLE"){
 					$('.creditCardType').removeClass('hide')
-					res.AcceptedCreditCards.map(function(item) {
-						if (format(item) == format("AMERICAN EXPRESS") || format(item) == format("Diners") || format(item) == format(
-								"Union") || format(item) == format("JCB") || format(item) == format("Master") || format(item) == format(
-								"VISA") || format(item) == format("DISCOVER CARD") || format(item) == format("WORLD BANK")) {
-							$('.creditCardTypeBody').append('<img src="./images/CreditCardType/' + format(item) + '.png">')
+					res.AcceptedCreditCards.map(function(item){
+						if(format(item) ==format("AMERICAN EXPRESS") || format(item)==format("Diners") || format(item)==format("Union") || format(item)==format("JCB") || format(item)==format("Master") || format(item)==format("VISA") || format(item)==format("DISCOVER CARD")|| format(item)==format("WORLD BANK")){
+							$('.creditCardTypeBody').append('<img src="./images/CreditCardType/'+format(item)+'.png">')
 						}
 					})
 				}
-
 				if (res.CanPolicy != "" && res.CanPolicy != null) {
 					$(".creditCardPolicyBody").html('<span style="color:' + canPolicyColor + '">' + res.CanPolicy + '</span><br/>');
 				}
@@ -1003,7 +982,8 @@ function needCreditCard(queryKeySelect) {
 							$(".creditCardNumberInput").attr("CreditCardNumber", CreditCardNumber);
 							$(".creditCardNumberInput").val("****************" + CreditCardNumber.substring(CreditCardNumber.length -
 								4, CreditCardNumber.length));
-							$(".creditCardDateInput").val(format);
+							$(".creditCardDateInput").val(hideDocDate(ProfileInfo,format));
+							$(".creditCardDateInput").attr("hideNo",format);
 						}
 					},
 					error: function() {
@@ -1023,41 +1003,50 @@ function needCreditCard(queryKeySelect) {
 				// $(".hotelReasonSelect").html('<option value="">' + get_lan("hotelReasonRemind") + '</option>')
 				// res.ReasonCodes.map(function(item) {
 				// 	$(".hotelReasonSelect").append('\
-				//                     <option value="' + item.Code + '">' + item.Des +
+    //                     <option value="' + item.Code + '">' + item.Des +
 				// 		'</option>\
-				//                     ')
+    //                     ')
 				// })
 				// $(".hotelReason").removeClass("hide");
-
-				if ($('.hotelReasonSelect').val() == undefined || $('.hotelReasonSelect').val() == 'undefined') {
+				
+				if($('.hotelReasonSelect').val()==undefined || $('.hotelReasonSelect').val()=='undefined'){
 					if (res.ReasonCodes[0].IsInPolicy && ProfileInfo.onlineStyle == "APPLE") {
 						$(".hotelReasonText").text('In Policy Reason:');
 					}
 					$(".hotelReasonSelect").html('<option value="">' + get_lan("hotelReasonRemind") + '</option>')
 					res.ReasonCodes.map(function(item) {
 						$(".hotelReasonSelect").append('\
-					        <option value="' + item.Code + '">' + item.Des +
+					        <option value="' + item.Code + '" ReasonType="'+item.ReasonType+'">' + item.Des +
 							'</option>\
 					        ')
 					})
-					$(".hotelReason").removeClass("hide");
-					// res.ReasonCodeTitle="ReasonCodeTitle"
-					// res.ReasonCodeContent="ReasonCodeContent"
-					if (ProfileInfo.onlineStyle != "APPLE") {
-						addRemark(res)
+					if(ProfileInfo.IsHideHotelReason!=true){
+						//2020.12.08新权限
+						//HotelNeedReasonCode，有这个profile权限的时候，弹框不弹出，预定界面的“原因”下拉框保留，且必填。
+						$(".hotelReason").removeClass("hide");
+						if(ProfileInfo.onlineStyle != "APPLE" && ProfileInfo.HotelNeedReasonCode == false){
+							addRemark(res)
+						}
 					}
-				}
 
+					/*SW酒店新增*/
+					if(ProfileInfo.NeedSpecialPolicy){
+						$(".hotelReasonSelect").unbind("change").change(function(){
+							if($(".hotelReasonSelect option:selected").val() != ""){
+								SWRemark(queryKeySelect,$(".hotelReasonSelect option:selected").val());
+							}
+						})
+					}
+					/*end*/
+				}
+				
 			} else {
 				$(".hotelReason").addClass("hide");
 			}
-
+			
 			if (res.ReasonCodes.length == 1) {
 				$(".bookHotelBtn").attr("reasoncode", res.ReasonCodes[0].Code);
 			}
-
-
-
 			clickReserveBtn(res); //点击预定按钮
 		},
 		error: function() {
@@ -1065,6 +1054,57 @@ function needCreditCard(queryKeySelect) {
 		}
 	});
 }
+/*SW新增*/
+function SWRemark(queryKey,policyCode){
+	$('body').mLoading("show");
+	$.ajax({
+		type: 'post',
+		url: $.session.get('ajaxUrl'),
+		dataType: 'json',
+		data: {
+			url: $.session.get('obtCompany') + "/QueryService.svc/QuerySwHotelRemarkPost",
+			jsonStr: '{"queryKey":"' + queryKey + '","policyCode":"' + policyCode + '","id":' +
+				netUserId + ',"Language":"' + obtLanguage + '"}'
+		},
+		success: function(data) {
+			var res = JSON.parse(data);
+			console.log(res);
+			var otherRemark = res;
+			$('body').mLoading("hide");
+			if(res.length>0){
+				var CompanyId = $(".passengerLi").eq(0).attr("companyId");
+				var CustomerID = $(".passengerLi").eq(0).attr("customerId");
+				$('body').mLoading("show");
+				$.ajax({
+					type: 'post',
+					url: $.session.get('ajaxUrl'),
+					dataType: 'json',
+					data: {
+						url: $.session.get('obtCompany') + "/SystemService.svc/GetOrderCustomerRemark",
+						jsonStr: '{"id":' + netUserId + ',"customerId":"' + CustomerID + '","companyID":"' + CompanyId + '"}'
+					},
+					success: function(data) {
+						var res = JSON.parse(data);
+						console.log(res);
+						otherRemark.map(function(rItem){
+							res.push(rItem);
+						})
+						$('body').mLoading("hide");
+						openRemarkPop();
+						remark(res, CustomerID, CompanyId, 'false');
+					},
+					error: function() {
+						// alert('fail');
+					}
+				});
+			}
+		},
+		error: function() {
+			// alert('fail');
+		}
+	});
+}
+/*end*/
 /*订单列表*/
 function orderList() {
 	$.ajax({
@@ -1215,14 +1255,14 @@ function remarkInfoPop(CompanyID, CustomerID, employeeName, isFirst) {
 
 	function getNewRemark(CustomerID, CompanyId, isFirst) {
 		$('body').mLoading("show");
-		if ($.session.get('TAnumber')) {
-			var queryKey = CustomerID + $(".orderDetail").attr("queryKey");
-			tools.getTravelRequestRemark(netUserId, queryKey, function(data) {
-				var res = JSON.parse(data);
-				console.log(res.Remarks);
-				remark(res.Remarks, CustomerID, ProfileInfo.CompanyID, "true");
-			})
-		} else {
+		if($.session.get('TAnumber')){
+			var queryKey = CustomerID+$(".orderDetail").attr("queryKey");
+            tools.getTravelRequestRemark(netUserId,queryKey,function(data){
+                var res = JSON.parse(data);
+                console.log(res.Remarks);
+                remark(res.Remarks,CustomerID,ProfileInfo.CompanyID,"true");
+            })
+        }else{
 			if (isFirst == "true") {
 				$.ajax({
 					type: 'post',
@@ -1286,102 +1326,69 @@ function remarkInfoPop(CompanyID, CustomerID, employeeName, isFirst) {
 	}
 	openRemarkPop();
 }
-
 function remark(remarks, CustomerID, CompanyID, isFirst) {
 	$(".remarkInfoBody").html('');
-	var redTips = false;
-	remarks.map(function(item, index) {
-		var colorRed = item.Input.indexOf("4") != -1 || item.Input == "" ? "" : "colorRed";
-		var starIcon = item.Input.indexOf("4") != -1 || item.Input == "" ? "" : "*";
-		if (ProfileInfo.onlineStyle != "APPLE") {
-			starIcon = "";
-		}
-		if (colorRed == "colorRed") {
-			redTips = true
-		}
-		if (!item.CanModify) {
-			$(".remarkInfoBody").append(
-				'\
-				<div class="remarkLi flexRow">\
-				  <div id="liTittle' + item.Index +
-				'" class="liTittle ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
-				'</div>\
-				  <div class="liContent" index="' + item.Index + '"><input id="remarkInput' + item
-				.Index + '" class="remarkLiInput" require="' + colorRed + '" index="' + item.Index + '" value="' + item.Content +
-				'" key="' + item.SubmitContent + '" disabled></div>\
-				</div>\
-			')
-		} else if (item.CanModify && item.InList) {
-			if (!item.ListCanSearch) {
-				$(".remarkInfoBody").append(
-					'\
-					<div class="remarkLi flexRow">\
-					  <div id="liTittle' + item
-					.Index + '" class="liTittle ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
-					'</div>\
-					  <div class="liContent">\
-						<select class="remarkSelect" index="' +
-					index + '" id="remarkSelect' + item.Index + '">\
-						  <option>' + get_lan("remarkPop")
-					.Choose +
-					'</option>\
-						</select>\
-						<input id="remarkInput' + item.Index +
-					'" class="remarkLiInput" require="' + colorRed + '" index="' + item.Index + '" value="' + item.Content +
-					'" key="' + item.SubmitContent + '" readonly placeholder="' + get_lan("remarkPop").Choose +
-					'">\
-					  </div>\
-					</div>\
-				')
-			} else {
-				$(".remarkInfoBody").append(
-					'\
-					<div class="remarkLi flexRow">\
-					  <div id="liTittle' + item
-					.Index + '" class="liTittle ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
-					'</div>\
-					  <div class="liContent">\
-						<select class="remarkSelect" index="' +
-					index + '" id="remarkSelect' + item.Index + '">\
-						  <option>' + get_lan("remarkPop")
-					.Choose +
-					'</option>\
-						</select>\
-						<input class="remarkLiInput" CompanyID="' +
-					CompanyID + '" id="remarkInput' + item.Index + '" require="' + colorRed + '" value="' + item.Content +
-					'" index="' + item.Index + '"  key="' + item.SubmitContent + '" placeholder="' + get_lan("remarkPop").search +
-					'">\
-					  </div>\
-					</div>\
-				')
-				$("#remarkInput" + item.Index + "").searchRemark();
-			}
-		} else if (item.CanModify && !item.InList) {
-			$(".remarkInfoBody").append(
-				'\
-				<div class="remarkLi flexRow">\
-				  <div id="liTittle' + item.Index +
-				'" class="liTittle ' + colorRed + '" title="' + item.Title + '">' + starIcon + item.Title +
-				'</div>\
-				  <div class="liContent">\
-					<select class="remarkSelect" index="' +
-				index + '">\
-					  <option>' + get_lan("remarkPop").Choose +
-				'</option>\
-					</select>\
-					<input id="remarkInput' + item.Index +
-				'" CompanyID="' + CompanyID + '" class="remarkLiInput" require="' + colorRed + '" index="' + item.Index +
-				'" value="' + item.Content + '" key="">\
-				  </div>\
-				</div>\
-			')
-			// <input id="remarkInput' + item.Index +
-			// '" CompanyID="' + CompanyID + '" class="remarkLiInput" require="' + colorRed + '" index="' + item.Index +
-			// '" value="' + item.Content + '" key="' + item.SubmitContent+'">\
-		}
-	})
+    var redTips=false;
+    remarks.map(function(item,index){
+        var colorRed = item.Input.indexOf("4") != -1||item.Input==""?"":"colorRed";
+        var starIcon = item.Input.indexOf("4") != -1||item.Input==""?"":"*";
+        if(ProfileInfo.onlineStyle!="APPLE"){
+            starIcon = "";
+        }
+        if(colorRed=="colorRed"){
+            redTips=true
+        }
+        if(!item.CanModify){
+            $(".remarkInfoBody").append('\
+                <div class="remarkLi flexRow">\
+                  <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
+                  <div class="liContent" index="'+item.Index+'"><input id="remarkInput'+item.Index+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" disabled></div>\
+                </div>\
+            ')
+        }else if(item.CanModify&&item.InList){
+            if(!item.ListCanSearch){
+                $(".remarkInfoBody").append('\
+                    <div class="remarkLi flexRow">\
+                      <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
+                      <div class="liContent" index="'+item.Index+'">\
+                        <select class="remarkSelect" index="'+index+'" id="remarkSelect'+item.Index+'">\
+                          <option>'+get_lan("remarkPop").Choose+'</option>\
+                        </select>\
+                        <input id="remarkInput'+item.Index+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" readonly placeholder="'+get_lan("remarkPop").Choose+'">\
+                      </div>\
+                    </div>\
+                ')
+            }else{
+                
+                $(".remarkInfoBody").append('\
+                    <div class="remarkLi flexRow">\
+                      <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
+                      <div class="liContent" index="'+item.Index+'">\
+                        <select class="remarkSelect" index="'+index+'" id="remarkSelect'+item.Index+'">\
+                          <option>'+get_lan("remarkPop").Choose+'</option>\
+                        </select>\
+                        <input class="remarkLiInput" CompanyID="'+CompanyID+'" id="remarkInput'+item.Index+'" require="'+colorRed+'" value="'+item.Content+'" index="'+item.Index+'"  key="'+item.SubmitContent+'" placeholder="'+get_lan("remarkPop").search+'">\
+                      </div>\
+                    </div>\
+                ')
+                $("#remarkInput"+item.Index+"").searchRemark();
+            }
+        }else if(item.CanModify&&!item.InList){
+            $(".remarkInfoBody").append('\
+                <div class="remarkLi flexRow">\
+                  <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
+                  <div class="liContent" index="'+item.Index+'">\
+                    <select class="remarkSelect" index="'+index+'">\
+                      <option>'+get_lan("remarkPop").Choose+'</option>\
+                    </select>\
+                    <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'">\
+                  </div>\
+                </div>\
+            ')
+        }
+    })
 	// 红的提示字 是否显示
-	if (!redTips && ProfileInfo.onlineStyle != "APPLE") {
+	if(!redTips && ProfileInfo.onlineStyle!="APPLE"){
 		$('.colorRed').hide()
 	}
 	for (var i = 0; i < $(".remarkSelect").length; i++) {
@@ -1433,7 +1440,7 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
 					} else if (sItem.SubRemarkRule == 2) {
 						// $("#remarkInput"+rItem.SubRemarkIndex+"").val("");
 						if (sItem.SubRemarkValue == "true") {
-							$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", get_lan("remarkPop").search);
+							// $("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", get_lan("remarkPop").search);
 							$("#remarkInput" + rItem.SubRemarkIndex + "").removeAttr("disabled");
 							$("#remarkSelect" + rItem.SubRemarkIndex + "").show();
 							// $("#remarkInput" + rItem.SubRemarkIndex + "").searchRemark();
@@ -1441,12 +1448,24 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
 							$("#remarkInput" + rItem.SubRemarkIndex + "").prev().removeAttr("disabled");
 							//新增 判断是否有下拉搜索
 							//$("#remarkInput" + rItem.SubRemarkIndex + "").attr("autocomplete",'off')
-							if (remarks[rIndex].InList) {
+							var remarkObj={}
+							remarks.map(function(remarkList){
+								if(remarkList.Index==rIndex){
+									remarkObj=remarkList
+								}
+							})
+							if (remarkObj.InList) {
 								$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", get_lan("remarkPop").search);
 								$("#remarkInput" + rItem.SubRemarkIndex + "").searchRemark();
 							} else {
 								$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", "");
 							}
+							$('.liContent').map(function(){
+								var i=$(this).attr('index')
+								if(rItem.SubRemarkIndex==i){
+									renderRight(i,"")
+								}
+							})
 						} else if (sItem.SubRemarkValue == "false") {
 							$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", "");
 							$("#remarkInput" + rItem.SubRemarkIndex + "").attr("disabled", "disabled");
@@ -1460,9 +1479,74 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
 		})
 	})
 
+	// 重新渲染 右侧select
+	function renderRight(renderIndex,swRemark){
+		var item=''
+		remarks.map(function(renderItem){
+			if(renderItem.Index==renderIndex){
+				item=renderItem
+			}
+		})
+		$('.liContent').map(function(liItem){
+			var liIndex=$(this).attr("index")
+			if(liIndex==item.Index){
+				// item.CanModify 不再判断，默认为true
+				 var colorRed = item.Input.indexOf("4") != -1||item.Input==""?"":"colorRed";
+				if(item.InList){
+				        if(!item.ListCanSearch){
+				            $(this).html('\
+				                    <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
+				                      <option>'+get_lan("remarkPop").Choose+'</option>\
+				                    </select>\
+				                    <input id="remarkInput'+item.Index+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" readonly placeholder="'+get_lan("remarkPop").Choose+'">\
+				            ')
+				        }else{
+				            $(this).html('\
+				                    <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
+				                      <option>'+get_lan("remarkPop").Choose+'</option>\
+				                    </select>\
+				                    <input class="remarkLiInput '+newInput+'" CompanyID="'+CompanyID+'" id="remarkInput'+item.Index+'" require="'+colorRed+'" value="'+item.Content+'" index="'+item.Index+'"  key="'+item.SubmitContent+'" placeholder="'+get_lan("remarkPop").search+'">\
+				            ')
+				            $("#remarkInput"+item.Index+"").searchRemark();
+				        }
+				    }else if(!item.InList){
+				        $(this).html('\
+				                <select class="remarkSelect '+newSelect+'" index="'+index+'">\
+				                  <option>'+get_lan("remarkPop").Choose+'</option>\
+				                </select>\
+				                <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'"key="">\
+				        ')
+				    }
+				// 
+				console.log($("#remarkSelect"+item.Index))
+				item.Items.map(function(selectItem){
+				    var itemValue = selectItem.Value==null||selectItem.Value==""?selectItem.Key:selectItem.Value;
+					if(swRemark=="SWRemark"){
+						$("#remarkSelect"+item.Index).append('\
+								<option class="remarkOption" key="'+selectItem.Key+'" index="'+liIndex+'">'+itemValue+'</option>\
+								')
+					}else{
+						$("#remarkSelect"+item.Index).append('\
+							<option class="remarkOption" key="'+selectItem.Key+'" index="'+liIndex+'">'+itemValue+'</option>\
+							')
+					}
+				})
+				$("#remarkSelect"+item.Index).change(function(){
+				    var index = parseInt($(this).find("option:selected").attr("index"));
+				    $("#remarkInput"+item.Index).val($(this).find("option:selected").text());
+				    $("#remarkInput"+item.Index).attr('key',$(this).find("option:selected").attr("key"));
+				})
+			}
+		})
+	}
+		// end
 	/*关闭remark*/
 	$(".closeRemarkBtn").unbind("click").click(function() {
 		closeRemarkPop();
+		if($('.passengerLi').length<1){
+			$.session.set('TAnumber','')
+		}
+		$(".selectPassengerArrow").click();
 	})
 	$(".sureRemarkBtn").unbind("click").click(function() {
 		var remarks = '';
@@ -1499,7 +1583,8 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
 		var isCopy = false;
 		$('body').mLoading("show");
 		if (isFirst == "true") {
-			if (!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest && !$.session.get('TAnumber')) {
+			// if((!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber'))||JSON.parse($.session.get('ProfileInfo')).HotelNoNeedTR){
+			if(!$.session.get('TAnumber')){
 				$.ajax({
 					type: 'post',
 					url: $.session.get('ajaxUrl'),
@@ -1527,18 +1612,18 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
 						// alert('fail');
 					}
 				});
-			} else {
-				var queryKey = $.session.get('TAnumber') + ',' + CustomerID;
-				$.ajax({
-					type: 'post',
-					url: $.session.get('ajaxUrl'),
-					dataType: 'json',
-					data: {
-						url: $.session.get('obtCompany') + "/SystemService.svc/AddTravelRequestCustomerPost",
-						jsonStr: '{"id":' + netUserId + ',"queryKey":"' + queryKey + '","remarks":"' + remarks.substring(0, remarks.length -
-							1) + '","language":"' + obtLanguage + '"}'
+			}else{
+				var queryKey = $.session.get('TAnumber')+','+CustomerID;
+				$.ajax(
+				  {
+					type:'post',
+					url : $.session.get('ajaxUrl'), 
+					dataType : 'json',
+					data:{
+						url: $.session.get('obtCompany')+"/SystemService.svc/AddTravelRequestCustomerPost",
+						jsonStr:'{"id":'+netUserId+',"queryKey":"'+queryKey+'","remarks":"'+remarks.substring(0,remarks.length-1)+'","language":"'+obtLanguage+'"}'
 					},
-					success: function(data) {
+					success : function(data) {
 						$('body').mLoading("hide");
 						var res = JSON.parse(data);
 						console.log(res);
@@ -1551,12 +1636,13 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
 							alert(res);
 						}
 					},
-					error: function() {
-						// alert('fail');
+					error : function() {
+					  // alert('fail');
 					}
-				});
+				  } 
+				);
 			}
-
+			
 		} else if (isFirst == "false") {
 			$.ajax({
 				type: 'post',
@@ -1616,6 +1702,68 @@ function remark(remarks, CustomerID, CompanyID, isFirst) {
 		$(".sureRemarkBtn").click();
 	}
 }
+/*隐藏证件信息*/
+function hideDocument(profile,document,rid){
+	if(profile.HideMyPersonalInfo&&document!=""){
+		if(rid==1&&document.length>10){
+			var starLength = document.length-10;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,6)+starString+document.substring(document.length-4,document.length);
+		}else if(document.length>3){
+			var starLength = document.length-3;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,1)+starString+document.substring(document.length-2,document.length);
+		}else{
+			var DocumentNumber = document;
+		}
+	}else{
+		var DocumentNumber = document
+	}
+	
+	return DocumentNumber;
+}
+/*end*/
+/*隐藏邮箱*/
+function hideEmail(profile,email){
+	if(profile.HideMyPersonalInfo&&email!=""){
+        var starLength = email.split("@")[0].length;
+        var starString = "";
+        for(var i=0;i<starLength-2;i++){
+            starString += "*"
+        }
+        var profileEmail = email.substring(0,1)+starString+email.substring(starLength-1,starLength)+'@'+email.split("@")[1];
+    }else{
+        var profileEmail = email;
+    }
+    return profileEmail;
+}
+/*end*/
+/*隐藏手机号*/
+function hidePhones(profile,phone){
+    if(profile.HideMyPersonalInfo&&phone!=""){
+        var profilePhone = "*******"+phone.substring(phone.length-4,phone.length)
+    }else{
+        var profilePhone = phone;
+    }
+    return profilePhone;
+}
+/*end*/
+/*隐藏证件有效期*/
+function hideDocDate(profile,date){
+    if(profile.HideMyPersonalInfo&&date!=""){
+        var docDate = "****-**-**";
+    }else{
+        var docDate = date;
+    }
+    return docDate;
+}
+/*end*/
 //旅客信息确认
 function surePassengerInfo() {
 	$('body').mLoading("show");
@@ -1652,26 +1800,26 @@ function surePassengerInfo() {
 						$('body').mLoading("hide");
 						//备注信息展示
 						var employeeName = obtLanguage == "CN" ? passengerJson.CustomerCN : passengerJson.CustomerEN;
-						if (!$.session.get('goOnBookOrderNo') && !$.session.get('TACustomerId')) {
+						if (!$.session.get('goOnBookOrderNo')&&!$.session.get('TACustomerId')) {
 							remarkInfoPop(passengerJson.CompanyID, passengerJson.ID, employeeName, "true");
-						} else if ($.session.get('goOnBookOrderNo')) {
+						} else if($.session.get('goOnBookOrderNo')){
 							//继续预订
 							$(".choosePassengerBody").hide();
 							$('body').mLoading("show");
 							var queryKey = "," + $(".orderDetail").attr("city") + "," + $(".orderDetail").attr("DateStart") + "," + $(
 								".orderDetail").attr("DateReturn");
-
-							var jsonStr = {
-								request: {
-									"id": netUserId.split('"')[1],
-									"bcn": $.session.get('goOnBookOrderNo'),
-									"Language": obtLanguage,
-									"itemID": "0",
-									"queryKey": queryKey,
-									"reginType": "",
-									"dstCode": JSON.parse($.session.get('searchHotelInfo')).hotelCode,
+								
+								var jsonStr={
+									request:{
+										"id":netUserId.split('"')[1],
+										"bcn":$.session.get('goOnBookOrderNo'),
+										"Language":obtLanguage,
+										"itemID":"0",
+										"queryKey":queryKey,
+										"reginType":"",
+										"dstCode":JSON.parse($.session.get('searchHotelInfo')).hotelCode,
+									}
 								}
-							}
 							$.ajax({
 								type: 'post',
 								url: $.session.get('ajaxUrl'),
@@ -1738,12 +1886,14 @@ function surePassengerInfo() {
 									// alert('fail');
 								}
 							});
-						} else {
+						}else{
 							$(".choosePassengerBody").hide();
 						}
 						//有代订权限
 						if (res.length > 1) {
-							if (!passengerJson.HasTravelRequest || (passengerJson.HasTravelRequest && !$.session.get('TAnumber'))) {
+							//没有审批单权限，或者有审批单权限但是没有选择
+							// if(!passengerJson.HasTravelRequest||(passengerJson.HasTravelRequest&&!$.session.get('TAnumber'))){
+							if(!passengerJson.HasTravelRequest||(passengerJson.HasTravelRequest&&!$.session.get('TACustomerId'))){
 								$(".choosePassengerBody").html('\
 	                                <div style="min-width:110px;">' +
 									get_lan('passengerInfo').choosePassenger +
@@ -1797,27 +1947,29 @@ function surePassengerInfo() {
 										// alert('fail');
 									}
 								});
-							} else {
+							}else{
 								closeRemarkPop();
 								// alert($.session.get('TAnumber'));
-								if ($.session.get('TACustomerId')) {
-									var TACustomerId = $.session.get('TACustomerId');
-									// alert(TACustomerId);
+								if($.session.get('TACustomerId')){
+								    var TACustomerId = $.session.get('TACustomerId');
+								    // alert(TACustomerId);
 								}
 								$(".remarkFooter").html('\
-								    <div class="sureRemarkBtn btnBackColor" style="margin:0 auto;">' +
-									get_lan('remarkPop').confirm + '</div>\
+								    <div class="sureRemarkBtn btnBackColor" style="margin:0 auto;">'+get_lan('remarkPop').confirm+'</div>\
 								')
-								remarkInfoPop(TACustomerId.split(',')[1], TACustomerId.split(',')[0], TACustomerId.split(',')[2], "true");
+								remarkInfoPop(TACustomerId.split(',')[1],TACustomerId.split(',')[0],TACustomerId.split(',')[2],"true");
 							}
 						}
 						//无代订权限
 						else {
 							oneCustomer();
 							// 有审批单权限
-							if (passengerJson.HasTravelRequest && !$.session.get('goOnBookOrderNo') && !$.session.get('TAnumber')) {
-								var queryKey = passengerJson.ID + $(".orderDetail").attr("queryKey");
-								tools.customerTravelRequest(netUserId, queryKey, function() {
+							var city=$('.orderDetail').attr('citycode')?$('.orderDetail').attr('citycode'):""
+							if(passengerJson.HasTravelRequest&&!$.session.get('goOnBookOrderNo')&&!$.session.get('TAnumber') && !ProfileInfo.HotelNoNeedTR ){
+							    var queryKey = passengerJson.ID+$(".orderDetail").attr("queryKey");
+								//酒店不需要传city
+								city=""
+							    tools.customerTravelRequest(netUserId,queryKey,function(){
 									$(".requestCover").remove();
 									tools.getTravelRequestRemark(netUserId,queryKey,function(data){
                                         var res = JSON.parse(data);
@@ -1826,16 +1978,14 @@ function surePassengerInfo() {
                                     })
 							    },2,city)
 							}
-
-							function oneCustomer() {
-								$(".passengerBody").attr("state", "true");
-								$(".choosePassengerBody").hide();
-								// $(".closeRemarkBtn").remove();
-								// $(".sureRemarkBtn").css("margin","0 auto");
-								$(".remarkFooter").html(
-									'\
-							        <div class="sureRemarkBtn btnBackColor" style="margin:0 auto;">' + get_lan(
-										'remarkPop').confirm + '</div>\
+							
+							function oneCustomer(){
+							    $(".passengerBody").attr("state","true");
+							    $(".choosePassengerBody").hide();
+							    // $(".closeRemarkBtn").remove();
+							    // $(".sureRemarkBtn").css("margin","0 auto");
+							    $(".remarkFooter").html('\
+							        <div class="sureRemarkBtn btnBackColor" style="margin:0 auto;">'+get_lan('remarkPop').confirm+'</div>\
 							    ')
 							}
 						}
@@ -1877,7 +2027,7 @@ function selectPassengers() {
 						$(".selectPassengerList").append(
 							'\
                             <div class="selectPassengerLi ellipsis" CompanyID="' + item.CompanyID +
-							'" searchId="' + item.ID + '" employeeName="' + item.NameCN + '">' + name + '(' + item.Email + ')' +
+							'" searchId="' + item.ID + '" employeeName="' + item.NameCN + '">' + name + '(' + hideEmail(ProfileInfo,item.Email) + ')' +
 							'</div>\
                             ')
 					})
@@ -1956,7 +2106,7 @@ function selectPassengers() {
 					$(".selectPassengerList").append(
 						'\
                         <div class="selectPassengerLi ellipsis" CompanyID="' + item.CompanyID +
-						'" searchId="' + item.ID + '" employeeName="' + item.NameCN + '">' + name + '(' + item.Email + ')' +
+						'" searchId="' + item.ID + '" employeeName="' + item.NameCN + '">' + name + '(' + hideEmail(ProfileInfo,item.Email) + ')' +
 						'</div>\
                         ')
 				})
@@ -1996,10 +2146,11 @@ function selectPassengers() {
 
 			var customerId = $(this).attr("searchId");
 			var employeeName = $(this).attr("employeeName");
-			$(".passengerBody").attr("state", "true");
+			$(".passengerBody").attr("state","true");
 			// 有审批单权限
-			var city=$('.orderDetail').attr('citycode')?$('.orderDetail').attr('citycode'):""
-			if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber')){
+			// var city=$('.orderDetail').attr('citycode')?$('.orderDetail').attr('citycode'):""
+			var city=""
+			if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber') && !ProfileInfo.HotelNoNeedTR){
 			    tools.customerTravelRequest(netUserId,queryKey,function(){
 			        $(".requestCover").remove();
 			        if($(".passengerLi").length == 0){
@@ -2009,32 +2160,35 @@ function selectPassengers() {
 			        }
 			    },1,city)
 			}else{
-			    $.ajax(
-			      {
-			        type:'post',
-			        url : $.session.get('ajaxUrl'),
-			        dataType : 'json',
-			        data:{
-			            url: $.session.get('obtCompany')+"/SystemService.svc/GetTravelRequestWithOtherCitysPost",
-			            jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'","otherCitys":"'+city+'"}'
-			        },
-			        success : function(data) {
-			            $('body').mLoading("hide");
-			            var res = JSON.parse(data);
-			            console.log(res);
-			            if(res.Remarks.length != 0){
+				//CheckCustomerHasTravelRequestPost更换为CheckCustomerHasTravelRequestWithOtherCitysPost  新增参数otherCitys，城市列表
+			    // $.ajax(
+			    //   {
+			    //     type:'post',
+			    //     url : $.session.get('ajaxUrl'),
+			    //     dataType : 'json',
+			    //     data:{
+			    //         url: $.session.get('obtCompany')+"/SystemService.svc/CheckCustomerHasTravelRequestWithOtherCitysPost",
+			    //         jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'","otherCitys":"'+city+'"}'
+			    //     },
+			    //     success : function(data) {
+			    //         $('body').mLoading("hide");
+			    //         var res = JSON.parse(data);
+			    //         console.log(res);
+			    //         if(res.Remarks.length != 0){
+							
 			                $(".passengerBody").attr("state","true");
 			                if($(".passengerLi").length == 0){
 			                    remarkInfoPop(CompanyID,customerId,employeeName,"true");
 			                }else{
 			                    remarkInfoPop($(".passengerLi").eq(0).attr("companyId"),customerId,employeeName,"true");
 			                }
-			            }
-			        },
-			        error : function() {
-			        }
-			      } 
-			    );
+							
+			    //         }
+			    //     },
+			    //     error : function() {
+			    //     }
+			    //   } 
+			    // );
 			}
 		})
 	}
@@ -2223,9 +2377,7 @@ function newCustomerPop(CompanyId) {
                 <input type="text" class="newCustomerInput newCustomerInputBirthday" readonly value="1985-1-1">\
             </div>\
 			<div class="newCustomerLi require flexRow remarkTips">\
-			    <div style="width:100%;font-size: 12px;color: red;">' +
-		get_lan('newCustomerPop').required +
-		'</div>\
+			    <div style="width:100%;font-size: 12px;color: red;">'+get_lan('newCustomerPop').required+'</div>\
 			</div>\
         </div>\
         <div class="newCustomerPopBottom flexRow">\
@@ -2236,29 +2388,29 @@ function newCustomerPop(CompanyId) {
         <div>\
         ');
 	// 隐藏必填项
-	if (ProfileInfo.onlineStyle != "eTravel") {
+	if(ProfileInfo.onlineStyle!="eTravel"){
 		$(".remarkTips").remove()
 	}
 	$(".newCustomerPopCancel").unbind("click").click(function() {
 		closeNewCustomer();
 	})
-
+	
 	//验证身份证
-	function testIDCard() {
+	function testIDCard(){
 		//证件类型
-		var type = $('.newPopDocumentsSelect').val() //1身份证
+		var type=$('.newPopDocumentsSelect').val()//1身份证
 		var IDcard = $('.newCustomerInputDocuments').val()
 		var res = tools.testIdCard(IDcard)
-		if (res.status == 1 && type == 1) {
+		if(res.status==1 && type==1){
 			$('.newCustomerInputBirthday').val(res.birthday)
-			$('.newCustomerInputBirthday').attr('value', res.birthday)
+			$('.newCustomerInputBirthday').attr('value',res.birthday)
 		}
 	}
 	//获取身份证号
 	$('.newCustomerInputDocuments').keypress(function(){
 		setTimeout(testIDCard,10)
 	})
-
+	
 	$("#countryInput").kuCity();
 	$(".newCustomerInputTime").datepicker({
 		dateFormat: 'yy-mm-dd',
@@ -2268,6 +2420,7 @@ function newCustomerPop(CompanyId) {
 		hideIfNoPrevNext: true,
 		showOtherMonths: true,
 		selectOtherMonths: true,
+		yearRange:'c-50:c+50',//选择框，前后多少年
 		beforeShow: function() {
 			$('style').text('')
 		},
@@ -2277,8 +2430,8 @@ function newCustomerPop(CompanyId) {
 		changeMonth: true,
 		changeYear: true,
 		minDate: '1930-1-1', // 当前日期之后的 0 天，就是当天
-		maxDate: 0,
-		yearRange: 'c-50:c+50', //选择框，前后多少年
+		maxDate:0,
+		yearRange:'c-50:c+50',//选择框，前后多少年
 		hideIfNoPrevNext: true,
 		showOtherMonths: true,
 		selectOtherMonths: true,
@@ -2316,7 +2469,7 @@ function newCustomerPop(CompanyId) {
 	$(".newCustomerPopBtn").unbind("click").click(function() {
 		// console.log($('.popNameRadio:checked').attr("PassengerName"));
 		var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-		var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+		var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
 		if (!regPhone.test($(".newCustomerInputPhone").val())) {
 			alert(get_lan('passengerPop').phoneRemind);
 		} else if (!regEmail.test($(".newCustomerInputEmail").val()) && !regEmail2.test($(".newCustomerInputEmail").val())) {
@@ -2432,16 +2585,23 @@ function passengerPopChange(customerId, isFirst, customerRid) {
 					$(".popNameEnText").text(item.NameEN);
 					$(".popNameCn .popNameRadio").attr("PassengerName", item.NameCN);
 					$(".popNameEn .popNameRadio").attr("PassengerName", item.NameEN);
-					if (item.Phones != null) {
-						$(".popPhoneInput").val(item.Phones)
-					}
-					if (item.Email != null) {
-						$(".popMailInput").val(item.Email)
-					}
+					if(item.Phones !=null){
+                        $(".popPhoneInput").val(hidePhones(ProfileInfo,item.Phones));
+                        $(".popPhoneInput").attr("hideNo",item.Phones);
+                    }
+                    if(item.Email !=null){
+                        $(".popMailInput").val(hideEmail(ProfileInfo,item.Email));
+                        $(".popMailInput").attr("hideNo",item.Email);
+                    }
 					if (item.Documents.length != 0) {
 						$(".popDocumentsSelect").val(item.Documents[0].Rid);
-						$(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
-						$(".popDocumentsTimeInput").val(item.Documents[0].docExpiryDate.substring(0, 10));
+						// $(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
+                        /*隐藏证件信息*/
+                        $(".popDocumentsInput").attr("hideNo",item.Documents[0].DocumentNumber);
+                        $(".popDocumentsInput").val(hideDocument(ProfileInfo,item.Documents[0].DocumentNumber,item.Documents[0].Rid));
+                        /*end*/
+						$(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,item.Documents[0].docExpiryDate.substring(0,10)));
+                        $(".popDocumentsTimeInput").attr("hideNo",item.Documents[0].docExpiryDate.substring(0,10));
 						if (item.Documents[0].Rid != 1) {
 							$(".popDocumentsTime ").removeClass("hide");
 						}
@@ -2455,9 +2615,23 @@ function passengerPopChange(customerId, isFirst, customerRid) {
 						var ridList = [];
 						item.Documents.map(function(ditem) {
 							if ($('.popDocumentsSelect').val() == ditem.Rid) {
-								$(".popDocumentsInput").val(ditem.DocumentNumber);
+								// $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
+								if(ditem.DocNameCn!=null&&ditem.DocNameCn!=""){
+								    $(".popNameCnText").text(ditem.DocNameCn);
+								    $(".popNameCn .popNameRadio").attr("PassengerName",ditem.DocNameCn);
+								}
+								if(ditem.DocNameEn!=null&&ditem.DocNameEn!=""){
+								    $(".popNameEnText").text(ditem.DocNameEn);
+								    $(".popNameEn .popNameRadio").attr("PassengerName",ditem.DocNameEn);
+								}
+								
 								if (ditem.docExpiryDate.length >= 10) {
-									$(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0, 10));
+									$(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                    $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
 								}
 							}
 							ridList.push(ditem.Rid);
@@ -2477,9 +2651,29 @@ function passengerPopChange(customerId, isFirst, customerRid) {
 					} else if (isFirst == "false") {
 						item.Documents.map(function(ditem) {
 							if (customerRid == ditem.Rid) {
-								$(".popDocumentsInput").val(ditem.DocumentNumber);
+								// $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
 								$(".popDocumentsSelect").val(customerRid);
-								$(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0, 10));
+								$(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
+								//个人信息修改
+								if(ditem.DocNameCn!=null&&ditem.DocNameCn!=""){
+								    $(".popNameCnText").text(ditem.DocNameCn);
+								    $(".popNameCn .popNameRadio").attr("PassengerName",ditem.DocNameCn);
+								}else{
+								    $(".popNameCnText").text(item.NameCN);
+								    $(".popNameCn .popNameRadio").attr("PassengerName",item.NameCN);
+								}
+								if(ditem.DocNameEn!=null&&ditem.DocNameEn!=""){
+								    $(".popNameEnText").text(ditem.DocNameEn);
+								    $(".popNameEn .popNameRadio").attr("PassengerName",ditem.DocNameEn);
+								}else{
+								    $(".popNameEnText").text(item.NameEN);
+								    $(".popNameEn .popNameRadio").attr("PassengerName",item.NameEN);
+								}
 							}
 						})
 						if (customerRid != 1) {
@@ -2502,27 +2696,43 @@ function passengerPopChange(customerId, isFirst, customerRid) {
 					}
 				}
 			})
+			$(".popPhoneInput,.popMailInput").unbind("focus").focus(function(){
+                if($(this).attr("hideNo")){
+                    $(this).val($(this).attr("hideNo"));
+                }
+            })
+            $(".popPhoneInput").unbind("blur").blur(function(){
+                var phoneNo = $(".popPhoneInput").val();
+                $(".popPhoneInput").attr("hideNo",phoneNo);
+                $(".popPhoneInput").val(hidePhones(ProfileInfo,phoneNo));
+            })
+            $(".popMailInput").unbind("blur").blur(function(){
+                $(".popMailInput").attr("hideNo",$(".popMailInput").val());
+                $(".popMailInput").val(hideEmail(ProfileInfo,$(".popMailInput").attr("hideNo")))
+            })
 			$(".passengerPopBtn").unbind("click").click(function() {
 				// console.log($('.popNameRadio:checked').attr("PassengerName"));
 				var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
-				var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
-				if (!regPhone.test($(".popPhoneInput").val())) {
-					alert(get_lan('passengerPop').phoneRemind);
-				} else if (!regEmail.test($(".popMailInput").val()) && !regEmail2.test($(".popMailInput").val())) {
-					alert(get_lan('passengerPop').emailRemind);
-				} else if (!$('.popNameRadio:checked').attr("PassengerName") || $(".popDocumentsInput").val() == "" || $(
+				var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
+				var phoneInfo = $(".popPhoneInput").attr("hideNo")?$(".popPhoneInput").attr("hideNo"):$(".popPhoneInput").val();
+                var emailInfo = $(".popMailInput").attr("hideNo")?$(".popMailInput").attr("hideNo"):$(".popMailInput").val();
+                
+                if(!regPhone.test(phoneInfo)){
+                   alert(get_lan('passengerPop').phoneRemind);
+                }else if(!regEmail.test(emailInfo) && !regEmail2.test(emailInfo)){
+                    alert(get_lan('passengerPop').emailRemind);
+				} else if (!$('.popNameRadio:checked').attr("PassengerName") || $(".popDocumentsInput").attr("hideNo") == "" || $(
 						'.popDocumentsSelect option:selected').val() == "") {
 					alert(get_lan('passengerPop').clickRemind);
 				} else if ($('.popDocumentsSelect option:selected').val() != 1 && $(".popDocumentsTimeInput").val() == "") {
 					alert(get_lan('passengerPop').clickRemind);
 				} else {
-					var emailInfo = $(".popMailInput").val();
-					var phoneInfo = $(".popPhoneInput").val();
+
 					if ($('.popDocumentsSelect option:selected').val() == 1) {
-						var docInfo = $('.popDocumentsSelect option:selected').val() + ',' + $(".popDocumentsInput").val() + ',,,,'
+						var docInfo = $('.popDocumentsSelect option:selected').val() + ',' + $(".popDocumentsInput").attr("hideNo") + ',,,,'
 					} else {
-						var docInfo = $('.popDocumentsSelect option:selected').val() + ',' + $(".popDocumentsInput").val() + ',,,,' +
-							$(".popDocumentsTimeInput").val();
+						var docInfo = $('.popDocumentsSelect option:selected').val() + ',' + $(".popDocumentsInput").attr("hideNo") + ',,,,' +
+							$(".popDocumentsTimeInput").attr("hideNo");
 					}
 					var memberShipInfo = '';
 					$('body').mLoading("show");
@@ -2633,6 +2843,7 @@ function passengersInOrder(customerState) {
 			/*乘客信息*/
 			$(".passengerList").html('');
 			res.map(function(item, index) {
+				var profilePhone = ProfileInfo.HideMyPersonalInfo&&item.Phones!=""?"*******"+item.Phones.substring(item.Phones.length-4,item.Phones.length):item.Phones;
 				$(".passengerList").append('\
                     <div class="passengerLi flexRow" customerId="' + item.ID +
 					'" companyId="' + item.OrderCompanyId +
@@ -2641,10 +2852,8 @@ function passengersInOrder(customerState) {
 					item.NameCN + '</span><span class="changePassengerInfo specificFontColor" index="' + index +
 					'" customerId="' + item.ID + '" style="margin-left:5px;cursor:pointer;">' + get_lan('passengerInfo').changePassengerInfo +
 					'</span></div>\
-                    <div class="passengerLiDiv passengerPhone" style="width:150px;">' + item
-					.Phones + '</div>\
-                    <div class="passengerLiDiv" style="width:200px;">' + item.Email +
-					'</div>\
+                    <div class="passengerLiDiv passengerPhone" style="width:150px;" hideNo="'+item.Phones+'">'+profilePhone+'</div>\
+                    <div class="passengerLiDiv" style="width:200px;">'+hideEmail(ProfileInfo,item.Email)+'</div>\
                     <div class="passengerLiDiv passengerLiDocuments" style="width:300px;"><select class="documentsSelect"></select></div>\
                     <div class="passengerLiDiv roommateName flexRow" style="width:170px;color:#1e66ae" index="' +
 					index +
@@ -2658,18 +2867,41 @@ function passengersInOrder(customerState) {
                     \
                     ')
 				item.Documents.map(function(ditem) {
+					var name = obtLanguage=="CN"?ditem.DocNameCn:ditem.DocNameEn;
+					var cName = obtLanguage=="CN"?item.NameCN:item.NameEN;
 					$(".documentsSelect").eq(index).append('\
                         <option value="' + ditem.Rid +
-						'" docText="' + ditem.DocumentNumber + '">' + ditem.nameDoc + ':' + ditem.DocumentNumber +
+						'" docText="' + ditem.DocumentNumber + '" name="'+name+'" cName="'+cName+'" index="'+index+'" docDelId="'+ditem.delDocId+'">' + ditem.nameDoc + ':' + ditem.DocumentNumber +
 						'</option>\
                     ')
+					 
 				})
+				
+				//2020-9-15 证件号修改，名字联动
+				$(".documentsSelect").change(function(){
+				    var name = $(this).children('option:selected').attr("name");
+				    var cName = $(this).children('option:selected').attr("cName");
+				    var index = parseInt($(this).children('option:selected').attr("index"));
+				    if(name!="null"&&name!=""){
+				        $(".PassengerNameText").eq(index).text(name);
+				    }else{
+				        $(".PassengerNameText").eq(index).text(cName);
+				    }
+				})
+				//end
 				if (item.UpdatedCustomerInfo != "" && item.UpdatedCustomerInfo != null) {
 					var UpdatedCustomerList = item.UpdatedCustomerInfo.split(',');
 					$(".PassengerNameText").text(UpdatedCustomerList[1]);
 					$(".documentsSelect").val(UpdatedCustomerList[2]);
 				}
 			})
+			//价格
+			if(hotelChooseInfo.LocalCurrency != "null"){
+				var allPrice = hotelChooseInfo.LocalTotalFare*res.length
+			}else{
+				var allPrice = hotelChooseInfo.TotalFare*res.length
+			}
+			$('.TotalFare').text(allPrice)
 			if (res.length > 0) {
 				if ($(".orderDetail").attr("HotelType") == "1B" || $(".orderDetail").attr("HotelType") == "4" || $(
 						".orderDetail").attr("HotelType") == "3" || $(".orderDetail").attr("HotelType") == "HRS") {
@@ -2806,9 +3038,9 @@ function passengersInOrder(customerState) {
 					})
 				})
 			}
-			if ($.session.get("TAnumber")) {
-				$(".delIcon").remove();
-			}
+			if($.session.get("TAnumber")){
+                $(".delIcon").remove();
+            }
 			/*删除旅客*/
 			$(".delIcon").unbind("click").click(function() {
 				var customerId = $(this).attr("customerId");
@@ -2908,7 +3140,7 @@ function passengersInOrder(customerState) {
 					var cardIndex = 0;
 					res.map(function(item, index) {
 						var name = obtLanguage == "CN" ? item.NameCN : item.NameEN;
-						if (item.HotelCards.length > 0) {
+						if (item.HotelCards!=null && item.HotelCards.length > 0) {
 							$(".frequentCardsBody").append(
 								'\
                                 \
@@ -2968,10 +3200,10 @@ function passengersInOrder(customerState) {
 				}
 			}
 			/*有审批单*/
-			if (JSON.parse($.session.get('ProfileInfo')).HasTravelRequest && $(".passengerLi").length == 1) {
-				$(".choosePassengerBody").addClass("hide");
-			} else {
-				$(".choosePassengerBody").removeClass("hide");
+			if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&$(".passengerLi").length==1&&!JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption){
+			    $(".choosePassengerBody").addClass("hide");
+			}else{
+			    $(".choosePassengerBody").removeClass("hide");
 			}
 		},
 		error: function() {
@@ -3027,7 +3259,7 @@ function CheckHotelNeedRemaind(payRes) {
 		return false;
 	}
 	$('body').mLoading("show");
-	if ($(".hotelReasonSelect").length > 0) {
+	if ($(".hotelReasonSelect").length > 0 && ProfileInfo.IsHideHotelReason!=true) {
 		if ($(".hotelReasonSelect option:selected").val() == "") {
 			$('body').mLoading("hide");
 			alert(get_lan("bookReasonRemind"));
@@ -3084,8 +3316,13 @@ function reserveHotel(res, payRes) {
 		var reasoncode = $(".bookHotelBtn").attr("reasoncode")
 	} else if ($(".hotelReasonSelect").length > 0 && !$(".hotelReason").hasClass("hide")) {
 		var reasoncode = $(".hotelReasonSelect option:selected").val();
+		var swPolicyCode = $(".hotelReasonSelect option:selected").val()+','+$(".hotelReasonSelect option:selected").attr("ReasonType");
 	} else {
 		var reasoncode = '';
+		var swPolicyCode = '';
+	}
+	if(ProfileInfo.IsHideHotelReason==true){
+		reasoncode=""
 	}
 	console.log(reasoncode);
 	// return false
@@ -3114,7 +3351,7 @@ function reserveHotel(res, payRes) {
 	// }
 	// //加密方法
 	// var key = aesKeyBytes(ProfileInfo.CCKey.split(","));
-	// var iv = aesIvBytes(ProfileInfo.CCIV.split(","));
+    // var iv = aesIvBytes(ProfileInfo.CCIV.split(","));
 	// function Encrypt(word) {
 	// 	var encrypted = CryptoJS.AES.encrypt(word, key, { iv: iv, mode: CryptoJS.mode.CBC, padding: CryptoJS.pad.Pkcs7 });
 	// 	return encrypted.toString();
@@ -3147,11 +3384,11 @@ function reserveHotel(res, payRes) {
 		}
 		var CreditCardNumber = $(".creditCardNumberInput").val().indexOf("*") != -1 ? $(".creditCardNumberInput").attr(
 			"CreditCardNumber") : $(".creditCardNumberInput").val();
-
-		CreditCardNumber = tools.Encrypt(CreditCardNumber);
+		
+		CreditCardNumber=tools.Encrypt(CreditCardNumber);
 		var creditCardKey = $(".passengerLi").eq(0).attr("customerId") + ',' + creditCardName + ',' + $(".documentsSelect").eq(
 				0).val() + ',' + $('.creditCardDocumentNumberInput').val() + ',' + CreditCardNumber + ',' + parseInt($(
-				'.creditCardDateInput').val().split('-')[0]) % 100 + ',' + parseInt($('.creditCardDateInput').val().split('-')[1]) +
+				'.creditCardDateInput').attr("hideNo").split('-')[0]) % 100 + ',' + parseInt($('.creditCardDateInput').attr("hideNo").split('-')[1]) +
 			',' + '' + ',' + creditCardCvv;
 		console.log(creditCardKey);
 	} else if (payRes.IsNeedCreditCard && !payRes.IsNeedDocumentNum) {
@@ -3173,18 +3410,18 @@ function reserveHotel(res, payRes) {
 		// }
 		var CreditCardNumber = $(".creditCardNumberInput").val().indexOf("*") != -1 ? $(".creditCardNumberInput").attr(
 			"CreditCardNumber") : $(".creditCardNumberInput").val();
-
-		CreditCardNumber = tools.Encrypt(CreditCardNumber);
+		
+		CreditCardNumber=tools.Encrypt(CreditCardNumber);
 		var creditCardKey = $(".passengerLi").eq(0).attr("customerId") + ',' + creditCardName + ',' + "" + ',' + "" + ',' +
-			CreditCardNumber + ',' + parseInt($('.creditCardDateInput').val().split('-')[0]) % 100 + ',' + parseInt($(
-				'.creditCardDateInput').val().split('-')[1]) + ',' + '' + ',' + creditCardCvv;
+			CreditCardNumber + ',' + parseInt($('.creditCardDateInput').attr("hideNo").split('-')[0]) % 100 + ',' + parseInt($(
+				'.creditCardDateInput').attr("hideNo").split('-')[1]) + ',' + '' + ',' + creditCardCvv;
 		console.log(creditCardKey);
 	} else {
 		var creditCardKey = 'non_____';
 		console.log(creditCardKey);
 	}
 
-
+	
 
 	var preference = $('input[name="bedTypeRequirement"]:checked').val() + "," + $(
 		'input[name="roomTypeRequirement"]:checked').val() + "," + $('input[name="otherRequirement"]:checked').val();
@@ -3215,16 +3452,20 @@ function reserveHotel(res, payRes) {
 			for (var i = 0; i < $(".checkBusDate").length; i++) {
 				if ($(".checkBusDate").eq(i).is(':checked')) {
 					if ($(".checkBusMorning").is(':checked')) {
-						busInfo += $(".selectMorning").eq(i).children('option:selected').attr("key");
-						busInfo += '_';
-						busInfo += $(".checkBusDate").eq(i).val();
-						busInfo += ',';
+						if($(".selectMorning").eq(i).children('option:selected').attr("key")!=""){
+							busInfo += $(".selectMorning").eq(i).children('option:selected').attr("key");
+							busInfo += '_';
+							busInfo += $(".checkBusDate").eq(i).val();
+							busInfo += ',';
+						}
 					}
 					if ($(".checkBusEvening").is(':checked')) {
-						busInfo += $(".selectEvening").eq(i).children('option:selected').attr("key");
-						busInfo += '_';
-						busInfo += $(".checkBusDate").eq(i).val();
-						busInfo += ',';
+						if($(".selectEvening").eq(i).children('option:selected').attr("key")!=""){
+							busInfo += $(".selectEvening").eq(i).children('option:selected').attr("key");
+							busInfo += '_';
+							busInfo += $(".checkBusDate").eq(i).val();
+							busInfo += ',';
+						}
 					}
 				}
 			}
@@ -3242,26 +3483,33 @@ function reserveHotel(res, payRes) {
 			for (var i = 0; i < $(".frequentCardsSelect").length; i++) {
 				if ($(".frequentCardsSelect").eq(i).find("option:selected").attr("cardnumbers") != "不使用常旅客卡" && $(
 						".frequentCardsSelect").eq(i).find("option:selected").attr("cardnumbers") != "No Membership Card") {
-					memberShipInfo += $(".frequentCardsSelect").eq(i).attr("code") + '-' + $(".frequentCardsSelect").eq(i).find(
+							var memberStr=$(".frequentCardsSelect").eq(i).attr("code") + '-' + $(".frequentCardsSelect").eq(i).find(
 						"option:selected").attr("type") + '-' + $(".frequentCardsSelect").eq(i).find("option:selected").attr(
-						"cardnumbers");
+						"cardnumbers")
+						if(memberStr==""){
+							// memberShipInfo += null;
+							memberShipInfo += "";
+						}else{
+							memberShipInfo += memberStr;
+						}
+				}else{
+					// memberShipInfo += null;
+					memberShipInfo += "";
 				}
 				memberShipInfo += ',';
 			}
 			memberShipInfo = memberShipInfo.substring(0, memberShipInfo.length - 1);
 		}
 		console.log(memberShipInfo)
-
 		$.ajax({
 			type: 'post',
 			url: $.session.get('ajaxUrl'),
 			dataType: 'json',
 			data: {
-				url: $.session.get('obtCompany') + "/OrderService.svc/BookAllHotelPost",	//正式	
-				// url: "https://mobileservicetest.bcdtravel.cn:8089/AndroidService.testForIT/OrderService.svc/BookAllHotelPost",	//测试
+				url: $.session.get('obtCompany') + "/OrderService.svc/BookAllHotelPost",
 				jsonStr: '{"request":{"queryKey":"' + finalQueryKey + '","preference":"' + preference + '","creditCardKey":"' +
 					creditCardKey + '","remarkKey":"' + remarkKey + '","payInfo":"' + payInfo + '","id":' + netUserId +
-					',"Language":"' + obtLanguage + '","busInfo":"' + busInfo + '","memberShipInfo":[' + memberShipInfo + ']}}'
+					',"Language":"' + obtLanguage + '","busInfo":"' + busInfo + '","memberShipInfo":' + JSON.stringify(memberShipInfo.split(',')) + ',"swPolicyCode":"'+swPolicyCode+'"}}'
 			},
 			success: function(data) {
 				$('body').mLoading("hide");
@@ -3278,16 +3526,11 @@ function reserveHotel(res, payRes) {
 					}
 				} else {
 					var orderNo = res.OrderNo;
-					var orderFinishDetail = new OrderFinishDetail(netUserId.split('\"')[1],res.AirMainRids,orderType,obtLanguage)
-					hotelBookOthersPopUp(orderFinishDetail,res.OrderNo);	//确认酒店杂项
-					//以下移到杂项提交内
-					// if ($.session.get("TAnumber") && !$.session.get("TAnumberIndex")) {
-					// 	$.session.remove("TAnumber");
-					// 	$.session.remove("TACustomerId");
-					// }
-					// changeNewUid(orderNo);
-					//以上
-
+					if($.session.get("TAnumber")&&!$.session.get("TAnumberIndex")){
+						$.session.remove("TAnumber");
+						$.session.remove("TACustomerId");
+					}
+					changeNewUid(orderNo);
 					// if(ProfileInfo.onlineStyle=="APPLE"){
 					//     var finishedInfo = {
 					//         'orderNo':orderNo,
@@ -3362,8 +3605,8 @@ function changeNewUid(orderNo) {
 					$.session.set('searchOrderInfo', JSON.stringify(searchOrderInfo));
 					console.log($.session.get('searchOrderInfo'));
 					// window.location.href='../../bookFinished/bookFinished.html';
-					var TAnumberIndex = $.session.get('TAnumberIndex');
-					if (TAnumberIndex != 1) {
+					var TAnumberIndex=$.session.get('TAnumberIndex');
+					if(TAnumberIndex != 1){
 						$.session.remove("TAnumber")
 					}
 					window.location.href = '../../orders/orderDetails.html?state=finish';

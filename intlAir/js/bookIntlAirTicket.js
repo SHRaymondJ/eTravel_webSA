@@ -8,8 +8,15 @@ if($.session.get('searchIntlInfo')){
     var searchIntlInfo = JSON.parse($.session.get('searchIntlInfo'));
     console.log(searchIntlInfo)
 }
+var regPhone = tools.regPhone;
+
 console.log(intlTicketInfo);
 var ProfileInfo = JSON.parse($.session.get('ProfileInfo'));
+
+//置顶，多出用到的参数
+var goOptionID="" ,goCabinID="",backOptionID="",backCabinID=""
+//货币单位
+var curreny="￥"
 $(function(){
    showContent();//内容展示
    clickBookBtn();
@@ -193,7 +200,7 @@ var en = {
         "selectPassengerSearch":"Search",
         "commonPassengers":"Common Travelers",
         'delMsg':'Do you want to remove this traveler from this order?',
-        'addNewCustomer':"[Adding New Travelers]",
+        'addNewCustomer':"[Add New Travelers]",
     },
     "frequentCardsInfo":{
         "cardholder":"Name Of Cardholder : ",
@@ -224,26 +231,6 @@ var en = {
     "airlineRemind2":"China southern airlines' important tips",
     "airlineRemind3":"2019 excess baggage prices",
 }
-
-var orderType = 1;  //订单类型 1机票 2酒店
-// //获得机票杂项的请求参数
-// var orderFinishDetail = {
-//     request: {
-//         id: "",  //用户ID
-//         orderRids: [],   //预定接口返回的AirMainRids参数
-//         orderType: 1,    //订单类型 1机票 2酒店
-//         Language: ""     //用户环境语言
-//     }
-// }
-//获得机票杂项的请求参数
-function OrderFinishDetail(__id,__orderRids,__orderType,__Language){
-    this.request = {};
-    this.request.id = __id; //<String>用户ID
-    this.request.orderRids = __orderRids,   //<Array>预定接口返回的AirMainRids参数
-    this.request.orderType = __orderType,   //<int>订单类型 1机票 2酒店
-    this.request.Language = __Language      //<String>用户环境语言
-}
-
 if(ProfileInfo.onlineStyle=="APPLE"){
     cn.remarkPop.remarkInfoRemind = "";
     en.remarkPop.remarkInfoRemind = "";
@@ -327,7 +314,7 @@ function showContent(){
             </div>\
             <div class="intlReasonBody">\
               <div class="intlReason flexRow">\
-                '+get_lan('intlReason')+'\
+               <span class="resonTitle"> '+get_lan('intlReason')+'</span>\
                 <select class="intlReasonSelect">\
                 </select>\
                 <input class="reasonText hide" placeholder="'+get_lan('reasonText')+'">\
@@ -405,6 +392,7 @@ function showContent(){
          },
          success : function(data) {
             var res = JSON.parse(data);
+			var resDate=JSON.parse(data)
             console.log(res);
             if(res.length==0){
                 alert(get_lan("intlRemind"));
@@ -511,6 +499,7 @@ function showContent(){
             surePassengerInfo(res);//旅客信息确认
             passengerPop();//个人信息弹窗
             res.map(function(item,index){
+				curreny=item.Curreny
                 $(".orderDetail").append('\
                     <div class="orderDetailBody flexRow">\
                         <div  class="orderDetailLeft">\
@@ -520,12 +509,12 @@ function showContent(){
                     </div>\
                     ')
                 $(".orderDetail").attr('totalPrice',parseInt(item.FaceValue)+parseInt(item.TaxValue)+parseInt(item.ServiceValue));
-                $(".totalAmountText").html('<span style="font-size:16px;">￥</span>'+$(".orderDetail").attr('totalPrice'));
+                $(".totalAmountText").html($(".orderDetail").attr('totalPrice')+'<span style="font-size:16px;">'+item.Curreny+'</span>');
                 var showServiceFare = item.ServiceValue == 0?"hide":"";
                 $(".orderDetailRight").eq(0).html('\
-                    <div class="orderFareAmount flexRow"><div style="width:120px;">'+get_lan('orderDetail').ticketPrice+'</div>￥<span class="mainFontColor" style="font-size:20px;">'+item.FaceValue+'</span></div>\
-                    <div class="orderTotalTax flexRow"><div style="width:120px;">'+get_lan('orderDetail').tax+'</div>￥<span class="mainFontColor">'+item.TaxValue+'</span></div>\
-                    <div class="orderServiceFare flexRow '+showServiceFare+'"><div style="width:120px;">'+get_lan('orderDetail').serviceFare+'</div>￥<span class="mainFontColor">'+item.ServiceValue+'</span></div>\
+                    <div class="orderFareAmount flexRow"><div style="width:120px;">'+get_lan('orderDetail').ticketPrice+'</div><span class="mainFontColor" style="font-size:20px;">'+item.FaceValue+'</span>'+item.Curreny+'</div>\
+                    <div class="orderTotalTax flexRow"><div style="width:120px;">'+get_lan('orderDetail').tax+'</div><span class="mainFontColor">'+item.TaxValue+item.Curreny+'</span></div>\
+                    <div class="orderServiceFare flexRow '+showServiceFare+'"><div style="width:120px;">'+get_lan('orderDetail').serviceFare+'</div><span class="mainFontColor">'+item.ServiceValue+item.Curreny+'</span></div>\
                     ')
                 item.InterSegments.map(function(sItem,sIndex){
                     if(sItem.MarketingCode=="CZ"&&ProfileInfo.onlineStyle!="APPLE"){
@@ -595,7 +584,8 @@ function showContent(){
             }else{
                 $(".InterSingleReasonBody").remove();
             }
-            if(!res[0].isShowReason){
+            // if(!res[0].isShowReason){
+            if(!res[0].isShowReason && !ProfileInfo.NeedSpecialPolicy){//方糖权限NeedSpecialPolicy 为true显示违反政策
                 $(".intlReasonBody").remove();
             }else{
                 $.ajax(
@@ -630,16 +620,124 @@ function showContent(){
                                 })
                             })
                             $(".intlReason").append('\
-                                <div class="intlReasonPrice"><span class="intlReasonPriceTittle">'+get_lan("lowestPrice")+'</span><span class="minPrice">￥'+(parseInt(res[0].Fare)+parseInt(res[0].TotalTax))+'</span></div>\
+                                <div class="intlReasonPrice"><span class="intlReasonPriceTittle">'+get_lan("lowestPrice")+'</span><span class="minPrice">'+(parseInt(res[0].Fare)+parseInt(res[0].TotalTax))+res[0].Curreny+'</span></div>\
                             ')
                         }
                         $(".intlReasonLi").eq($(".intlReasonLi").length-1).css("border","0");
+						
+						if(ProfileInfo.NeedSpecialPolicy && res.length>0){
+							if(searchIntlInfo.type=='roundTrip'){
+								// res 改成 resDate
+								// intlTicketInfo.segmentKey="1000601,2000601-0"
+								// goOptionID=res[0].SegID;
+								// goCabinID=res[0].InterCabins[0].CabinID;
+								// backOptionID=res[1].SegID;
+								// backCabinID=res[1].InterCabins[0].CabinID;
+								var cabin = intlTicketInfo.segmentKey.split(',')[1].split('-')[1];
+								goOptionID=intlTicketInfo.segmentKey.split(',')[0];
+								goCabinID=cabin;
+								backOptionID=intlTicketInfo.segmentKey.split(',')[1].split('-')[0];
+								backCabinID=cabin;
+							}
+							if(searchIntlInfo.type=='oneWay'){
+								// goOptionID=res[0].SegID;
+								// goCabinID=res[0].InterCabins[0].CabinID;
+								goOptionID=intlTicketInfo.segmentKey.split('-')[0];
+								goCabinID=intlTicketInfo.segmentKey.split('-')[1];
+							}
+							SwCheapestSegmentInter(goOptionID,goCabinID,backOptionID,backCabinID)
+						}
+						
                     },
                     error : function() {
                       // alert('fail');
                     }
                   }
                 );
+				
+				function SwCheapestSegmentInter(goOptionID,goCabinID,backOptionID,backCabinID){
+					var jsonStr={
+						'id':netUserId.split('"')[1],
+						'goOptionID':goOptionID.toString(),
+						'goCabinID':goCabinID,
+						'backOptionID':backOptionID.toString(),
+						'backCabinID':backCabinID,
+						'language':obtLanguage,
+					}
+					$.ajax(
+					  {
+					    type:'post',
+					    url : $.session.get('ajaxUrl'),
+					    dataType : 'json',
+					    data:{
+					        url: $.session.get('obtCompany')+"/QueryService.svc/SwCheapestSegmentInter",
+					        // jsonStr:'{"id":'+netUserId+',"Language":"'+obtLanguage+'"}'
+					        jsonStr:JSON.stringify(jsonStr)
+					    },
+					    success : function(data) {
+					        // $('body').mLoading("hide");
+					        var res = JSON.parse(data);
+					        console.log(res);
+							// var reasonIndex=0//显示第几条的理由，目前不需要这个逻辑
+					        if(res.length>0){
+								$('.resonTitle').text(res[0].DisplayMessage+":")
+								$(".intlReasonSelect").html('<option value="">'+get_lan("intlReasonRemind")+'</option>')
+								res[0].SwFavorableReasons.map(function(item){
+									var DescriptionCn="",DescriptionEn="",Code=""
+									for(var k in item){
+										if(k=="<DescriptionCn>k__BackingField"){DescriptionCn=item[k]}
+										if(k=="<DescriptionEn>k__BackingField"){DescriptionEn=item[k]}
+										if(k=="<Code>k__BackingField"){Code=item[k]}
+									}
+									var Name=obtLanguage=="CN"?DescriptionCn:DescriptionEn
+									$(".intlReasonSelect").append('\
+										<option value="'+Code+'">'+Name+'</option>\
+										')
+								})
+								// 推荐航班
+								//删除原数据
+								$('.intlReasonLi').remove()
+								$('.intlReasonPrice').remove()
+								
+								res.map(function(item,index){
+									// if(item.ReasonCodeType==3){
+									// 	reasonIndex=index;
+									// }
+								    item.InterSegments.map(function(sItem){
+								        $(".intlReasonBody").append('\
+								            <div class="intlReasonLi">\
+								              <div class="intlReasonLiDate">'+sItem.DateBegin+'</div>\
+								              <div class="intlReasonLiFlightNo">'+sItem.FlightNo+'</div>\
+								              <div class="intlReasonLiCompany">'+sItem.Marketing+'</div>\
+								              <div class="intlReasonLiDeparture" title="'+sItem.AirportDeparte+'">'+sItem.AirportDeparte+'</div>\
+								              <div class="intlReasonLiArrow"></div>\
+								              <div class="intlReasonLiDestination" title="'+sItem.AirportArrive+'">'+sItem.AirportArrive+'</div>\
+								              <div class="intlReasonLiTimeStart">'+sItem.TimeStart+'</div>\
+								              <div class="intlReasonLiTimeArrive">'+sItem.TimeArrive+'</div>\
+								            </div>\
+								        ')
+								    })
+								})
+								$(".intlReason").append('\
+								    <div class="intlReasonPrice"><span class="intlReasonPriceTittle">'+get_lan("lowestPrice")+'</span><span class="minPrice">'+(parseInt(res[0].Fare)+parseInt(res[0].TotalTax))+res[0].Curreny+'</span></div>\
+								')
+						  
+								//     $(".intlReason").append('\
+								//         <div class="intlReasonPrice"><span class="intlReasonPriceTittle">'+get_lan("lowestPrice")+'</span><span class="minPrice">￥'+(parseInt(res[0].Fare)+parseInt(res[0].TotalTax))+'</span></div>\
+								//     ')
+					        }
+							
+							//违反政策理由
+							
+							
+					        // $(".intlReasonLi").eq($(".intlReasonLi").length-1).css("border","0");
+					    },
+					    error : function() {
+					      // alert('fail');
+					    }
+					  }
+					);
+				}
             }
             $(".orderNewOrder").eq(0).text(get_lan('orderDetail').reselection);
             $(".orderNewOrder").eq(0).unbind("click").click(function(){
@@ -663,6 +761,68 @@ function showContent(){
        }
     );
 }
+/*隐藏证件信息*/
+function hideDocument(profile,document,rid){
+	if(profile.HideMyPersonalInfo&&document!=""){
+		if(rid==1&&document.length>10){
+			var starLength = document.length-10;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,6)+starString+document.substring(document.length-4,document.length);
+		}else if(document.length>3){
+			var starLength = document.length-3;
+			var starString = "";
+			for(var i=0;i<starLength;i++){
+				starString += "*";
+			}
+			var DocumentNumber = document.substring(0,1)+starString+document.substring(document.length-2,document.length);
+		}else{
+			var DocumentNumber = document;
+		}
+	}else{
+		var DocumentNumber = document
+	}
+	
+	return DocumentNumber;
+}
+/*end*/
+/*隐藏邮箱*/
+function hideEmail(profile,email){
+	if(profile.HideMyPersonalInfo&&email!=""){
+        var starLength = email.split("@")[0].length;
+        var starString = "";
+        for(var i=0;i<starLength-2;i++){
+            starString += "*"
+        }
+        var profileEmail = email.substring(0,1)+starString+email.substring(starLength-1,starLength)+'@'+email.split("@")[1];
+    }else{
+        var profileEmail = email;
+    }
+    return profileEmail;
+}
+/*end*/
+/*隐藏手机号*/
+function hidePhones(profile,phone){
+    if(profile.HideMyPersonalInfo&&phone!=""){
+        var profilePhone = "*******"+phone.substring(phone.length-4,phone.length)
+    }else{
+        var profilePhone = phone;
+    }
+    return profilePhone;
+}
+/*end*/
+/*隐藏证件有效期*/
+function hideDocDate(profile,date){
+    if(profile.HideMyPersonalInfo&&date!=""){
+        var docDate = "****-**-**";
+    }else{
+        var docDate = date;
+    }
+    return docDate;
+}
+/*end*/
 //旅客信息确认
 function surePassengerInfo(airlineInfo){
     $('body').mLoading("show");
@@ -690,6 +850,23 @@ function surePassengerInfo(airlineInfo){
                 }else{
                     $(".reasonText").addClass("hide");
                 }
+				
+				// 是否符合政策
+				if(ProfileInfo.NeedSpecialPolicy){
+					$('.newRemark').remove()
+					if($('.intlReasonSelect').val()==""){
+						//理论上删除新的remark行后不需要再弹窗，看需求
+					}else{
+						if(searchIntlInfo.type == 'oneWay'){
+							var policyCodes=$('.intlReasonSelect').val()
+						}else{
+							var policyCodes=$('.intlReasonSelect').val()+","+$('.intlReasonSelect').val()
+						}
+						QuerySwRemark(passengerJson.CompanyID,policyCodes)
+					}
+					
+				}
+				
             })
             if(passengerJson.isDirectTicket){
                 $(".ricketOutBody").html('<input type="checkbox" class="ricketOutCheckBox"><span style="margin-left:21px;">'+get_lan('ricketOut')+'</span>')
@@ -725,7 +902,8 @@ function surePassengerInfo(airlineInfo){
                             remarkInfoPop(passengerJson.CompanyID,passengerJson.ID,employeeName,"true");
                         }else if(searchIntlInfo.alterTicketInfo&&!$.session.get('goOnBookOrderNo')){
                             var customerId = searchIntlInfo.alterTicketInfo.split(',')[0].split('_')[0];
-                            if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber')){
+                            // if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber')){
+                            if(!$.session.get('TAnumber')){
                                 $.ajax(
                                     {
                                       type:'post',
@@ -814,11 +992,12 @@ function surePassengerInfo(airlineInfo){
                                         alert(res.Message);
                                     }else{
                                         res.Customers.map(function(item,index){
+                                            var profilePhone = ProfileInfo.HideMyPersonalInfo&&item.Phone!=""?"*******"+item.Phone.substring(item.Phone.length-4,item.Phone.length):item.Phone;
                                             $(".passengerList").append('\
                                                 <div class="passengerLi flexRow" customerId="'+item.CustomerID+'">\
-                                                <div class="passengerLiDiv" style="width:250px;"><span class="PassengerNameText">'+item.CustomerName+'</span><span class="changePassengerInfo specificFontColor" index="'+index+'" customerId="'+item.CustomerID+'" style="margin-left:5px;cursor:pointer;">'+get_lan('passengerInfo').changePassengerInfo+'</span></div>\
-                                                <div class="passengerLiDiv passengerPhone" style="width:150px;">'+item.Phone+'</div>\
-                                                <div class="passengerLiDiv" style="width:200px;">'+item.Email+'</div>\
+                                                <div class="passengerLiDiv" style="width:250px;"><span class="PassengerNameText">'+item.NameEN+'</span><span class="changePassengerInfo specificFontColor" index="'+index+'" customerId="'+item.CustomerID+'" style="margin-left:5px;cursor:pointer;">'+get_lan('passengerInfo').changePassengerInfo+'</span></div>\
+                                                <div class="passengerLiDiv passengerPhone" style="width:150px;" hideNo="'+item.Phone+'">'+profilePhone+'</div>\
+                                                <div class="passengerLiDiv" style="width:200px;">'+hideEmail(ProfileInfo,item.Email)+'</div>\
                                                 <div class="passengerLiDiv passengerLiDocuments" style="width:300px;"><select class="documentsSelect" index="'+index+'"></select></div>\
                                                 </div>\
                                                 \
@@ -826,7 +1005,7 @@ function surePassengerInfo(airlineInfo){
                                             item.DocumentsDetail.map(function(ditem){
                                                 if(ditem.Rid!=1){
                                                     $(".documentsSelect").eq(index).append('\
-                                                        <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'">'+ditem.nameDoc+':'+ditem.DocumentNumber+'</option>\
+														<option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'" name="'+ditem.DocNameEn+'" cName="'+item.NameEN+'" index="'+index+'" docDelId="'+ditem.delDocId+'">'+ditem.nameDoc+':<pre>'+tools.innerHtml(ditem.DocumentNumber)+'</pre></option>\
                                                     ')
                                                 }
                                             })
@@ -840,11 +1019,26 @@ function surePassengerInfo(airlineInfo){
                                         for(var i=0;i<$(".documentsSelect").length;i++){
                                             if($(".documentsSelect").eq(i).find("option[value='2']").length==1){
                                                 $(".documentsSelect").eq(i).val('2');
+												var nameDoc=$(".documentsSelect").eq(0).find('option:checked').attr('name')
+												var nameItem=$(".documentsSelect").eq(0).find('option:checked').attr('cname')
+												var name=nameDoc!="" && nameDoc!=null?nameDoc:nameItem
+												$('.PassengerNameText').eq(i).text(name)
                                             }else if($(".documentsSelect:eq("+i+") option").length==0){
                                                 var customerId = $(".changePassengerInfo").eq(i).attr("customerId");
                                                 passengerPopChange(customerId,"true",2);
                                             }
                                         }
+										//修改名字
+										$(".documentsSelect").change(function(){
+										    var name = $(this).children('option:selected').attr("name");
+										    var cName = $(this).children('option:selected').attr("cName");
+										    var index = parseInt($(this).children('option:selected').attr("index"));
+										    if(name!="null"&&name!=""){
+										        $(".PassengerNameText").eq(index).text(name);
+										    }else{
+										        $(".PassengerNameText").eq(index).text(cName);
+										    }
+										})
 										// 11.26 显示常旅客卡
 										// $('.frequentCardsInfo').show()
 										passengersInOrder2()
@@ -931,6 +1125,9 @@ function surePassengerInfo(airlineInfo){
 							var city=$('.orderDetail').attr('citys')?$('.orderDetail').attr('citys'):""
                             if(passengerJson.HasTravelRequest&&!$.session.get('goOnBookOrderNo')&&!$.session.get('TAnumber')){
                                 var queryKey = passengerJson.ID+$(".orderDetail").attr("queryKey");
+								if(searchIntlInfo.type == "oneWay"){
+									city=""
+								}
                                 tools.customerTravelRequest(netUserId,queryKey,function(){
                                     $(".requestCover").remove();
                                     tools.getTravelRequestRemark(netUserId,queryKey,function(data){
@@ -990,7 +1187,7 @@ function selectPassengers(){
                     res.map(function(item){
                         var name = obtLanguage=="CN"?item.NameCN:item.NameEN;
                         $(".selectPassengerList").append('\
-                            <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+item.Email+')'+'</div>\
+                            <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+hideEmail(ProfileInfo,item.Email)+')'+'</div>\
                             ')
                     })
                     clickPassengerLi();
@@ -1053,7 +1250,7 @@ function selectPassengers(){
                 res.map(function(item){
                     var name = obtLanguage=="CN"?item.NameCN:item.NameEN;
                     $(".selectPassengerList").append('\
-                        <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+item.Email+')'+'</div>\
+                        <div class="selectPassengerLi ellipsis" CompanyID="'+item.CompanyID+'" searchId="'+item.ID+'" employeeName="'+item.NameCN+'">'+name+'('+hideEmail(ProfileInfo,item.Email)+')'+'</div>\
                         ')
                 })
                 clickPassengerLi();
@@ -1102,6 +1299,9 @@ function selectPassengers(){
             // 有审批单权限
 			var city=$('.orderDetail').attr('citys')?$('.orderDetail').attr('citys'):""
             if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&!$.session.get('TAnumber')){
+				if(searchIntlInfo.type == "oneWay"){
+					city=""
+				}
                 tools.customerTravelRequest(netUserId,queryKey,function(){
                     $(".requestCover").remove();
                     if($(".passengerLi").length == 0){
@@ -1111,32 +1311,34 @@ function selectPassengers(){
                     }
                 },1,city)
             }else{
-                $.ajax(
-                  {
-                    type:'post',
-                    url : $.session.get('ajaxUrl'),
-                    dataType : 'json',
-                    data:{
-                        url: $.session.get('obtCompany')+"/SystemService.svc/GetTravelRequestWithOtherCitysPost",
-                        jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'","otherCitys":"'+city+'"}'
-                    },
-                    success : function(data) {
-                        $('body').mLoading("hide");
-                        var res = JSON.parse(data);
-                        console.log(res);
-                        if(res.Remarks.length != 0){
+                // $.ajax(
+                //   {
+                //     type:'post',
+                //     url : $.session.get('ajaxUrl'),
+                //     dataType : 'json',
+                //     data:{
+                //         url: $.session.get('obtCompany')+"/SystemService.svc/CheckCustomerHasTravelRequestWithOtherCitysPost",
+                //         jsonStr:'{"queryKey":"'+queryKey+'","id":'+netUserId+',"Language":"'+obtLanguage+'","otherCitys":"'+city+'"}'
+                //     },
+                //     success : function(data) {
+                //         $('body').mLoading("hide");
+                //         var res = JSON.parse(data);
+                //         console.log(res);
+                //         if(res.Remarks.length != 0){
+							
                             $(".passengerBody").attr("state","true");
                             if($(".passengerLi").length == 0){
                                 remarkInfoPop(CompanyID,customerId,employeeName,"true");
                             }else{
                                 remarkInfoPop($(".passengerLi").eq(0).attr("companyId"),customerId,employeeName,"true");
                             }
-                        }
-                    },
-                    error : function() {
-                    }
-                  } 
-                );
+							
+                //         }
+                //     },
+                //     error : function() {
+                //     }
+                //   } 
+                // );
             }
         })
     }
@@ -1157,6 +1359,13 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
             $('body').mLoading("hide");
             var res = JSON.parse(data);
             console.log(res);
+			//弹窗中的用户名，需求未知
+			var serverName=""
+			if(res.length>0){
+				serverName=obtLanguage=="CN"?res[0].NameCN:res[0].NameEN;
+			}
+			employeeName= serverName?serverName:employeeName;
+			
             if(res.length==0){
                 $(".businessTripBody").html('\
                     <div class="businessTripLi flexRow">\
@@ -1281,6 +1490,15 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
                         console.log(res);
                         $('body').mLoading("hide");
                         remark(res,CustomerID,CompanyId,isFirst);
+						setTimeout(function(){
+							// remark(res,CustomerID,CompanyId,'false',true);
+							if(searchIntlInfo.type == 'oneWay'){
+								var policyCodes=$('.intlReasonSelect').val()
+							}else{
+								var policyCodes=$('.intlReasonSelect').val()+","+$('.intlReasonSelect').val()
+							}
+							QuerySwRemark(CompanyId,policyCodes)
+						},100)
                     },
                     error : function() {
                       // alert('fail');
@@ -1292,8 +1510,89 @@ function remarkInfoPop(CompanyID,CustomerID,employeeName,isFirst){
     }
     openRemarkPop();
 }
-function remark(remarks,CustomerID,CompanyID,isFirst){
-    $(".remarkInfoBody").html('');
+//SW  方糖获取更多remark
+function QuerySwRemark(CompanyId,policyCodes){
+	var type=""
+	if(intlTicketInfo.type=='roundTrip'){
+		type="I2"
+	}
+	if(intlTicketInfo.type=='oneWay'){
+		type="I1"
+	}
+	var jsonStr={
+		"request":{
+			"id":netUserId.split('"')[1],
+			"companyId":CompanyId,
+			"goOptionID":goOptionID+"","goCabinID":goCabinID,
+			"backOptionID":backOptionID+"","backCabinID":backCabinID,
+			"language":obtLanguage,
+			"type":type,
+			"policyCodes":policyCodes.split(',')
+			}
+		}
+	$.ajax(
+	  {
+	    type:'post',
+	    url : $.session.get('ajaxUrl'), 
+	    dataType : 'json',
+	    data:{
+	        url: $.session.get('obtCompany')+"/QueryService.svc/QuerySwRemarkList",
+			jsonStr:JSON.stringify(jsonStr)
+	    },
+		//goOptionID
+	    success : function(data) {
+	        var res = JSON.parse(data);
+	        console.log(res);
+	        $('body').mLoading("hide");
+			var CustomerID = $('.passengerLi').eq(0).attr('customerid') 
+			$('.newRemark').remove()//无论有无数据，都删除新remark；
+			if(res.length==0){
+				//没有数据，不再弹窗
+				//remarkInfoPop(CompanyId,CustomerID,"UserName","false")
+			}else{
+				openRemarkPop()//打开remark,重新跑一遍接口
+				// $.ajax(
+				//   {
+				//     type:'post',
+				//     url : $.session.get('ajaxUrl'), 
+				//     dataType : 'json',
+				//     data:{
+				//         url: $.session.get('obtCompany')+"/SystemService.svc/GetOrderCustomerRemark",
+				//         jsonStr:'{"id":'+netUserId+',"customerId":"'+CustomerID+'","companyID":"'+CompanyId+'"}'
+				//     },
+				//     success : function(data) {
+				//         var oldres = JSON.parse(data);
+				//         console.log(oldres);
+				//         $('body').mLoading("hide");
+				//         remark(oldres,CustomerID,CompanyId,"false");
+						openRemarkPop()
+						setTimeout(function(){
+							remark(res,CustomerID,CompanyId,'false',true);
+						},100)
+				//     },
+				//     error : function() {
+				//       // alert('fail');
+				//     }
+				//   } 
+				// );
+			}
+	    },
+	    error : function() {
+	      // alert('fail');
+	    }
+	  } 
+	);
+}
+function remark(remarks,CustomerID,CompanyID,isFirst,newRemark){
+		//方糖 新remark 
+		var remarkClass="",newSelect="",newInput=""
+		if(newRemark){
+			remarkClass="newRemark"
+			newSelect="newSelect"
+			newInput="newInput"
+		}else{
+			$(".remarkInfoBody").html('');
+		}
     var redTips=false;
     remarks.map(function(item,index){
         var colorRed = item.Input.indexOf("4") != -1||item.Input==""?"":"colorRed";
@@ -1306,33 +1605,33 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
         }
         if(!item.CanModify){
             $(".remarkInfoBody").append('\
-                <div class="remarkLi flexRow">\
+                <div class="remarkLi flexRow '+ remarkClass +'">\
                   <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
-                  <div class="liContent" index="'+item.Index+'"><input id="remarkInput'+item.Index+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" disabled></div>\
+                  <div class="liContent" index="'+item.Index+'"><input id="remarkInput'+item.Index+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" disabled></div>\
                 </div>\
             ')
         }else if(item.CanModify&&item.InList){
             if(!item.ListCanSearch){
                 $(".remarkInfoBody").append('\
-                    <div class="remarkLi flexRow">\
+                    <div class="remarkLi flexRow '+ remarkClass +'">\
                       <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
-                      <div class="liContent">\
-                        <select class="remarkSelect" index="'+index+'" id="remarkSelect'+item.Index+'">\
+                      <div class="liContent" index="'+item.Index+'">\
+                        <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
                           <option>'+get_lan("remarkPop").Choose+'</option>\
                         </select>\
-                        <input id="remarkInput'+item.Index+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" readonly placeholder="'+get_lan("remarkPop").Choose+'">\
+                        <input id="remarkInput'+item.Index+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" readonly placeholder="'+get_lan("remarkPop").Choose+'">\
                       </div>\
                     </div>\
                 ')
             }else{
                 $(".remarkInfoBody").append('\
-                    <div class="remarkLi flexRow">\
+                    <div class="remarkLi flexRow '+ remarkClass +'">\
                       <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
-                      <div class="liContent">\
-                        <select class="remarkSelect" index="'+index+'" id="remarkSelect'+item.Index+'">\
+                      <div class="liContent" index="'+item.Index+'">\
+                        <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
                           <option>'+get_lan("remarkPop").Choose+'</option>\
                         </select>\
-                        <input class="remarkLiInput" CompanyID="'+CompanyID+'" id="remarkInput'+item.Index+'" require="'+colorRed+'" value="'+item.Content+'" index="'+item.Index+'"  key="'+item.SubmitContent+'" placeholder="'+get_lan("remarkPop").search+'">\
+                        <input class="remarkLiInput '+newInput+'" CompanyID="'+CompanyID+'" id="remarkInput'+item.Index+'" require="'+colorRed+'" value="'+item.Content+'" index="'+item.Index+'"  key="'+item.SubmitContent+'" placeholder="'+get_lan("remarkPop").search+'">\
                       </div>\
                     </div>\
                 ')
@@ -1340,44 +1639,70 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
             }
         }else if(item.CanModify&&!item.InList){
             $(".remarkInfoBody").append('\
-                <div class="remarkLi flexRow">\
+                <div class="remarkLi flexRow '+ remarkClass +'">\
                   <div id="liTittle'+item.Index+'" class="liTittle '+colorRed+'" title="'+item.Title+'">'+starIcon+item.Title+'</div>\
-                  <div class="liContent">\
-                    <select class="remarkSelect" index="'+index+'">\
+                  <div class="liContent" index="'+item.Index+'">\
+                    <select class="remarkSelect '+newSelect+'" index="'+index+'">\
                       <option>'+get_lan("remarkPop").Choose+'</option>\
                     </select>\
-                    <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="">\
+                    <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="">\
                   </div>\
                 </div>\
             ')
-                    // <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'">\
+                    // <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'">
         }
     })
     // 红的提示字 是否显示
     if(!redTips && ProfileInfo.onlineStyle!="APPLE"){
         $('.colorRed').hide()
     }
-    for(var i=0;i<$(".remarkSelect").length;i++){
-        var index = parseInt($(".remarkSelect").eq(i).attr("index"));
+	var selectLength=0
+	if(newRemark){
+		selectLength=$(".newSelect").length
+	}else{
+		selectLength=$(".remarkSelect").length
+	}
+    for(var i=0;i<selectLength;i++){
+		if(newRemark){
+			var index = parseInt($(".newSelect").eq(i).attr("index"));
+		}else{
+			var index = parseInt($(".remarkSelect").eq(i).attr("index"));
+		}
         // console.log(index);
         if(remarks[index].Items.length!=0){
             remarks[index].Items.map(function(item){
                 var itemValue = item.Value==null||item.Value==""?item.Key:item.Value;
-                $(".remarkSelect").eq(i).append('\
-                    <option class="remarkOption" key="'+item.Key+'" index="'+index+'">'+itemValue+'</option>\
-                    ')
+				if(newRemark){
+					$(".newSelect").eq(i).append('\
+							<option class="remarkOption" key="'+item.Key+'" index="'+index+'">'+itemValue+'</option>\
+							')
+				}else{
+					$(".remarkSelect").eq(i).append('\
+						<option class="remarkOption" key="'+item.Key+'" index="'+index+'">'+itemValue+'</option>\
+						')
+				}
             })
         }else{
-            $(".remarkSelect").eq(i).hide();
+			if(newRemark){
+				$(".newSelect").eq(i).hide();
+			}else{
+				$(".remarkSelect").eq(i).hide();
+			}
         }
         
         // var inputIndex = parseInt($(".remarkSelect").eq(i).find("option:selected").attr("index"));
         // $(".remarkLiInput").eq(inputIndex).val($(".remarkSelect").eq(i).find("option:selected").text());
         $(".remarkSelect").eq(i).change(function(){
             var index = parseInt($(this).find("option:selected").attr("index"));
-            $(".remarkLiInput").eq(index).val($(this).find("option:selected").text());
-            $(".remarkLiInput").eq(index).attr('key',$(this).find("option:selected").attr("key"));
+			$(".remarkLiInput").eq(index).val($(this).find("option:selected").text());
+			$(".remarkLiInput").eq(index).attr('key',$(this).find("option:selected").attr("key"));
         })
+		$(".newSelect").eq(i).change(function(){
+		    var index = parseInt($(this).find("option:selected").attr("index"));
+				$(".newInput").eq(index).val($(this).find("option:selected").text());
+				$(".newInput").eq(index).attr('key',$(this).find("option:selected").attr("key"));
+		})
+		
     }
     //选择remark关联其他remark
     $(".remarkSelect").change(function(){
@@ -1387,6 +1712,7 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
         var selectIndex = parseInt($(this).find("option:selected").attr("index"));
         remarks[selectIndex].RelatedRemarkList.map(function(rItem){
             if(rItem.ChooseMainValue==selectKey){
+			var rIndex=rItem.SubRemarkIndex;
                 rItem.SubRemarkRuleList.map(function(sItem){
                     $("#remarkInput"+rItem.SubRemarkIndex+"").val("");
                     $("#remarkInput"+rItem.SubRemarkIndex+"").removeAttr("key");
@@ -1403,12 +1729,31 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
                     }else if(sItem.SubRemarkRule==2){
                         // $("#remarkInput"+rItem.SubRemarkIndex+"").val("");
                         if(sItem.SubRemarkValue=="true"){
-                            $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder",get_lan("remarkPop").search);
+                            // $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder",get_lan("remarkPop").search);
                             $("#remarkInput"+rItem.SubRemarkIndex+"").removeAttr("disabled");
                             $("#remarkSelect"+rItem.SubRemarkIndex+"").show();
-                            $("#remarkInput"+rItem.SubRemarkIndex+"").searchRemark();
+                            // $("#remarkInput"+rItem.SubRemarkIndex+"").searchRemark();
                             // 12.13新增
                             $("#remarkInput"+rItem.SubRemarkIndex+"").prev().removeAttr("disabled");
+							
+							var remarkObj={}
+							remarks.map(function(remarkList){
+								if(remarkList.Index==rIndex){
+									remarkObj=remarkList
+								}
+							})
+							if (remarkObj.InList) {
+								$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", get_lan("remarkPop").search);
+								$("#remarkInput" + rItem.SubRemarkIndex + "").searchRemark();
+							} else {
+								$("#remarkInput" + rItem.SubRemarkIndex + "").attr("placeholder", "");
+							}
+							$('.liContent').map(function(){
+								var i=$(this).attr('index')
+								if(rItem.SubRemarkIndex==i){
+									renderRight(i,"")
+								}
+							})
                         }else if(sItem.SubRemarkValue=="false"){
                             $("#remarkInput"+rItem.SubRemarkIndex+"").attr("placeholder","");
                             $("#remarkInput"+rItem.SubRemarkIndex+"").attr("disabled","disabled");
@@ -1421,10 +1766,74 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
             }
         })
     })
-
+	// 重新渲染 右侧select
+	function renderRight(renderIndex,swRemark){
+		var item=''
+		remarks.map(function(renderItem){
+			if(renderItem.Index==renderIndex){
+				item=renderItem
+			}
+		})
+		$('.liContent').map(function(liItem){
+			var liIndex=$(this).attr("index")
+			if(liIndex==item.Index){
+				// item.CanModify 不再判断，默认为true
+				 var colorRed = item.Input.indexOf("4") != -1||item.Input==""?"":"colorRed";
+				if(item.InList){
+				        if(!item.ListCanSearch){
+				            $(this).html('\
+				                    <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
+				                      <option>'+get_lan("remarkPop").Choose+'</option>\
+				                    </select>\
+				                    <input id="remarkInput'+item.Index+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'" key="'+item.SubmitContent+'" readonly placeholder="'+get_lan("remarkPop").Choose+'">\
+				            ')
+				        }else{
+				            $(this).html('\
+				                    <select class="remarkSelect '+newSelect+'" index="'+index+'" id="remarkSelect'+item.Index+'">\
+				                      <option>'+get_lan("remarkPop").Choose+'</option>\
+				                    </select>\
+				                    <input class="remarkLiInput '+newInput+'" CompanyID="'+CompanyID+'" id="remarkInput'+item.Index+'" require="'+colorRed+'" value="'+item.Content+'" index="'+item.Index+'"  key="'+item.SubmitContent+'" placeholder="'+get_lan("remarkPop").search+'">\
+				            ')
+				            $("#remarkInput"+item.Index+"").searchRemark();
+				        }
+				    }else if(!item.InList){
+				        $(this).html('\
+				                <select class="remarkSelect '+newSelect+'" index="'+index+'">\
+				                  <option>'+get_lan("remarkPop").Choose+'</option>\
+				                </select>\
+				                <input id="remarkInput'+item.Index+'" CompanyID="'+CompanyID+'" class="remarkLiInput '+newInput+'" require="'+colorRed+'" index="'+item.Index+'" value="'+item.Content+'"key="">\
+				        ')
+				    }
+				// 
+				console.log($("#remarkSelect"+item.Index))
+				item.Items.map(function(selectItem){
+				    var itemValue = selectItem.Value==null||selectItem.Value==""?selectItem.Key:selectItem.Value;
+					if(swRemark=="SWRemark"){
+						$("#remarkSelect"+item.Index).append('\
+								<option class="remarkOption" key="'+selectItem.Key+'" index="'+liIndex+'">'+itemValue+'</option>\
+								')
+					}else{
+						$("#remarkSelect"+item.Index).append('\
+							<option class="remarkOption" key="'+selectItem.Key+'" index="'+liIndex+'">'+itemValue+'</option>\
+							')
+					}
+				})
+				$("#remarkSelect"+item.Index).change(function(){
+				    var index = parseInt($(this).find("option:selected").attr("index"));
+				    $("#remarkInput"+item.Index).val($(this).find("option:selected").text());
+				    $("#remarkInput"+item.Index).attr('key',$(this).find("option:selected").attr("key"));
+				})
+			}
+		})
+	}
+		// end
     /*关闭remark*/
     $(".closeRemarkBtn").unbind("click").click(function(){
         closeRemarkPop();
+		if($('.passengerLi').length<1){
+			$.session.set('TAnumber','')
+		}
+		$(".selectPassengerArrow").click();
     })
     $(".sureRemarkBtn").unbind("click").click(function(){
         var remarks = '';
@@ -1458,7 +1867,8 @@ function remark(remarks,CustomerID,CompanyID,isFirst){
         var isCopy = false;
         $('body').mLoading("show");
         if(isFirst == "true"){
-            if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest){
+            // if(!JSON.parse($.session.get('ProfileInfo')).HasTravelRequest){
+                if(!$.session.get('TAnumber')){
                 $.ajax(
                     {
                       type:'post',
@@ -1801,9 +2211,9 @@ function newCustomerPop(CompanyId){
     );
     $(".newCustomerPopBtn").unbind("click").click(function(){
         // console.log($('.popNameRadio:checked').attr("PassengerName"));
-        var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+        var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 		var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
-        var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+        // var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
         if(!regPhone.test($(".newCustomerInputPhone").val())){
            alert(get_lan('passengerPop').phoneRemind);
         }else if(!regEmail.test($(".newCustomerInputEmail").val()) && !regEmail2.test($(".newCustomerInputEmail").val())){
@@ -1920,23 +2330,45 @@ function passengerPopChange(customerId,isFirst,customerRid,docDelId){
                 if(item.ID == customerId){
                     $(".popNameCnText").text(item.NameCN);
                     $(".popNameEnText").text(item.NameEN);
+					//乘客中英文姓名，按照证件信息的显示
+					item.Documents.map(function(ditem){
+					    if(customerRid==ditem.Rid){
+							 var passengerNameCN = ditem.DocNameCn!=null&&ditem.DocNameCn!=""?ditem.DocNameCn:item.NameCN;
+							 var passengerNameEN = ditem.DocNameEn!=null&&ditem.DocNameEn!=""?ditem.DocNameEn:item.NameEN;
+							 $(".popNameCnText").text(passengerNameCN);
+							 $(".popNameEnText").text(passengerNameEN);
+					    }
+					})
                     $(".popNameCn .popNameRadio").attr("PassengerName",item.NameCN);
                     $(".popNameEn .popNameRadio").attr("PassengerName",item.NameEN);
-                    if(item.Phones !=null){$(".popPhoneInput").val(item.Phones)}
-                    if(item.Email !=null){$(".popMailInput").val(item.Email)}
+                    if(item.Phones !=null){
+                        $(".popPhoneInput").val(hidePhones(ProfileInfo,item.Phones));
+                        $(".popPhoneInput").attr("hideNo",item.Phones);
+                    }
+                    if(item.Email !=null){
+                        $(".popMailInput").val(hideEmail(ProfileInfo,item.Email));
+                        $(".popMailInput").attr("hideNo",item.Email);
+                    }
+
                     if(item.Documents.length != 0&&item.Documents[0].Rid!=1){
                         $(".popDocumentsSelect").val(item.Documents[0].Rid);
-                        $(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
-                        $(".popDocumentsTimeInput").val(item.Documents[0].docExpiryDate.substring(0,10));
+                        
+                        // $(".popDocumentsInput").val(item.Documents[0].DocumentNumber);
+                        /*隐藏证件信息*/
+                        $(".popDocumentsInput").attr("hideNo",item.Documents[0].DocumentNumber);
+                        $(".popDocumentsInput").val(hideDocument(ProfileInfo,item.Documents[0].DocumentNumber,item.Documents[0].Rid));
+                        /*end*/
+                        $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,item.Documents[0].docExpiryDate.substring(0,10)));
+                        $(".popDocumentsTimeInput").attr("hideNo",item.Documents[0].docExpiryDate.substring(0,10));
                         if(item.Documents[0].Rid!=1){
                             $(".popDocumentsTime ").removeClass("hide");
                         }
-                        var popNameCnText = item.Documents[0].DocNameCn!=null&&item.Documents[0].DocNameCn!=""?item.Documents[0].DocNameCn:item.NameCN;
-                        var popNameEnText = item.Documents[0].DocNameEn!=null&&item.Documents[0].DocNameEn!=""?item.Documents[0].DocNameEn:item.NameEN;
-                        $(".popNameCn .popNameRadio").attr("PassengerName",popNameCnText);
-                        $(".popNameEn .popNameRadio").attr("PassengerName",popNameEnText);
-                        $(".popNameCnText").text(popNameCnText);
-                        $(".popNameEnText").text(popNameEnText);
+                        // var popNameCnText = item.Documents[0].DocNameCn!=null&&item.Documents[0].DocNameCn!=""?item.Documents[0].DocNameCn:item.NameCN;
+                        // var popNameEnText = item.Documents[0].DocNameEn!=null&&item.Documents[0].DocNameEn!=""?item.Documents[0].DocNameEn:item.NameEN;
+                        // $(".popNameCn .popNameRadio").attr("PassengerName",popNameCnText);
+                        // $(".popNameEn .popNameRadio").attr("PassengerName",popNameEnText);
+                        // $(".popNameCnText").text(popNameCnText);
+                        // $(".popNameEnText").text(popNameEnText);
                     }
                     // if(item.cardsGo.length != 0){
                     //     $(".popFrequentFlierSelect").val(item.cardsGo[0].SupplierCode);
@@ -1951,7 +2383,11 @@ function passengerPopChange(customerId,isFirst,customerRid,docDelId){
                         var ridList=[];
                         item.Documents.map(function(ditem){
                             if($('.popDocumentsSelect').val()==ditem.Rid){
-                                $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                // $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
                                 if(ditem.DocNameCn!=null&&ditem.DocNameCn!=""){
                                     $(".popNameCnText").text(ditem.DocNameCn);
                                     $(".popNameCn .popNameRadio").attr("PassengerName",ditem.DocNameCn);
@@ -1961,13 +2397,15 @@ function passengerPopChange(customerId,isFirst,customerRid,docDelId){
                                     $(".popNameEn .popNameRadio").attr("PassengerName",ditem.DocNameEn);
                                 }
                                 if(ditem.docExpiryDate.length>=10){
-                                    $(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0,10));
+                                    $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                    $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
                                 }
                             }
                             ridList.push(ditem.Rid);
                         })
                         if(ridList.indexOf($('.popDocumentsSelect').val()) <= -1){
                             $(".popDocumentsInput").val('');
+                            $(".popDocumentsInput").attr("hideNo",'');
                         }
                     })
                     if(isFirst == "true"){
@@ -1975,15 +2413,20 @@ function passengerPopChange(customerId,isFirst,customerRid,docDelId){
                         if(item.Phones != null&&item.Email != null&&item.Documents.length != 0){
                             if(item.Documents.length>1||item.Documents[0].Rid!=1){
                                 closePassengerPop();
-                                passengersInOrder();
+                                // passengersInOrder();
                             }
                         }
                     }else if(isFirst == "false"){
                         item.Documents.map(function(ditem){
                             if(docDelId==ditem.delDocId){
-                                $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                // $(".popDocumentsInput").val(ditem.DocumentNumber);
+                                /*隐藏证件信息*/
+                                $(".popDocumentsInput").attr("hideNo",ditem.DocumentNumber);
+                                $(".popDocumentsInput").val(hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid));
+                                /*end*/
                                 $(".popDocumentsSelect").val(customerRid);
-                                $(".popDocumentsTimeInput").val(ditem.docExpiryDate.substring(0,10));
+                                $(".popDocumentsTimeInput").val(hideDocDate(ProfileInfo,ditem.docExpiryDate.substring(0,10)));
+                                $(".popDocumentsTimeInput").attr("hideNo",ditem.docExpiryDate.substring(0,10));
                                 if(ditem.DocNameCn!=null&&ditem.DocNameCn!=""){
                                     $(".popNameCnText").text(ditem.DocNameCn);
                                     $(".popNameCn .popNameRadio").attr("PassengerName",ditem.DocNameCn);
@@ -2016,28 +2459,44 @@ function passengerPopChange(customerId,isFirst,customerRid,docDelId){
                     }
                 }
             })
+            $(".popPhoneInput,.popMailInput").unbind("focus").focus(function(){
+                if($(this).attr("hideNo")){
+                    $(this).val($(this).attr("hideNo"));
+                }
+            })
+            $(".popPhoneInput").unbind("blur").blur(function(){
+                var phoneNo = $(".popPhoneInput").val();
+                $(".popPhoneInput").attr("hideNo",phoneNo);
+                $(".popPhoneInput").val(hidePhones(ProfileInfo,phoneNo));
+            })
+            $(".popMailInput").unbind("blur").blur(function(){
+                $(".popMailInput").attr("hideNo",$(".popMailInput").val());
+                $(".popMailInput").val(hideEmail(ProfileInfo,$(".popMailInput").attr("hideNo")))
+            })
             $(".passengerPopBtn").unbind("click").click(function(){
                 // console.log($('.popNameRadio:checked').attr("PassengerName"));
-                var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+                var regEmail = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.|\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
 				var regEmail2 = /^[\w\-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]{2,8}){1,2}$/ig;
-                var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
-                if(!regPhone.test($(".popPhoneInput").val())){
+                // var regPhone = /^1([38]\d|5[0-35-9]|7[3678])\d{8}$/;
+                var phoneInfo = $(".popPhoneInput").attr("hideNo")?$(".popPhoneInput").attr("hideNo"):$(".popPhoneInput").val();
+                var emailInfo = $(".popMailInput").attr("hideNo")?$(".popMailInput").attr("hideNo"):$(".popMailInput").val();
+                
+                if(!regPhone.test(phoneInfo)){
                    alert(get_lan('passengerPop').phoneRemind);
-                }else if(!regEmail.test($(".popMailInput").val()) && !regEmail2.test($(".popMailInput").val())){
+                }else if(!regEmail.test(emailInfo) && !regEmail2.test(emailInfo)){
                     alert(get_lan('passengerPop').emailRemind);
                 }
-                else if(!$('.popNameRadio:checked').attr("PassengerName")||$(".popDocumentsInput").val()==""||$('.popDocumentsSelect option:selected').val()==""){
+                else if(!$('.popNameRadio:checked').attr("PassengerName")||$(".popDocumentsInput").attr("hideNo")==""||$('.popDocumentsSelect option:selected').val()==""){
                     alert(get_lan('passengerPop').clickRemind);
                 }else if($('.popDocumentsSelect option:selected').val()!=1&&$(".popDocumentsTimeInput").val()==""){
                     alert(get_lan('passengerPop').clickRemind);
                 }
                 else{
-                    var emailInfo = $(".popMailInput").val();
-                    var phoneInfo = $(".popPhoneInput").val();
+
                     if($('.popDocumentsSelect option:selected').val()==1){
-                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+',,,,'
+                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+',,,,'
                     }else{
-                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+',,,,'+$(".popDocumentsTimeInput").val();
+                        var docInfo = $('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+',,,,'+$(".popDocumentsTimeInput").attr("hideNo");
                     }
                     // if(JSON.parse($.session.get('intlTicketInfo')).type == "oneWay"){
                     //     var memberShipInfo = '1,'+$('.popFrequentFlierSelect option:selected').val()+','+$('.popFrequentFlierSelect option:selected').val()+$(".popFrequentFlierInput").val()+','+'2030-1-1';
@@ -2065,9 +2524,9 @@ function passengerPopChange(customerId,isFirst,customerRid,docDelId){
                             }else{
                                 closePassengerPop();
                                 if($('.popDocumentsSelect option:selected').val()==1){
-                                    var documentInfo = customerId+','+$('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+','
+                                    var documentInfo = customerId+','+$('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+','
                                 }else{
-                                    var documentInfo = customerId+','+$('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").val()+','+$(".popDocumentsTimeInput").val();
+                                    var documentInfo = customerId+','+$('.popDocumentsSelect option:selected').val()+','+$(".popDocumentsInput").attr("hideNo")+','+$(".popDocumentsTimeInput").val();
                                 }
                                 var airInfo = $(".orderDetail").attr("airInfoTime").split(" ").join('');
                                 $.ajax(
@@ -2163,8 +2622,8 @@ function passengersInOrder(customerState){
         airLineListString+='"'+$(".orderAirLine").eq(i).attr("code")+'"';
         airLineListString+=',';
     }
-    console.log(airLineListString);
     airLineListString = airLineListString.substring(0,airLineListString.length-1)+']';
+    console.log(airLineListString);
     $.ajax(
       {
         type:'post',
@@ -2188,11 +2647,12 @@ function passengersInOrder(customerState){
             $(".passengerList").html('');
             res.map(function(item,index){
                 var passengerName = item.Documents[0].DocNameEn!=null&&item.Documents[0].DocNameEn!=""?item.Documents[0].DocNameEn:item.NameEN;
+                var profilePhone = ProfileInfo.HideMyPersonalInfo&&item.Phones!=""?"*******"+item.Phones.substring(item.Phones.length-4,item.Phones.length):item.Phones;
                 $(".passengerList").append('\
                     <div class="passengerLi flexRow" customerId="'+item.ID+'" companyId="'+item.OrderCompanyId+'">\
                     <div class="passengerLiDiv" style="width:250px;text-align:left;padding-left:45px;box-sizing:border-box;"><span class="PassengerNameText">'+passengerName+'</span><span class="changePassengerInfo specificFontColor" index="'+index+'" customerId="'+item.ID+'" style="margin-left:5px;cursor:pointer;">'+get_lan('passengerInfo').changePassengerInfo+'</span></div>\
-                    <div class="passengerLiDiv passengerPhone" style="width:150px;">'+item.Phones+'</div>\
-                    <div class="passengerLiDiv" style="width:200px;">'+item.Email+'</div>\
+                    <div class="passengerLiDiv passengerPhone" style="width:150px;" hideNo="'+item.Phones+'">'+profilePhone+'</div>\
+                    <div class="passengerLiDiv" style="width:200px;">'+hideEmail(ProfileInfo,item.Email)+'</div>\
                     <div class="passengerLiDiv passengerLiDocuments" style="width:300px;"><select class="documentsSelect"></select></div>\
                     <div class="passengerLiDiv frequentCardsText" style="width:175px;"></div>\
                     <div class="passengerLiDiv changeRemarkBtn specificFontColor" index="'+index+'"  style="width:125px;text-decoration: underline;cursor:pointer">'+get_lan('passengerInfo').remarks+'</div>\
@@ -2202,7 +2662,7 @@ function passengersInOrder(customerState){
                     ')
                 item.Documents.map(function(ditem){
                     $(".documentsSelect").eq(index).append('\
-                        <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'" name="'+ditem.DocNameEn+'" cName="'+item.NameEN+'" index="'+index+'" docDelId="'+ditem.delDocId+'">'+ditem.nameDoc+':'+ditem.DocumentNumber+'</option>\
+                        <option value="'+ditem.Rid+'" docText="'+ditem.DocumentNumber+'" name="'+ditem.DocNameEn+'" cName="'+item.NameEN+'" index="'+index+'" docDelId="'+ditem.delDocId+'">'+ditem.nameDoc+':'+hideDocument(ProfileInfo,ditem.DocumentNumber,ditem.Rid)+'</option>\
                     ')
                 })
                 $(".frequentCardsText").html("");
@@ -2366,7 +2826,7 @@ function passengersInOrder(customerState){
                 selectPassengers();
             }
             /*有审批单*/
-            if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&$(".passengerLi").length==1){
+            if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&$(".passengerLi").length==1&&!JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption){
                 $(".choosePassengerBody").addClass("hide");
             }else{
                 $(".choosePassengerBody").removeClass("hide");
@@ -2587,7 +3047,7 @@ function passengersInOrder2(customerState){
                 selectPassengers();
             }
             /*有审批单*/
-            if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&$(".passengerLi").length==1){
+            if(JSON.parse($.session.get('ProfileInfo')).HasTravelRequest&&$(".passengerLi").length==1&&!JSON.parse($.session.get('ProfileInfo')).SelectNoTrOption){
                 $(".choosePassengerBody").addClass("hide");
             }else{
                 $(".choosePassengerBody").removeClass("hide");
@@ -2604,24 +3064,30 @@ function totalAmount(){
     var total = parseInt($(".orderDetail").attr('totalPrice'));
     var passengersLength = $(".passengerLi").length==0?1:$(".passengerLi").length;
     total = passengersLength*total;
-    $(".totalAmountText").html('<span style="font-size:16px;">￥</span>'+total);
+    // $(".totalAmountText").html('<span style="font-size:16px;">￥</span>'+total);
+    $(".totalAmountText").html(total+'<span style="font-size:16px;">'+curreny+'</span>');
+	
 }
 //预订机票
 function clickBookBtn(){
     $(".bookTicketBtn").unbind("click").click(function(){
+		$('body').mLoading("show");
         if($(this).attr("canBookInterAir")=="false"){
+			$('body').mLoading("hide");
             return false;
         }
         if($(".intlReason").length==1){
             var val = $('.intlReasonSelect option:selected').eq(0).val();
             if(val==""){
                 alert(get_lan("reasonRemind"));
+				$('body').mLoading("hide");
                 return false;
             }else if(val =="OT"){
                 if($(".reasonText").val()!=""){
                     val = 'OT,'+$(".reasonText").val();
                 }else{
                     alert(get_lan("reasonText"));
+					$('body').mLoading("hide");
                     return false;
                 }
             }
@@ -2639,6 +3105,7 @@ function clickBookBtn(){
                 }else if(obtLanguage=="EN"){
                     alert("For travel to Taiwan, please contact Apple Travel directly.");
                 }
+				$('body').mLoading("hide");
                 return false;
             }
 
@@ -2649,7 +3116,6 @@ function clickBookBtn(){
                     customerList += ',';
                 }
                 customerList = customerList.substring(0,customerList.length-1);
-                $('body').mLoading("show");
                 $.ajax(
                   {
                     type:'post',
@@ -2662,10 +3128,10 @@ function clickBookBtn(){
                     success : function(data) {
                         var res = JSON.parse(data);
                         console.log(res);
-                        // $('body').mLoading("hide");
                         if(res.code==200){
                             checkRepeat();
                         }else{
+							$('body').mLoading("hide");
                             alert(res.message);
                         }
                     },
@@ -2743,7 +3209,7 @@ function bookTicket(queryKey){
             alert(get_lan("documentRemind"));
             return false;
         }
-        otherKey += $(".passengerLi").eq(i).attr("customerId")+"-"+$('.documentsSelect option:selected').eq(i).val()+'-'+$('.documentsSelect option:selected').eq(i).attr("docText")+'-'+$(".passengerPhone").eq(i).text();
+        otherKey += $(".passengerLi").eq(i).attr("customerId")+"-"+$('.documentsSelect option:selected').eq(i).val()+'-'+$('.documentsSelect option:selected').eq(i).attr("docText")+'-'+$(".passengerPhone").eq(i).attr("hideNo");
         otherKey += ',';
     }
     otherKey = otherKey.substring(0,otherKey.length-1);
@@ -2797,19 +3263,16 @@ function bookTicket(queryKey){
                 console.log(res);
                 if(res.OrderNo != null){
                     var orderNo = res.OrderNo;
-					// if($.session.get("TAnumber")&&!$.session.get("TAnumberIndex")){
-					// 	$.session.remove("TAnumber");
-					// 	$.session.remove("TACustomerId");
-					// }
+					if($.session.get("TAnumber")&&!$.session.get("TAnumberIndex")){
+						$.session.remove("TAnumber");
+						$.session.remove("TACustomerId");
+					}
 					if(orderNo=="SucceedIntExcApplication"){
 						alert(res.ErrorMsg)
 						// 跳转到原订单详情页
 						window.location.href='../../orders/orderDetails.html?state=finish'
 					}else{
-                        var isTA=1;
-                        var orderFinishDetail = new OrderFinishDetail(netUserId.split('\"')[1],res.AirMainRids,orderType,obtLanguage)
-                        airBookOthersPopUp(orderFinishDetail,res.OrderNo,isTA) //确认机票杂项
-						// changeNewUid(orderNo);   //移到确认机票杂项里了
+						changeNewUid(orderNo);
 					}
                     // if(ProfileInfo.onlineStyle=="APPLE"){
                     //     var finishedInfo = {

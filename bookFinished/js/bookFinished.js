@@ -192,7 +192,7 @@ function showContent(){
                       <div class="continueLiText">'+get_lan('continueUl').air+'</div>\
                     </div>\
                     <div class="continueLi hotelLi">\
-                      <div class="continueLiImg hotelImg" name="hotel"></div>\
+                      <div class="continueLiImg hotelImg" id="indexHotelTab" name="hotel"></div>\
                       <div class="continueLiText">'+get_lan('continueUl').hotel+'</div>\
                     </div>\
                     <div class="continueLi trainLi">\
@@ -348,6 +348,12 @@ function approvalInfo(){
                     window.location.href='../../search/queryTrain.html';
                 }
             })
+            // 2020.11.26 酒店跳转
+            if(ProfileInfo.HotelJumpHRSWeb){
+                $('#indexHotelTab').unbind("click").click(function(){
+                    window.open(ProfileInfo.HRSWebsite);
+                })
+            }
             $(".approvalPrice").text(res.OrderFare);
             if(res.ShowApproval&&!res.UploadFileApprove){
                 checkRemark(detailInfo);

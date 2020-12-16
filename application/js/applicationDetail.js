@@ -254,10 +254,11 @@ function showContent(){
     $(".orderCustomerInfo").hide();
     $(".approveBtn").unbind("click").click(function(){
 		var refuseTxt=$(".approveComments").val()
-		if($(".approveComments").val()==""){
-		    alert(get_lan("approveCommentsRemind"))
-		    return false;
-		}
+
+		// if($(".approveComments").val()==""){
+		    // alert(get_lan("approveCommentsRemind"))
+		    // return false;
+		// }
 		// 2.6,回车换成空格
 		refuseTxt=refuseTxt.replace(/\n/g," ") 
         $('body').mLoading("show");
